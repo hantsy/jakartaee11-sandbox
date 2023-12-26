@@ -1,0 +1,76 @@
+site_name: Migrating to Jakarta EE 10
+
+repo_url: https://github.com/hantsy/jakartaee10-sandbox
+repo_name: hantsy/jakartaee10-sandbox
+theme:
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: pink
+      accent: pink
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  name: material
+  features:
+    - search.suggest
+    - navigation.expand
+    - navigation.indexes
+    # - toc.integrate
+  icon:
+    repo: fontawesome/brands/git-alt
+
+copyright: Copyright &copy;2022 Hantsy
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/hantsy
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/hantsy
+    - icon: fontawesome/brands/medium
+      link: https://medium.com/@hantsy
+    - icon: fontawesome/brands/github
+      link: https://github.com/hantsy
+
+markdown_extensions:
+  - meta
+  - toc:
+      toc_depth: 3
+      permalink: true
+plugins:
+  - search
+  - git-revision-date
+
+nav:
+  - Preface: index.md
+  - Persistence:
+      - jpa/index.md
+      - "What's New in Jakarta Persistence 3.1": jpa/new.md
+      - "Example: Hibernate 6.1": jpa/hibernate.md
+      - "Example: JPA and Jakarta EE Runtimes": jpa/jakartaee.md
+  - REST:
+      - rest/index.md
+      - "What's New in Jakarta REST 3.1": rest/new.md
+      - "Java SE Bootstrap API": rest/se-bootstrap.md
+      - "Support for MultiPart media type": rest/multipart.md
+      - "Better alignment with JSONB": rest/jsonb.md
+      - "Better alignment with CDI": rest/cdi-inject.md
+  - Concurrency: concurrency.md
+  - Security: 
+      - security/index.md
+      - "What's New in Jakarta Security 3.1": security/new.md
+      - "Example Project": security/example.md
+      - "OIDC with Keycloak": security/kc.md
+      - "OIDC with Auth0": security/auth0.md
+      - "OIDC with Okta": security/okta.md
+      - "Summary": security/summary.md
+  - Faces: 
+      - faces/index.md
+      - "What's new in Faces 4.0": faces/new.md
+      - "Clean Up Deprecated Staff": faces/cleanup.md
+      - "New Features and Improvements": faces/faces.md
