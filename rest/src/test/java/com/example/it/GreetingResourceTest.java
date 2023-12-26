@@ -18,9 +18,9 @@ under the License.
  */
 package com.example.it;
 
-import com.example.JsonbContextResolver;
 import com.example.GreetingRecord;
 import com.example.GreetingResource;
+import com.example.JsonbContextResolver;
 import com.example.RestConfig;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -47,7 +47,6 @@ import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(ArquillianExtension.class)
 public class GreetingResourceTest {
@@ -63,7 +62,7 @@ public class GreetingResourceTest {
                 .resolve("org.assertj:assertj-core")
                 .withTransitivity()
                 .asFile();
-        var war = ShrinkWrap.create(WebArchive.class)
+        var war = ShrinkWrap.create(WebArchive.class, "test")
                 .addAsLibraries(extraJars)
                 .addClasses(GreetingResource.class, GreetingRecord.class, JsonbContextResolver.class, RestConfig.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -77,14 +76,14 @@ public class GreetingResourceTest {
     Client client;
 
     @BeforeEach
-    public void before() throws Exception {
+    public void before() {
         LOGGER.log(Level.INFO, "baseURL: {0}", new Object[]{baseUrl.toExternalForm()});
         client = ClientBuilder.newClient();
         //client.register(JsonbContextResolver.class);
     }
 
     @AfterEach
-    public void after() throws Exception {
+    public void after() {
         client.close();
     }
 
@@ -100,6 +99,5 @@ public class GreetingResourceTest {
         assertThat(jsonString).doesNotContain("email");
         assertThat(jsonString).contains("Name");
     }
-
 
 }
