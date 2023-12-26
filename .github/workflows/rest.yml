@@ -30,3 +30,9 @@ jobs:
       run: |
         cd rest
         mvn -B -q clean verify -Parq-glassfish-managed
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: server-log
+        path: rest/target/glassfish*/glassfish/domains/domain1/logs/server.log
+              
