@@ -62,7 +62,7 @@ public class GreetingResourceTest {
                 .resolve("org.assertj:assertj-core")
                 .withTransitivity()
                 .asFile();
-        var war = ShrinkWrap.create(WebArchive.class, "test")
+        var war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
                 .addClasses(GreetingResource.class, GreetingRecord.class, JsonbContextResolver.class, RestConfig.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
