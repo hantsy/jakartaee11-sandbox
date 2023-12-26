@@ -97,7 +97,8 @@ public class GreetingResourceTest {
         String jsonString = r.readEntity(String.class);
         LOGGER.log(Level.INFO, "Get greeting result string: {0}", jsonString);
         assertThat(jsonString).doesNotContain("email");
-        assertThat(jsonString).contains("Name");
+        assertThat(jsonString).contains("name");
+        assertThat(jsonString).contains("sent_at");
     }
 
 }
