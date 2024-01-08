@@ -90,7 +90,7 @@ public class GreetingResourceTest {
     @Test
     @RunAsClient
     public void testGetPerson() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting/Hantsy"));
         Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get();
         LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());
         assertEquals(200, r.getStatus());
