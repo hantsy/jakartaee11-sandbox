@@ -222,7 +222,7 @@ under the License.
                         <version>${maven-failsafe-plugin.version}</version>
                         <configuration>
                             <environmentVariables>
-                                <GLASSFISH_HOME>${project.build.directory}/glassfish7</GLASSFISH_HOME>
+                                <GLASSFISH_HOME>${project.build.directory}/glassfish8</GLASSFISH_HOME>
                             </environmentVariables>
                             <systemPropertyVariables>
                                 <arquillian.launch>glassfish-managed</arquillian.launch>
