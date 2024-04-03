@@ -17,7 +17,7 @@
         <maven.compiler.release>21</maven.compiler.release>
 
         <!-- Official Maven Plugins -->
-        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
 
@@ -33,19 +33,19 @@
         <jakartaee-api.version>11.0.0-M1</jakartaee-api.version>
         <slf4j.version>2.0.9</slf4j.version>
         <logback.version>1.4.11</logback.version>
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.32</lombok.version>
         <!-- requires 6.1.2.Final or higher -->
-        <hibernate.version>6.4.1.Final</hibernate.version>
+        <hibernate.version>6.5.0.CR1</hibernate.version>
         <h2.version>2.2.224</h2.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.8.0.Final</arquillian-bom.version>
         <junit-jupiter.version>5.10.1</junit-jupiter.version>
         <assertj.version>3.25.1</assertj.version>
-        <awaitility.version>4.2.0</awaitility.version>
+        <awaitility.version>4.2.1</awaitility.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M1</glassfish.version>
+        <glassfish.version>8.0.0-M3</glassfish.version>
         <jersey.version>3.1.5</jersey.version>
         <eclipselink.version>4.0.2</eclipselink.version>
         <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
@@ -61,6 +61,8 @@
     </properties>
     <modules>
         <module>faces</module>
+		<module>rest</module>
+		<module>hibernate</module>
     </modules>
 
     <dependencyManagement>
