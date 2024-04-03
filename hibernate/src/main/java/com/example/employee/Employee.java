@@ -1,36 +1,44 @@
-package com.example;
+package com.example.employee;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-public class Person {
+@MappedSuperclass
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "employees",
+        check = @CheckConstraint(
+                name = "joindate_birthday_check",
+                constraint = "joineDate>birthDate"
+        )
+)
+@DiscriminatorColumn(name="TYPE", discriminatorType = DiscriminatorType.CHAR)
+public class Employee {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
+
+    @Column(name = "age", comment = "age")
     private int age = 30;
 
     @Enumerated(EnumType.STRING)
     private Gender gender = Gender.MALE;
     private Integer yearsWorked = 2;
-    private LocalDateTime birthDate = LocalDateTime.now().minusYears(30);
-    private BigDecimal salary = new BigDecimal("12345.678");
-    private BigDecimal hourlyRate = new BigDecimal("34.56");
+    private LocalDateTime birthDate;
 
-    public Person() {
+    private LocalDateTime joinedDate;
+
+    public Employee() {
     }
 
-    public Person(String name, int age) {
+    public Employee(String name, int age) {
         assert age > 0;
         this.name = name;
         this.age = age;
-        this.birthDate = LocalDateTime.now().minusYears(this.age);
     }
 
     public UUID getId() {
@@ -81,66 +89,43 @@ public class Person {
         this.birthDate = birthDay;
     }
 
-    public BigDecimal getSalary() {
-        return salary;
+    public LocalDateTime getJoinedDate() {
+        return joinedDate;
     }
 
-    public void setSalary(BigDecimal salary) {
-        this.salary = salary;
-    }
-
-    public BigDecimal getHourlyRate() {
-        return hourlyRate;
-    }
-
-    public void setHourlyRate(BigDecimal hourlyRate) {
-        this.hourlyRate = hourlyRate;
-    }
-
-    public static enum Gender {
-        MALE, FEMALE;
+    public void setJoinedDate(LocalDateTime joinedDate) {
+        this.joinedDate = joinedDate;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return getAge() == person.getAge() &&
-                Objects.equals(getId(), person.getId()) &&
-                getName().equals(person.getName()) &&
-                getGender() == person.getGender() &&
-                Objects.equals(getYearsWorked(), person.getYearsWorked()) &&
-                getBirthDate().equals(person.getBirthDate()) &&
-                Objects.equals(getSalary(), person.getSalary()) &&
-                Objects.equals(getHourlyRate(), person.getHourlyRate());
+        Employee employee = (Employee) o;
+        return age == employee.age
+                && Objects.equals(id, employee.id)
+                && Objects.equals(name, employee.name)
+                && gender == employee.gender
+                && Objects.equals(yearsWorked, employee.yearsWorked)
+                && Objects.equals(birthDate, employee.birthDate)
+                && Objects.equals(joinedDate, employee.joinedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                getId(),
-                getName(),
-                getAge(),
-                getGender(),
-                getYearsWorked(),
-                getBirthDate(),
-                getSalary(),
-                getHourlyRate()
-        );
+        return Objects.hash(id, name, age, gender, yearsWorked, birthDate, joinedDate);
     }
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "Employee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
                 ", yearsWorked=" + yearsWorked +
-                ", birthDay=" + birthDate +
-                ", salary=" + salary +
-                ", hourlyRate=" + hourlyRate +
+                ", birthDate=" + birthDate +
+                ", joinedDate=" + joinedDate +
                 '}';
     }
 }
