@@ -85,7 +85,7 @@ under the License.
                         <artifactId>cargo-maven3-plugin</artifactId>
                         <configuration>
                             <container>
-                                <containerId>glassfish7x</containerId>
+                                <containerId>glassfish8x</containerId>
                                
                                 <!-- <artifactInstaller>
                                     <groupId>org.glassfish.main.distributions</groupId>
@@ -99,7 +99,7 @@ under the License.
                             </container>
                             <configuration>
                                 <!-- the configuration used to deploy -->
-                                <home>${project.build.directory}/glassfish7x-home</home>
+                                <home>${project.build.directory}/glassfish8x-home</home>
                                 <properties>
                                     <cargo.glassfish.admin.port>14848</cargo.glassfish.admin.port>
                                     <cargo.servlet.port>18080</cargo.servlet.port>
