@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 
 @Entity
 public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    //@Id
+    @EmbeddedId
+    private Isbn  id;
 
     private String name;
 
@@ -18,17 +18,18 @@ public class Book {
     public Book() {
     }
 
-    public Book(String name, Author author) {
+    public Book(Isbn id, String name, Author author) {
+        this.id = id;
         this.name = name;
         this.author = author;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Isbn getId() {
+        return id;
     }
 
-    public Long getId() {
-        return id;
+    public void setId(Isbn id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -45,6 +46,15 @@ public class Book {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", author=" + author +
+                '}';
     }
 }
 

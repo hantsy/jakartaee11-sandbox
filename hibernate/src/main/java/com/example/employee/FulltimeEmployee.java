@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@DiscriminatorValue("F")
 public class FulltimeEmployee extends Employee {
 
     @Column(name = "salary", check = @CheckConstraint(name = "salary_check", constraint = "salary>0"))

@@ -17,7 +17,8 @@ public class Customer {
 
     private String email;
 
-    private Address adress;
+    @Embedded
+    private Address address;
 
     public void setId(Long id) {
         this.id = id;

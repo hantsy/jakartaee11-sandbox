@@ -7,14 +7,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "employees",
-        check = @CheckConstraint(
-                name = "joindate_birthday_check",
-                constraint = "joineDate>birthDate"
-        )
-)
-@DiscriminatorColumn(name="TYPE", discriminatorType = DiscriminatorType.CHAR)
 public class Employee {
     @Id
     @Column(name = "id", nullable = false)
