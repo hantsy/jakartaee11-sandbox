@@ -30,7 +30,7 @@
         <cargo-maven3-plugin.version>1.10.12</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API -->
-        <jakartaee-api.version>11.0.0-M1</jakartaee-api.version>
+        <jakartaee-api.version>11.0.0-M2</jakartaee-api.version>
         <slf4j.version>2.0.13</slf4j.version>
         <logback.version>1.5.6</logback.version>
         <lombok.version>1.18.32</lombok.version>
@@ -45,7 +45,7 @@
         <awaitility.version>4.2.1</awaitility.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M4</glassfish.version>
+        <glassfish.version>8.0.0-M5</glassfish.version>
         <jersey.version>3.1.5</jersey.version>
         <eclipselink.version>4.0.2</eclipselink.version>
         <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
