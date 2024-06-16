@@ -8,5 +8,5 @@ import jakarta.persistence.Table;
 @Table(name="value_customers")
 public class ValueCustomer extends Customer{
 
-
+        private Double discoundPercentage;
 }

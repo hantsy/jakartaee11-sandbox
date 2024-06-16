@@ -28,13 +28,13 @@ public class BookstoreTest {
                 //                       "org.hibernate.readOnly", true);
 
                 // type safe options
-//                var result = em.find(Book.class, new Isbn("9781932394887"),
-//                        CacheRetrieveMode.BYPASS, Timeout.seconds(500), LockModeType.READ);
-//                LOG.debug("found book result: {}", result);
+                var result = em.find(Book.class, new Isbn("9781932394887"),
+                        CacheRetrieveMode.BYPASS, Timeout.seconds(500), LockModeType.READ);
+                LOG.debug("found book result: {}", result);
 
                 // get persistent or detached instance
-//                var ref = em.getReference(result);
-//                LOG.debug("book ref: {}", ref);
+                var ref = em.getReference(result);
+                LOG.debug("book ref: {}", ref);
 
                 em.createQuery("from Book where title like '%Hibernate'", Book.class).getResultStream()
                         .forEach(book -> LOG.debug("found books:{}", book));
@@ -59,7 +59,7 @@ public class BookstoreTest {
                 .property(PersistenceConfiguration.JDBC_DRIVER, "org.h2.Driver")
                 .property(PersistenceConfiguration.JDBC_USER, "sa");
 
-        //val emf =configuration.createEntityManagerFactory();
+        // val emf =configuration.createEntityManagerFactory();
         try (var emf = Persistence.createEntityManagerFactory(configuration)) {
 
             emf.runInTransaction(em -> {
