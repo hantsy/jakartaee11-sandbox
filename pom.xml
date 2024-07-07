@@ -62,6 +62,7 @@
     <modules>
         <module>faces</module>
 		<module>rest</module>
+		<module>jpa</module>
 		<module>hibernate</module>
     </modules>
 

@@ -104,7 +104,7 @@ under the License.
                         <artifactId>cargo-maven3-plugin</artifactId>
                         <configuration>
                             <container>
-                                <containerId>glassfish7x</containerId>
+                                <containerId>glassfish8x</containerId>
                                
                                 <!-- <artifactInstaller>
                                     <groupId>org.glassfish.main.distributions</groupId>
