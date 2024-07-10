@@ -10,6 +10,7 @@ import java.util.List;
 public class EmployeeRepository {
 
     @Inject
+    @MyCustom
     EntityManager entityManager;
 
     public List<Employee> allEmployees() {
