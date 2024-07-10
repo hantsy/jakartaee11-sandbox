@@ -18,9 +18,8 @@ under the License.
  */
 package com.example.it;
 
-import com.example.Person;
-import com.example.RecordIdClass;
-import com.example.RecordIdClassEntity;
+import com.example.idclass.RecordIdClass;
+import com.example.idclass.RecordIdClassEntity;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -32,7 +31,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

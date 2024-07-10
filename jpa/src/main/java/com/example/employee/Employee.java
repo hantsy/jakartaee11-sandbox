@@ -26,6 +26,14 @@ public class Employee {
 
     private Money salary;
 
+    public Employee() {
+    }
+
+    public Employee(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public UUID getId() {
         return id;
     }

@@ -18,10 +18,8 @@ under the License.
  */
 package com.example.it;
 
-import com.example.RecordEmbeddedId;
-import com.example.RecordEmbeddedIdEntity;
-import com.example.RecordIdClass;
-import com.example.RecordIdClassEntity;
+import com.example.embeddedid.RecordEmbeddedId;
+import com.example.embeddedid.RecordEmbeddedIdEntity;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
