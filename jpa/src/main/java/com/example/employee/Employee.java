@@ -12,6 +12,7 @@ public class Employee {
     private UUID id;
     private String firstName;
     private String lastName;
+    private String email;
 
     @Embedded
     private EmploymentPeriod employmentPeriod;
@@ -106,17 +107,35 @@ public class Employee {
         this.salary = salary;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", employmentPeriod=" + employmentPeriod +
                 ", phoneNumber=" + phoneNumber +
                 ", gender=" + gender +
                 ", address=" + address +
                 ", salary=" + salary +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

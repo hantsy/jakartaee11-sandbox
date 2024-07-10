@@ -100,12 +100,13 @@ public class EmployeeEntityTest {
         entity.setEmploymentPeriod(new EmploymentPeriod(LocalDate.now().minusYears(3),
                 LocalDate.now().minusDays(10)));
         entity.setSalary(new Money(new BigDecimal("5000"), Currency.getInstance("USD")));
+        entity.setEmail("FOObar@gmail.com");
         em.flush();
 
         endTx();
 
         String queryString = """
-                FROM Employee 
+                FROM Employee ORDER BY LOWER(email) ASC, createdAt DESC NULLS FIRST
                 """;
         var saved = em.createQuery(queryString, Employee.class)
                 .getResultList()
