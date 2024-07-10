@@ -41,7 +41,7 @@
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.8.1.Final</arquillian-bom.version>
         <junit-jupiter.version>5.10.3</junit-jupiter.version>
-        <assertj.version>3.26.0</assertj.version>
+        <assertj.version>3.26.3</assertj.version>
         <awaitility.version>4.2.1</awaitility.version>
 
         <!-- Glassfish server -->
