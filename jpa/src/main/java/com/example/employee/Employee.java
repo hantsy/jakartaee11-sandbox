@@ -2,6 +2,7 @@ package com.example.employee;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +26,13 @@ public class Employee {
     private Address address;
 
     private Money salary;
+
+    private Instant createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = Instant.now();
+    }
 
     public Employee() {
     }
