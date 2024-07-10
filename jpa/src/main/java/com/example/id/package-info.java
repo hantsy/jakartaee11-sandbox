@@ -1,5 +1,5 @@
 @TableGenerator(
-        name="id_gen",
+        //name="id_gen", // optional
         pkColumnName = "key",
         valueColumnName = "value",
         pkColumnValue = "id",
