@@ -20,13 +20,8 @@ under the License.
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://jboss.org/schema/arquillian"
         xsi:schemaLocation="http://jboss.org/schema/arquillian https://jboss.org/schema/arquillian/arquillian_1_0.xsd">
-    <defaultProtocol type="Servlet 5.0"/>
 
-    <engine>
-        <property name="deploymentExportPath">target/</property>
-    </engine>
-
-    <container qualifier="glassfish-managed">
+    <container qualifier="glassfish" default="true">
         <configuration>
             <property name="adminHost">localhost</property>
             <property name="adminPort">4848</property>
@@ -42,15 +37,6 @@ under the License.
             <property name="outputToConsole">true</property>
             <!-- true enables verbose logging of the jaxrs requests -->
             <property name="debugRequests">false</property>
-        </configuration>
-    </container>
-
-    <container qualifier="glassfish-remote">
-        <configuration>
-            <property name="adminHost">localhost</property>
-            <property name="adminPort">4848</property>
-            <property name="adminUser">admin</property>
-            <property name="adminPassword"></property>
         </configuration>
     </container>
 

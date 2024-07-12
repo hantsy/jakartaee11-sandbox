@@ -21,7 +21,7 @@ package com.example.it;
 import com.example.GreetingRecord;
 import com.example.GreetingResource;
 import com.example.JsonbContextResolver;
-import com.example.RestConfig;
+import com.example.RestActivator;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
@@ -64,7 +64,7 @@ public class GreetingResourceTest {
                 .asFile();
         var war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
-                .addClasses(GreetingResource.class, GreetingRecord.class, JsonbContextResolver.class, RestConfig.class)
+                .addClasses(GreetingResource.class, GreetingRecord.class, JsonbContextResolver.class, RestActivator.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, "war deployment: {0}", new Object[]{war.toString(true)});
         return war;
