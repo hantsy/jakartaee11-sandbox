@@ -3,7 +3,7 @@ package com.example.employee;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class Employee {
@@ -25,6 +25,9 @@ public class Employee {
 
     @Embedded
     private Address address;
+
+    @ElementCollection
+    private Set<Publication> publications = new HashSet<>();
 
     private Money salary;
 
