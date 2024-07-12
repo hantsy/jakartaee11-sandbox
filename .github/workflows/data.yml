@@ -1,12 +1,12 @@
-# This workflow will build a Java project with Maven, and cache/jpaore any dependencies to improve the workflow execution time
+# This workflow will build a Java project with Maven, and cache/dataore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Build jpa
+name: Build data
 
 on:
   push:
     paths:
-      - "jpa/**"
+      - "data/**"
     branches:
       - master
   pull_request:
@@ -16,7 +16,7 @@ on:
       - reopened
 
 jobs:
-  jpa:
+  data:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -28,11 +28,11 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: |
-        cd jpa
+        cd data
         mvn -B -q clean verify -Parq-glassfish-managed
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: server-log
-        path: jpa/target/glassfish*/glassfish/domains/domain1/logs/server.log
+        path: data/target/glassfish*/glassfish/domains/domain1/logs/server.log
               
