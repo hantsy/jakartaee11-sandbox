@@ -101,8 +101,9 @@ public class BloggerTest {
 
         var foundPost = blogger.byId(post.getId());
         assertTrue(foundPost.isPresent());
-        assertEquals(post.getTitle(), foundPost.get().getTitle());
-        assertEquals(post.getContent(), foundPost.get().getContent());
+        Post savedPost = foundPost.get();
+        assertEquals(post.getTitle(), savedPost.getTitle());
+        assertEquals(post.getContent(), savedPost.getContent());
 
         var foundByStatus = blogger.byStatus(
                 com.example.Status.PUBLISHED,
@@ -115,6 +116,14 @@ public class BloggerTest {
         var allPosts = blogger.allPosts("%My%", PageRequest.ofPage(1, 10, true));
         assertEquals(1, allPosts.totalElements());
         assertEquals(post.getId(), allPosts.content().getFirst().id());
+
+        savedPost.setTitle("New Title");
+        startTx();
+        blogger.update(savedPost);
+        endTx();
+
+        var updatedPost = blogger.byId(post.getId()).get();
+        assertEquals("New Title", updatedPost.getTitle());
 
 //        var comment = new Comment();
 //        comment.setContent("My Comment");
