@@ -14,7 +14,13 @@ public record Article(
     public Article withId(int id) {
         return new Article(id, title, author, content, tags, publishedAt);
     }
+
+    public Article withTags(List<String> tags) {
+        return new Article(id, title, author, content, tags, publishedAt);
+    }
+
+    public Article withAuthor(Author author) {
+        return new Article(id, title, author, content, tags, publishedAt);
+    }
 }
 
-record Author (String givenName, String familyName) {
-}

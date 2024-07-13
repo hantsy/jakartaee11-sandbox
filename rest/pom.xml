@@ -216,6 +216,9 @@ under the License.
                             <environmentVariables>
                                 <GLASSFISH_HOME>${project.build.directory}/glassfish8</GLASSFISH_HOME>
                             </environmentVariables>
+                            <argLine>
+                                --add-opens=java.base/java.net=ALL-UNNAMED
+                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>
