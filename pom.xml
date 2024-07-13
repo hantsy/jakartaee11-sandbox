@@ -51,7 +51,7 @@
         <!-- Glassfish server -->
         <glassfish.version>8.0.0-M6</glassfish.version>
         <jersey.version>4.0.0-M1</jersey.version>
-        <eclipselink.version>5.0.0-B02</eclipselink.version>
+        <eclipselink.version>5.0.0-SNAPSHOT</eclipselink.version>
         <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
 
         <!-- WildFly -->
