@@ -1,5 +1,6 @@
 package com.example;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -17,6 +18,7 @@ public class GreetingService {
     @MyQualifier
     private ManagedExecutorService executor;
 
+    @Asynchronous
     public CompletableFuture<GreetingRecord> greetAsync(String name) {
         return executor.supplyAsync(() -> {
             LOGGER.log(Level.INFO, "thread name: " + Thread.currentThread().getName());

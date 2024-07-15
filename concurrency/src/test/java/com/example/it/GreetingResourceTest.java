@@ -93,12 +93,14 @@ public class GreetingResourceTest {
 
     @Test
     @RunAsClient
-    public void testGetPerson() throws Exception {
+    public void testGreeting() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting/Hantsy"));
-        Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get();
-        LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());
-        assertEquals(200, r.getStatus());
-        String jsonString = r.readEntity(String.class);
+        String jsonString;
+        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
+            LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());
+            assertEquals(200, r.getStatus());
+            jsonString = r.readEntity(String.class);
+        }
         LOGGER.log(Level.INFO, "Get greeting result string: {0}", jsonString);
         assertThat(jsonString).doesNotContain("email");
         assertThat(jsonString).contains("name");

@@ -8,6 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Qualifier
-@Retention(RetentionPolicy. RUNTIME)
-@Target({ ElementType. FIELD, ElementType. METHOD, ElementType. PARAMETER, ElementType. TYPE })
-public  @interface MyQualifier {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
+public @interface MyQualifier {
+}
