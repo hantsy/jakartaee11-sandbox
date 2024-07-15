@@ -1,0 +1,38 @@
+# This workflow will build a Java project with Maven, and cache/securityore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Build security
+
+on:
+  push:
+    paths:
+      - "security/**"
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'zulu'
+        cache: maven
+    - name: Build with Maven
+      run: |
+        cd security
+        mvn -B -q clean verify -Parq-glassfish-managed
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: server-log
+        path: security/target/glassfish*/glassfish/domains/domain1/logs/server.log
+              
