@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html">
+<f:view>
+    <f:metadata>
+        <f:event listener="#{customerBean.init}" type="preRenderView"/>
+    </f:metadata>
+    <h:head>
+        <title>Express Language 6.0!</title>
+    </h:head>
+    <h:body>
+        <h1>Express Language 6.0</h1>
+
+        <div>
+            <strong>#{customerBean.customer.firstName +' ' +customerBean.customer.lastName}</strong>
+            <hr/>
+        </div>
+        <div>Emails: (#{customerBean.customer.emailAddresses.length})</div>
+        <ul>
+            <ui:repeat value="#{customerBean.customer.emailAddresses}" var="email">
+                <li>#{email.email}(#{email.primary?'O':'X'})</li>
+            </ui:repeat>
+        </ul>
+        <div>
+            #{customerBean.customer.address.street},
+            #{customerBean.customer.address.city},
+            #{customerBean.customer.address.state},
+            #{customerBean.customer.address.zipCode},
+        </div>
+    </h:body>
+</f:view>
+</html>

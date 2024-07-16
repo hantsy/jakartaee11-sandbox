@@ -75,7 +75,7 @@ under the License.
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-            <cargo.zipUrlInstaller.downloadDir>${project.basedir}/../installs
+                <cargo.zipUrlInstaller.downloadDir>${project.basedir}/../installs
                 </cargo.zipUrlInstaller.downloadDir>
             </properties>
             <build>
@@ -86,14 +86,16 @@ under the License.
                         <configuration>
                             <container>
                                 <containerId>glassfish8x</containerId>
-                               
+
                                 <!-- <artifactInstaller>
                                     <groupId>org.glassfish.main.distributions</groupId>
                                     <artifactId>glassfish</artifactId>
                                     <version>${glassfish.version}</version>
                                 </artifactInstaller> -->
                                 <zipUrlInstaller>
-                                    <url>https://github.com/eclipse-ee4j/glassfish/releases/download/${glassfish.version}/glassfish-${glassfish.version}.zip</url>
+                                    <url>
+                                        https://github.com/eclipse-ee4j/glassfish/releases/download/${glassfish.version}/glassfish-${glassfish.version}.zip
+                                    </url>
                                     <downloadDir>${cargo.zipUrlInstaller.downloadDir}</downloadDir>
                                 </zipUrlInstaller>
                             </container>
@@ -101,10 +103,19 @@ under the License.
                                 <!-- the configuration used to deploy -->
                                 <home>${project.build.directory}/glassfish8x-home</home>
                                 <properties>
-                                    <cargo.glassfish.admin.port>14848</cargo.glassfish.admin.port>
-                                    <cargo.servlet.port>18080</cargo.servlet.port>
+                                    <cargo.port.offset>10000</cargo.port.offset>
                                     <cargo.remote.password></cargo.remote.password>
+                                    <cargo.glassfish.removeDefaultDatasource>true</cargo.glassfish.removeDefaultDatasource>
                                 </properties>
+                                <datasources>
+                                    <datasource>
+                                        <driverClass>org.apache.derby.jdbc.EmbeddedDriver</driverClass>
+                                        <url>jdbc:derby:derbyDB;create=true</url>
+                                        <jndiName>jdbc/__default</jndiName>
+                                        <username>APP</username>
+                                        <password>nonemptypassword</password>
+                                    </datasource>
+                                </datasources>
                             </configuration>
                         </configuration>
                     </plugin>
