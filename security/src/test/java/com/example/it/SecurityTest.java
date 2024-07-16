@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,6 +53,7 @@ public class SecurityTest {
                         TestServlet.class
                 )
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+                .addAsWebInfResource("test-web.xml", "web.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         LOGGER.log(Level.INFO, "deployment archive: {0}", webArchive.toString(true));
@@ -65,18 +67,15 @@ public class SecurityTest {
 
     @BeforeEach
     public void setup() {
+        LOGGER.log(Level.INFO, "deployment baseURL: {0}", baseUrl);
         this.client = ClientBuilder.newClient();
     }
 
     @Test
     @RunAsClient
-    public void testRecordIdClass() throws Exception {
-        var target = client.target(baseUrl.toExternalForm());
-
-        try (var response = target.path("/servlet")
-                .request()
-                .get()) {
-
+    public void testServletPath() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "servlet"));
+        try (var response = target.request().get()) {
             LOGGER.info("response status: " + response.getStatus());
         }
     }
