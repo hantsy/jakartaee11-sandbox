@@ -2,12 +2,15 @@ package com.example;
 
 import jakarta.el.ELProcessor;
 
+import java.util.Optional;
+
 public class ELExample {
     public static void main(String[] args) {
         ELProcessor elProcessor = new ELProcessor();
         elProcessor.defineBean("customer", new Customer(
                         "Foo",
                         "Bar",
+                Optional.of(new PhoneNumber("001", "3334445555")),
                         new EmailAddress[]{
                                 new EmailAddress("foo@example.com", true),
                                 new EmailAddress("bar@example.com", false)
@@ -15,6 +18,10 @@ public class ELExample {
                         new Address("123 Main St", "Anytown", "CA", "12345")
                 )
         );
+
+        // access optional phonenumber
+        String phoneNumber = elProcessor.eval("customer.phoneNumber.map(t-> t.countryCode+t.number).orElse('NotFound')");
+        System.out.println(phoneNumber);
 
         String firstName = elProcessor.eval("customer.firstName");
         String lastName = elProcessor.eval("customer.lastName");
