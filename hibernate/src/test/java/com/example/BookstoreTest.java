@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+
 
 public class BookstoreTest {
     private static final Logger LOG = LoggerFactory.getLogger(BookstoreTest.class);
@@ -18,7 +20,13 @@ public class BookstoreTest {
         try (var emf = Persistence.createEntityManagerFactory("bookstorePU")) {
 
             emf.runInTransaction(em -> {
-                em.persist(new Book(new Isbn("9781932394887"), "Java Persistence with Hibernate", new Author("Gavin King")));
+                Book entity = new Book(
+                        new Isbn("9781932394887"),
+                        "Java Persistence with Hibernate",
+                        new Author("Gavin King"),
+                        new BigDecimal("50.1234")
+                );
+                em.persist(entity);
 
                 // var book =
                 //        em.find(Book.class, isbn,
@@ -29,14 +37,22 @@ public class BookstoreTest {
 
                 // type safe options
                 var result = em.find(Book.class, new Isbn("9781932394887"),
-                        CacheRetrieveMode.BYPASS, Timeout.seconds(500), LockModeType.READ);
+                        CacheRetrieveMode.BYPASS,
+                        Timeout.seconds(500),
+                        LockModeType.READ);
                 LOG.debug("found book result: {}", result);
 
                 // get persistent or detached instance
                 var ref = em.getReference(result);
                 LOG.debug("book ref: {}", ref);
 
-                em.createQuery("from Book where title like '%Hibernate'", Book.class).getResultStream()
+                // no select
+                em.createQuery("from Book where title like '%Hibernate'", Book.class)
+                        .getResultStream()
+                        .forEach(book -> LOG.debug("found books:{}", book));
+
+                em.createQuery("select id(), version(), left(title, 5), right(title, 2) from Book")
+                        .getResultStream()
                         .forEach(book -> LOG.debug("found books:{}", book));
             });
 
@@ -63,7 +79,13 @@ public class BookstoreTest {
         try (var emf = Persistence.createEntityManagerFactory(configuration)) {
 
             emf.runInTransaction(em -> {
-                em.persist(new Book(new Isbn("9781932394887"), "Java Persistence with Hibernate", new Author("Gavin King")));
+                Book entity = new Book(
+                        new Isbn("9781932394887"),
+                        "Java Persistence with Hibernate",
+                        new Author("Gavin King"),
+                        new BigDecimal("50.1234")
+                );
+                em.persist(entity);
             });
 
             emf.callInTransaction(em -> em.createQuery("from Book", Book.class)

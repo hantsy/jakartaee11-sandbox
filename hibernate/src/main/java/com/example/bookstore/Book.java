@@ -3,9 +3,10 @@ package com.example.bookstore;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Book {
-    //@Id
     @EmbeddedId
     private Isbn  id;
 
@@ -15,13 +16,16 @@ public class Book {
     @AttributeOverride(name = "name", column = @Column(name = "author"))
     private Author author;
 
+    private BigDecimal price = BigDecimal.ZERO;
+
     public Book() {
     }
 
-    public Book(Isbn id, String name, Author author) {
+    public Book(Isbn id, String name, Author author, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.author = author;
+        this.price = price;
     }
 
     public Isbn getId() {
@@ -48,12 +52,21 @@ public class Book {
         this.author = author;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", author=" + author +
+                ", price=" + price +
                 '}';
     }
 }
