@@ -6,6 +6,7 @@ import jakarta.faces.event.PreRenderViewEvent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +36,7 @@ public class CustomerBean {
         customer = new Customer(
                 "Foo",
                 "Bar",
+                Optional.ofNullable(null),
                 new EmailAddress[]{
                         new EmailAddress("foo@example.com", true),
                         new EmailAddress("bar@example.com", false)
