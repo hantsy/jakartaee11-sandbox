@@ -20,7 +20,7 @@ public class ELExample {
         );
 
         // access optional phonenumber
-        String phoneNumber = elProcessor.eval("customer.phoneNumber.map(t-> t.countryCode+t.number).orElse('NotFound')");
+        String phoneNumber = elProcessor.eval("customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')");
         System.out.println(phoneNumber);
 
         String firstName = elProcessor.eval("customer.firstName");
