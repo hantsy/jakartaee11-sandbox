@@ -14,8 +14,8 @@ import java.io.PrintWriter;
 import java.io.Serial;
 
 @WebServlet("/servlet")
-@DeclareRoles({"foo", "bar", "kaz"})
-@ServletSecurity(@HttpConstraint(rolesAllowed = "foo"))
+@DeclareRoles({"web", "rest"})
+@ServletSecurity(@HttpConstraint(rolesAllowed = "web"))
 public class TestServlet extends HttpServlet {
 
     @Serial
@@ -36,9 +36,8 @@ public class TestServlet extends HttpServlet {
                 <h1>This is a servlet </h1>
                 <br><br>
                 web username: %s<br><br>
-                web user has role "foo": %s<br>
-                web user has role "bar": %s<br>
-                web user has role "kaz": %s<br><br>
+                web user has role "web": %s<br>
+                web user has role "rest": %s<br>
                 <form method="POST">
                 <input type="hidden" name="logout" value="true">
                 <input type="submit" value="Logout"></form>
@@ -47,9 +46,8 @@ public class TestServlet extends HttpServlet {
                 """
                 .formatted(
                         webName,
-                        request.isUserInRole("foo"),
-                        request.isUserInRole("bar"),
-                        request.isUserInRole("kaz")
+                        request.isUserInRole("web"),
+                        request.isUserInRole("rest")
                 )
         );
         writer.flush();
