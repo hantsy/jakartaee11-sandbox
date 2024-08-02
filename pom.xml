@@ -66,12 +66,12 @@
     <modules>
         <module>faces</module>
 		<module>rest</module>
-		<module>jpa</module>
+		<module>persistence</module>
 		<module>data</module>
 		<module>hibernate</module>
 		<module>el</module>
 		<module>validation</module>
-	</modules>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
