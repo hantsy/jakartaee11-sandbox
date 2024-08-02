@@ -69,6 +69,8 @@
 		<module>jpa</module>
 		<module>data</module>
 		<module>hibernate</module>
+		<module>el</module>
+		<module>validation</module>
 	</modules>
 
     <dependencyManagement>
