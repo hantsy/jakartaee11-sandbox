@@ -65,12 +65,14 @@ public class BookstoreTest {
     @Test
     public void testPersistenceConfiguration() {
         PersistenceConfiguration configuration = new PersistenceConfiguration("bookstore")
+                .transactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL)
                 .provider(HibernatePersistenceProvider.class.getName())
-                .nonJtaDataSource("java:global/jdbc/BookstoreData")
+               // .nonJtaDataSource("java:global/jdbc/BookstoreData")
                 .managedClass(Book.class)
                 .managedClass(Author.class)
                 .property(PersistenceConfiguration.LOCK_TIMEOUT, 5000)
                 .property("hibernate.type.prefer_java_type_jdbc_types", true)
+                .property("hibernate.hbm2ddl.auto", "create-drop")
                 .property(PersistenceConfiguration.JDBC_URL, "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1")
                 .property(PersistenceConfiguration.JDBC_DRIVER, "org.h2.Driver")
                 .property(PersistenceConfiguration.JDBC_USER, "sa");

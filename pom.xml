@@ -36,7 +36,7 @@
         <lombok.version>1.18.34</lombok.version>
 	    
         <!-- Hibernate 7.0.0 or higher implements JPA 3.2 -->
-        <hibernate.version>7.0.0.Alpha3</hibernate.version>
+        <hibernate.version>7.0.0.Beta1</hibernate.version>
         <h2.version>2.3.230</h2.version>
 
         <!-- Arquillian BOM -->
