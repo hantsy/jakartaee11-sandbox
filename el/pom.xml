@@ -25,7 +25,7 @@
         <dependency>
 			<groupId>org.glassfish.expressly</groupId>
 			<artifactId>expressly</artifactId>
-			<version>6.0.0-M2</version>
+			<version>${expressly.version}</version>
 		</dependency>
 
         <!-- logging with logback -->
