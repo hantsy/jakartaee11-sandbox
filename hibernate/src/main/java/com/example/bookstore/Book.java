@@ -4,6 +4,8 @@ package com.example.bookstore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.Year;
 
 @Entity
 public class Book {
@@ -17,6 +19,15 @@ public class Book {
     private Author author;
 
     private BigDecimal price = BigDecimal.ZERO;
+
+    private Year publicationYear;
+
+    private Instant createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = Instant.now();
+    }
 
     public Book() {
     }
@@ -60,6 +71,22 @@ public class Book {
         this.price = price;
     }
 
+    public Year getPublicationYear() {
+        return publicationYear;
+    }
+
+    public void setPublicationYear(Year publicationYear) {
+        this.publicationYear = publicationYear;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -67,6 +94,8 @@ public class Book {
                 ", name='" + name + '\'' +
                 ", author=" + author +
                 ", price=" + price +
+                ", publicationYear=" + publicationYear +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

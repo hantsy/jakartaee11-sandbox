@@ -20,6 +20,15 @@ public class Customer {
     @Embedded
     private Address address;
 
+
+    public Customer() {
+    }
+
+    public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
