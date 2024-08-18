@@ -3,9 +3,25 @@ package com.example.blog;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
+@NamedQuery(name = "byTitle", query = "SELECT p FROM Post p where p.title = :title")
+@NamedEntityGraph(
+        name = "withComments",
+        attributeNodes = {
+                @NamedAttributeNode(value = "title"),
+                @NamedAttributeNode(value = "content"),
+                @NamedAttributeNode(value = "comments", subgraph = "commentsGraph"),
+                @NamedAttributeNode(value = "createdAt")
+        },
+        subgraphs = @NamedSubgraph(
+                name = "commentsGraph",
+                attributeNodes = @NamedAttributeNode("content")
+        )
+)
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_seq")
@@ -27,6 +43,13 @@ public class Post {
 
     @Column(name = "created_at", secondPrecision = 3)
     private Instant createdAt;
+
+    @OneToMany(mappedBy = Comment_.POST,
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Comment> comments = new HashSet<>();
 
     public Post() {
     }
@@ -81,6 +104,21 @@ public class Post {
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    // add comment
+    public void addComment(Comment comment) {
+        comment.setPost(this);
+        comments.add(comment);
+    }
+
 
     @Override
     public boolean equals(Object o) {

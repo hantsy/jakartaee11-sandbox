@@ -1,13 +1,15 @@
 package com.example;
 
+import com.example.blog.Comment;
 import com.example.blog.Post;
+import com.example.blog.Post_;
 import com.example.bookstore.Author;
 import com.example.bookstore.Book;
 import com.example.bookstore.Isbn;
 import com.example.customers.Customer;
 import com.example.record.MyEmbeddedEntity;
-import com.example.record.MyIdClassEntity;
 import com.example.record.MyEmbeddedIdEntity;
+import com.example.record.MyIdClassEntity;
 import jakarta.persistence.*;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.Test;
@@ -172,8 +174,31 @@ public class SampleTest {
                 // persist new Post entity
                 Post entity = new Post("What's new in Persistence 3.2?",
                         "dummy content of Jakarta Persistence 3.2");
+                entity.addComment(new Comment( "dummy comment by addComment method"));
                 em.persist(entity);
                 LOG.debug("persisted Post: {}", entity);
+
+                // persist comment
+                var comment = new Comment(entity, "dummy comment");
+                em.persist(comment);
+                LOG.debug("persisted comment: {}", comment);
+                em.flush(); // sync to db
+
+                // query byTitle named query
+                var result = em.createNamedQuery(Post_.QUERY_BY_TITLE, Post.class)
+                        .setParameter("title", "What's new in Persistence 3.2?")
+                        .getSingleResult();
+                LOG.debug("query byTitle result: {}", result);
+
+                // query withComments entityGraph
+                Post result2 = (Post) em.find(em.getEntityGraph(Post_.GRAPH_WITH_COMMENTS), entity.getId());
+                LOG.debug("query withComments result: {}", result2.getComments());
+
+                // query withComments entityGraph programmatically
+                var postEntityGraph = em.createEntityGraph("withComments");
+                postEntityGraph.addAttributeNode("comments");
+                Post result3 = (Post) em.find(postEntityGraph, entity.getId());
+                LOG.debug("query withComments programmatically result: {}", result3.getComments());
 
             });
         }
