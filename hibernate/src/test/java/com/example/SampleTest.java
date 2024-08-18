@@ -182,8 +182,10 @@ public class SampleTest {
                 var comment = new Comment(entity, "dummy comment");
                 em.persist(comment);
                 LOG.debug("persisted comment: {}", comment);
-                em.flush(); // sync to db
-
+            });
+            emf.runInTransaction(em -> {
+                var entity = em.createQuery("from Post", Post.class).getResultList().getFirst();
+                LOG.debug("query result: {}", entity);
                 // query byTitle named query
                 var result = em.createNamedQuery(Post_.QUERY_BY_TITLE, Post.class)
                         .setParameter("title", "What's new in Persistence 3.2?")
@@ -199,7 +201,6 @@ public class SampleTest {
                 postEntityGraph.addAttributeNode("comments");
                 Post result3 = (Post) em.find(postEntityGraph, entity.getId());
                 LOG.debug("query withComments programmatically result: {}", result3.getComments());
-
             });
         }
     }
