@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.Map;
+import java.util.stream.Stream;
 
 
 public class SampleTest {
@@ -96,9 +97,20 @@ public class SampleTest {
                 // id and version does not work
                 // Function "ID" not found
                 // Function "VERSION" not found;
-                em.createQuery("select left(name, 5), right(name, 2),cast(publicationYear as Integer) from Book")
+//                em.createQuery("select id(), version() from Book", Object[].class)
+//                        .getResultList()
+//                        .forEach(book -> LOG.debug("id and version result:{}", book));
+
+                em.createQuery("""
+                                select left(name, 5),
+                                right(name, 2),
+                                cast(price as Integer),
+                                replace(name ,' ','_'),
+                                name
+                                from Book
+                                """, Object[].class)
                         .getResultStream()
-                        .forEach(book -> LOG.debug("new functions result:{}", book));
+                        .forEach(book -> LOG.debug("new functions result:{}", Stream.of(book).toList()));
 
                 // improved sort nulls first/last
                 em.createQuery("from Book order by name nulls first", Book.class)
