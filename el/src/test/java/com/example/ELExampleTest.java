@@ -1,16 +1,27 @@
 package com.example;
 
 import jakarta.el.ELProcessor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-public class ELExample {
-    public static void main(String[] args) {
-        ELProcessor elProcessor = new ELProcessor();
+class ELExampleTest {
+
+    private ELProcessor elProcessor;
+
+    @BeforeEach
+    public void init() {
+        elProcessor = new ELProcessor();
+    }
+
+    @Test
+    public void testRecordInEL() {
+
         elProcessor.defineBean("customer", new Customer(
                         "Foo",
                         "Bar",
-                Optional.of(new PhoneNumber("001", "3334445555")),
+                        Optional.of(new PhoneNumber("001", "3334445555")),
                         new EmailAddress[]{
                                 new EmailAddress("foo@example.com", true),
                                 new EmailAddress("bar@example.com", false)
@@ -45,6 +56,23 @@ public class ELExample {
         String city = elProcessor.eval("customer.address.city");
         System.out.println("city = " + city);
 
+        String zip = elProcessor.eval("customer.address.zipCode");
+        System.out.println("zip = " + zip);
+    }
+
+    @Test
+    public void testNullableAccessInEL() {
+        elProcessor.defineBean("customer", new Customer(
+                        "Foo",
+                        "Bar",
+                        Optional.of(new PhoneNumber("001", "3334445555")),
+                        new EmailAddress[]{
+                                new EmailAddress("foo@example.com", true),
+                                new EmailAddress("bar@example.com", false)
+                        },
+                       null //
+                )
+        );
         String zip = elProcessor.eval("customer.address.zipCode");
         System.out.println("zip = " + zip);
     }
