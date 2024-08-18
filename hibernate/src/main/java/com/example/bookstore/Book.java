@@ -24,6 +24,9 @@ public class Book {
 
     private Instant createdAt;
 
+    @Version
+    private Long version;
+
     @PrePersist
     public void prePersist() {
         createdAt = Instant.now();
@@ -85,6 +88,14 @@ public class Book {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Override

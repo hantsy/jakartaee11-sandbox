@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.blog.Post;
 import com.example.bookstore.Author;
 import com.example.bookstore.Book;
 import com.example.bookstore.Isbn;
@@ -31,14 +32,14 @@ public class SampleTest {
                 em.persist(entity);
                 LOG.debug("persisted book: {}", entity);
 
-                 var book =
+                var book =
                         em.find(Book.class, new Isbn("9781932394887"),
                                 Map.of("jakarta.persistence.cache.retrieveMode",
-                                            CacheRetrieveMode.BYPASS,
-                                       "jakarta.persistence.query.timeout", 500,
-                                       "org.hibernate.readOnly", true)
+                                        CacheRetrieveMode.BYPASS,
+                                        "jakarta.persistence.query.timeout", 500,
+                                        "org.hibernate.readOnly", true)
                         );
-                 LOG.debug("found book with Map properties: {}", book);
+                LOG.debug("found book with Map properties: {}", book);
 
                 // type safe options
                 var result = em.find(Book.class, new Isbn("9781932394887"),
@@ -81,11 +82,10 @@ public class SampleTest {
                         .forEach(book -> LOG.debug("query result without select:{}", book));
 
                 // new functions
-                // count(this) does not work
-                // org.hibernate.query.SemanticException: Could not interpret path expression 'this'
+                // count(this): org.hibernate.query.SemanticException: Could not interpret path expression 'this'
                 var count = em.createQuery("select count(b) from Book b")
                         .getSingleResult();
-                LOG.debug("new functions count(this) result:{}", count);
+                LOG.debug(" count(this) result:{}", count);
 
                 // id and version does not work
                 // Function "ID" not found
@@ -93,6 +93,11 @@ public class SampleTest {
                 em.createQuery("select left(name, 5), right(name, 2),cast(publicationYear as Integer) from Book")
                         .getResultStream()
                         .forEach(book -> LOG.debug("new functions result:{}", book));
+
+                // improved sort nulls first/last
+                em.createQuery("from Book order by name nulls first", Book.class)
+                        .getResultStream()
+                        .forEach(book -> LOG.debug("improved sort nulls first:{}", book));
 
                 // persist new customers
                 var customer = new Customer("Gavin", "King");
@@ -154,6 +159,20 @@ public class SampleTest {
             emf.getSchemaManager().truncate();
             emf.getSchemaManager().drop(true);
             emf.getSchemaManager().create(true);
+        }
+    }
+
+    @Test
+    public void testMappingAnnotations() {
+        try (var emf = Persistence.createEntityManagerFactory("bookstorePU")) {
+            emf.runInTransaction(em -> {
+                // persist new Post entity
+                Post entity = new Post("What's new in Persistence 3.2?",
+                        "dummy content of Jakarta Persistence 3.2");
+                em.persist(entity);
+                LOG.debug("persisted Post: {}", entity);
+
+            });
         }
     }
 
