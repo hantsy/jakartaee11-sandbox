@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.Map;
 
 
@@ -174,7 +175,7 @@ public class SampleTest {
                 // persist new Post entity
                 Post entity = new Post("What's new in Persistence 3.2?",
                         "dummy content of Jakarta Persistence 3.2");
-                entity.addComment(new Comment( "dummy comment by addComment method"));
+                entity.addComment(new Comment("dummy comment by addComment method"));
                 em.persist(entity);
                 LOG.debug("persisted Post: {}", entity);
 
@@ -223,6 +224,30 @@ public class SampleTest {
                 MyEmbeddedEntity entity3 = new MyEmbeddedEntity(new MyEmbeddedEntity.MyEmbedded("test1", 40));
                 em.persist(entity3);
                 LOG.debug("persisted MyEmbeddedEntity: {}", entity3);
+            });
+        }
+    }
+
+    @Test
+    public void testEMCallbacks() {
+        try (var emf = Persistence.createEntityManagerFactory("bookstorePU")) {
+            emf.runInTransaction(em -> {
+                // persist new Post entity
+                Post entity = new Post("What's new in Persistence 3.2?",
+                        "dummy content of Jakarta Persistence 3.2");
+                em.persist(entity);
+                LOG.debug("persisted Post: {}", entity);
+            });
+
+            var em = emf.createEntityManager();
+            em.runWithConnection((Connection conn) -> {
+                var rs = conn.prepareStatement("select * from posts").executeQuery();
+                while (rs.next()) {
+                    LOG.debug("query result:");
+                    LOG.debug("id: {}", rs.getLong("id"));
+                    LOG.debug("title: {}", rs.getString("title"));
+                    LOG.debug("content: {}", rs.getString("content"));
+                }
             });
         }
     }

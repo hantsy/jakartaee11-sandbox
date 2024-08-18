@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "posts")
 @NamedQuery(name = "byTitle", query = "SELECT p FROM Post p where p.title = :title")
 @NamedEntityGraph(
         name = "withComments",
