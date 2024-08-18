@@ -5,6 +5,8 @@ import com.example.bookstore.Author;
 import com.example.bookstore.Book;
 import com.example.bookstore.Isbn;
 import com.example.customers.Customer;
+import com.example.record.MyClassIdEntity;
+import com.example.record.MyEmbeddedIdEntity;
 import jakarta.persistence.*;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.Test;
@@ -172,6 +174,23 @@ public class SampleTest {
                 em.persist(entity);
                 LOG.debug("persisted Post: {}", entity);
 
+            });
+        }
+    }
+
+    @Test
+    public void testRecord() {
+        try (var emf = Persistence.createEntityManagerFactory("bookstorePU")) {
+            emf.runInTransaction(em -> {
+                // persist MyClassIdEntity
+                MyClassIdEntity entity = new MyClassIdEntity(new MyClassIdEntity.MyClassId("test1", "test2"));
+                em.persist(entity);
+                LOG.debug("persisted MyClassIdEntity: {}", entity);
+
+                // persist MyEmbeddedIdEntity
+                MyEmbeddedIdEntity entity2 = new MyEmbeddedIdEntity(new MyEmbeddedIdEntity.MyId("test1"));
+                em.persist(entity2);
+                LOG.debug("persisted MyEmbeddedIdEntity: {}", entity2);
             });
         }
     }
