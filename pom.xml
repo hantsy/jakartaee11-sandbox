@@ -21,9 +21,9 @@
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
 
-        <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.3.1</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.3.1</maven-surefire-report-plugin.version>
+        <maven-surefire-plugin.version>3.4.0</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.4.0</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.4.0</maven-surefire-report-plugin.version>
 
         <!-- Cargo maven plugin -->
         <!-- Since 1.10.1, it includes Glassfish 7 support -->
@@ -59,7 +59,7 @@
         <!-- WildFly -->
         <wildfly.version>30.0.0.Final</wildfly.version>
         <wildfly-maven-plugin.version>5.0.0.Final</wildfly-maven-plugin.version>
-        <resteasy.version>6.2.9.Final</resteasy.version>
+        <resteasy.version>6.2.10.Final</resteasy.version>
 
         <!-- by default skip tests -->
         <skip.unit.tests>false</skip.unit.tests>
