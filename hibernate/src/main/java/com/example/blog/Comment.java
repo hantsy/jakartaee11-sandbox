@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_seq")
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "tbl_id_gen")
     private Long id;
 
     private String content;
