@@ -21,6 +21,7 @@ package com.example.it;
 import com.example.employee.*;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -41,27 +42,22 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(ArquillianExtension.class)
-public class EmployeeEntityCDITest {
+public class EmployeeTest {
 
-    private final static Logger LOGGER = Logger.getLogger(EmployeeEntityCDITest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(EmployeeTest.class.getName());
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class)
                 .addPackage(Employee.class.getPackage())
-                .addAsResource("test-persistence-cdi.xml", "META-INF/persistence.xml")
+                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
         return war;
     }
 
-    // @PersistenceContext
-    @Inject
-    @MyCustom
+    @PersistenceContext
     private EntityManager em;
-
-    @Inject
-    private EmployeeRepository employeeRepository;
 
     @Inject
     UserTransaction ux;
@@ -104,12 +100,13 @@ public class EmployeeEntityCDITest {
         entity.setEmploymentPeriod(new EmploymentPeriod(LocalDate.now().minusYears(3),
                 LocalDate.now().minusDays(10)));
         entity.setSalary(new Money(new BigDecimal("5000"), Currency.getInstance("USD")));
+        entity.setEmail("FOObar@gmail.com");
         em.flush();
 
         endTx();
 
         String queryString = """
-                FROM Employee 
+                FROM Employee ORDER BY LOWER(email) ASC, createdAt DESC NULLS FIRST
                 """;
         var saved = em.createQuery(queryString, Employee.class)
                 .getResultList()
@@ -119,31 +116,5 @@ public class EmployeeEntityCDITest {
         assertNotNull(saved.getId());
     }
 
-    @Test
-    public void testEmployeeCrudWithRepository() throws Exception {
-        var entity = new Employee("foo", "bar");
-        var chinaUnicomProvider = new PhoneServiceProvider("China Unicom");
-        var chinaMobileProvider = new PhoneServiceProvider("China Mobile");
-
-        startTx();
-        em.persist(chinaUnicomProvider);
-        em.persist(chinaUnicomProvider);
-
-        em.persist(entity);
-        entity.setPhoneNumber(new PhoneNumber("86", "12345678", chinaMobileProvider));
-        entity.setAddress(new Address("S street", "Boston", "MA", new ZipCode("abc", "0234")));
-        entity.setGender(Gender.MALE);
-        entity.setEmploymentPeriod(new EmploymentPeriod(LocalDate.now().minusYears(3),
-                LocalDate.now().minusDays(10)));
-        entity.setSalary(new Money(new BigDecimal("5000"), Currency.getInstance("USD")));
-        em.flush();
-
-        endTx();
-
-        var saved = employeeRepository.allEmployees().getFirst();
-
-        LOGGER.log(Level.INFO, "Saved employee: {0}", saved);
-        assertNotNull(saved.getId());
-    }
 
 }

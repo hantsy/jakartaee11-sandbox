@@ -18,7 +18,10 @@ under the License.
  */
 package com.example.it;
 
-import com.example.employee.*;
+import com.example.blog.Comment;
+import com.example.blog.Post;
+import com.example.blog.Comment_;
+import com.example.blog.Post_;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,27 +32,21 @@ import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Currency;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @ExtendWith(ArquillianExtension.class)
-public class EmployeeEntityTest {
+public class BlogTest {
 
-    private final static Logger LOGGER = Logger.getLogger(EmployeeEntityTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(BlogTest.class.getName());
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class)
-                .addPackage(Employee.class.getPackage())
+                .addPackage(Post.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
@@ -67,10 +64,6 @@ public class EmployeeEntityTest {
         em.joinTransaction();
     }
 
-    @AfterEach
-    public void after() throws Exception {
-        endTx();
-    }
 
     private void endTx() throws Exception {
         LOGGER.log(Level.INFO, "Transaction status: {0}", ux.getStatus());
@@ -83,38 +76,48 @@ public class EmployeeEntityTest {
         }
     }
 
-    @Test
-    public void testEmployeeCurd() throws Exception {
-        var entity = new Employee("foo", "bar");
-        var chinaUnicomProvider = new PhoneServiceProvider("China Unicom");
-        var chinaMobileProvider = new PhoneServiceProvider("China Mobile");
-
+    private void doInTx(Runnable runnable) throws Exception {
         startTx();
-        em.persist(chinaUnicomProvider);
-        em.persist(chinaUnicomProvider);
-
-        em.persist(entity);
-        entity.setPhoneNumber(new PhoneNumber("86", "12345678", chinaMobileProvider));
-        entity.setAddress(new Address("S street", "Boston", "MA", new ZipCode("abc", "0234")));
-        entity.setGender(Gender.MALE);
-        entity.setEmploymentPeriod(new EmploymentPeriod(LocalDate.now().minusYears(3),
-                LocalDate.now().minusDays(10)));
-        entity.setSalary(new Money(new BigDecimal("5000"), Currency.getInstance("USD")));
-        entity.setEmail("FOObar@gmail.com");
-        em.flush();
-
+        runnable.run();
         endTx();
-
-        String queryString = """
-                FROM Employee ORDER BY LOWER(email) ASC, createdAt DESC NULLS FIRST
-                """;
-        var saved = em.createQuery(queryString, Employee.class)
-                .getResultList()
-                .getFirst();
-
-        LOGGER.log(Level.INFO, "Saved employee: {0}", saved);
-        assertNotNull(saved.getId());
     }
 
+    @Test
+    public void testPackageLevelIdGeneratorStrategy() throws Exception {
+        doInTx(() -> {
+            // persist new Post entity
+            Post entity = new Post("What's new in Persistence 3.2?",
+                    "dummy content of Jakarta Persistence 3.2");
+            entity.addComment(new Comment("dummy comment by addComment method"));
+            em.persist(entity);
+            LOGGER.log(Level.INFO, "persisted Post: {0}", new Object[]{entity});
+
+            // persist comment
+            var comment = new Comment(entity, "dummy comment");
+            em.persist(comment);
+            LOGGER.log(Level.INFO, "persisted comment: {0}", new Object[]{comment});
+        });
+
+        doInTx(() -> {
+            var entity = em.createQuery("from Post", Post.class).getResultList().getFirst();
+            LOGGER.log(Level.INFO, "query result: {0}", new Object[]{entity});
+            // query byTitle named query
+            var result = em.createNamedQuery(Post_.QUERY_BY_TITLE, Post.class)
+                    .setParameter("title", "What's new in Persistence 3.2?")
+                    .getSingleResult();
+            LOGGER.log(Level.INFO, "query byTitle result: {0}", new Object[]{result});
+
+            // query withComments entityGraph
+            Post result2 = (Post) em.find(em.getEntityGraph(Post_.GRAPH_WITH_COMMENTS), entity.getId());
+            LOGGER.log(Level.INFO, "query withComments result: {0}", new Object[]{result2.getComments()});
+
+            // query withComments entityGraph programmatically
+            var postEntityGraph = em.createEntityGraph("withComments");
+            postEntityGraph.addAttributeNode("comments");
+            Post result3 = (Post) em.find(postEntityGraph, entity.getId());
+            LOGGER.log(Level.INFO, "query withComments programmatically result: {0}", new Object[]{result3.getComments()});
+        });
+
+    }
 
 }

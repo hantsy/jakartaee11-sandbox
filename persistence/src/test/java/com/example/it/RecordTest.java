@@ -18,8 +18,9 @@ under the License.
  */
 package com.example.it;
 
-import com.example.idclass.RecordIdClass;
-import com.example.idclass.RecordIdClassEntity;
+import com.example.record.MyEmbeddedEntity;
+import com.example.record.MyEmbeddedIdEntity;
+import com.example.record.MyIdClassEntity;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -30,25 +31,21 @@ import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @ExtendWith(ArquillianExtension.class)
-public class RecordIdClassTest {
+public class RecordTest {
 
-    private final static Logger LOGGER = Logger.getLogger(RecordIdClassTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(RecordTest.class.getName());
 
     @Deployment
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class)
-                .addClasses(RecordIdClass.class, RecordIdClassEntity.class)
+                .addPackage(MyEmbeddedEntity.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
@@ -57,16 +54,12 @@ public class RecordIdClassTest {
     private EntityManager em;
 
     @Inject
-    UserTransaction ux;
+    private UserTransaction ux;
+
 
     private void startTx() throws Exception {
         ux.begin();
         em.joinTransaction();
-    }
-
-    @AfterEach
-    public void after() throws Exception {
-        endTx();
     }
 
     private void endTx() throws Exception {
@@ -76,34 +69,35 @@ public class RecordIdClassTest {
                 ux.commit();
             }
         } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Failed to commit transaction", e);
             ux.rollback();
         }
     }
 
+    private void doInTx(Runnable runnable) throws Exception {
+        startTx();
+        runnable.run();
+        endTx();
+    }
+
     @Test
     public void testRecordIdClass() throws Exception {
-        String id = UUID.randomUUID().toString();
-        String id2 = UUID.randomUUID().toString();
-        var recordIdClass = new RecordIdClass(id, id2);
+        doInTx(() -> {
+            // persist MyClassIdEntity
+            MyIdClassEntity entity = new MyIdClassEntity(new MyIdClassEntity.MyIdClass("test1", "test2"));
+            em.persist(entity);
+            LOGGER.log(Level.INFO, "persisted MyClassIdEntity: {0}", new Object[]{entity});
 
-        var entity = new RecordIdClassEntity(id, id2, "test");
+            // persist MyEmbeddedIdEntity
+            MyEmbeddedIdEntity entity2 = new MyEmbeddedIdEntity(new MyEmbeddedIdEntity.MyId("test1"));
+            em.persist(entity2);
+            LOGGER.log(Level.INFO, "persisted MyEmbeddedIdEntity: {0}", new Object[]{entity2});
 
-        startTx();
-        em.persist(entity);
-        em.flush();
-
-        endTx();
-
-        String queryString = """
-                SELECT r FROM RecordIdClassEntity r
-                """;
-        var saved = em.createQuery(queryString, RecordIdClassEntity.class)
-                .getResultList()
-                .getFirst();
-
-        assertEquals(id, saved.getId());
-        assertEquals(id2, saved.getId2());
-
+            // persist MyEmbeddedEntity
+            MyEmbeddedEntity entity3 = new MyEmbeddedEntity(new MyEmbeddedEntity.MyEmbedded("test1", 40));
+            em.persist(entity3);
+            LOGGER.log(Level.INFO, "persisted MyEmbeddedEntity: {0}", new Object[]{entity3});
+        });
     }
 
 }
