@@ -20,7 +20,7 @@ public class Employee {
     @Embedded
     private PhoneNumber phoneNumber;
 
-    @Enumerated(EnumType.STRING)
+    // use new enum value in Gender
     private Gender gender = Gender.MALE;
 
     @Embedded
