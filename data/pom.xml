@@ -153,8 +153,30 @@ under the License.
                 <wildfly.artifactId>wildfly-preview-dist</wildfly.artifactId>
                 <jboss-as.home>${project.build.directory}/wildfly-preview-${wildfly.version}</jboss-as.home>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.hibernate.orm</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                    <version>${hibernate.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven-compiler-plugin.version}</version>
+                        <configuration>
+                            <annotationProcessorPaths>
+                                <annotationProcessorPath>
+                                    <groupId>org.hibernate.orm</groupId>
+                                    <artifactId>hibernate-jpamodelgen</artifactId>
+                                    <version>${hibernate.version}</version>
+                                </annotationProcessorPath>
+                            </annotationProcessorPaths>
+                        </configuration>
+                    </plugin>
 
                     <!-- unpack a copy of WildFly-->
                     <plugin>
@@ -196,6 +218,11 @@ under the License.
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
                         <version>${wildfly-maven-plugin.version}</version>
+                        <configuration>
+                            <scripts>
+                                <script>add-jakarta-data.cli</script>
+                            </scripts>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

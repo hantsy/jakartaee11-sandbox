@@ -1,0 +1,7 @@
+batch
+/extension=org.wildfly.extension.jakarta.data:add
+/subsystem=jakarta-data:add
+
+# Execute and reload
+run-batch
+:reload
