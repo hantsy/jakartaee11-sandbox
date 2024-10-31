@@ -4,4 +4,4 @@ batch
 
 # Execute and reload
 run-batch
-:reload
+# :reload
