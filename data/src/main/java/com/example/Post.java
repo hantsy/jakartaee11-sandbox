@@ -34,7 +34,7 @@ public class Post implements Serializable {
     @Builder.Default
     Status status = Status.DRAFT;
 
-    @OneToMany(mappedBy = "post", targetEntity = Comment.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     List<Comment> comments;
 
     LocalDateTime createdAt;

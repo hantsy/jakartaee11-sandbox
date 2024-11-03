@@ -18,7 +18,7 @@ public interface Blogger {
 //    StatelessSession session();
 
     @Query("""
-            SELECT p.id, p.title, size(c) AS summary FROM Post p LEFT JOIN p.comments c
+            SELECT p.id, p.title, size(c) FROM Post AS p LEFT JOIN p.comments AS c
             WHERE p.title LIKE :title
                 OR p.content LIKE :title
                 OR c.content LIKE :title

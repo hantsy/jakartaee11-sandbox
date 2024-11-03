@@ -3,10 +3,7 @@ package com.example;
 import jakarta.data.page.PageRequest;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.UUID;
@@ -21,9 +18,9 @@ public class PostResources {
     @GET
     @Path("")
     public Response getAll(
-            @QueryParam("title") String title,
-            @QueryParam("page") long page,
-            @QueryParam("size") int size) {
+            @QueryParam("title") @DefaultValue("") String title,
+            @QueryParam("page") @DefaultValue("1") long page,
+            @QueryParam("size") @DefaultValue("10") int size) {
         var data = this.blogger
                 .allPosts(
                         "%" + title + "%",
