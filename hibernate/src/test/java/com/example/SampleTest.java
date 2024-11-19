@@ -7,9 +7,9 @@ import com.example.bookstore.Author;
 import com.example.bookstore.Book;
 import com.example.bookstore.Isbn;
 import com.example.customers.Customer;
-import com.example.record.MyEmbeddedEntity;
-import com.example.record.MyEmbeddedIdEntity;
-import com.example.record.MyIdClassEntity;
+import com.example.record.RecordEmbeddedEntity;
+import com.example.record.RecordEmbeddedIdEntity;
+import com.example.record.RecordIdClassEntity;
 import jakarta.persistence.*;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.Test;
@@ -221,17 +221,17 @@ public class SampleTest {
         try (var emf = Persistence.createEntityManagerFactory("bookstorePU")) {
             emf.runInTransaction(em -> {
                 // persist MyClassIdEntity
-                MyIdClassEntity entity = new MyIdClassEntity(new MyIdClassEntity.MyIdClass("test1", "test2"));
+                RecordIdClassEntity entity = new RecordIdClassEntity(new RecordIdClassEntity.RecordIdClass("test1", "test2"));
                 em.persist(entity);
                 LOG.debug("persisted MyClassIdEntity: {}", entity);
 
                 // persist MyEmbeddedIdEntity
-                MyEmbeddedIdEntity entity2 = new MyEmbeddedIdEntity(new MyEmbeddedIdEntity.MyId("test1"));
+                RecordEmbeddedIdEntity entity2 = new RecordEmbeddedIdEntity(new RecordEmbeddedIdEntity.RecordId("test1"));
                 em.persist(entity2);
                 LOG.debug("persisted MyEmbeddedIdEntity: {}", entity2);
 
                 // persist MyEmbeddedEntity
-                MyEmbeddedEntity entity3 = new MyEmbeddedEntity(new MyEmbeddedEntity.MyEmbedded("test1", 40));
+                RecordEmbeddedEntity entity3 = new RecordEmbeddedEntity(new RecordEmbeddedEntity.RecordEmbedded("test1", 40));
                 em.persist(entity3);
                 LOG.debug("persisted MyEmbeddedEntity: {}", entity3);
             });

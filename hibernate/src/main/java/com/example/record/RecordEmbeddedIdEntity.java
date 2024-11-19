@@ -4,32 +4,32 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 
 @Entity
-public class MyEmbeddedIdEntity {
+public class RecordEmbeddedIdEntity {
     @EmbeddedId
-    MyId id;
+    RecordId id;
 
-    public MyEmbeddedIdEntity() {
+    public RecordEmbeddedIdEntity() {
     }
 
-    public MyEmbeddedIdEntity(MyId id) {
+    public RecordEmbeddedIdEntity(RecordId id) {
         this.id = id;
     }
 
-    public MyId getId() {
+    public RecordId getId() {
         return id;
     }
 
-    public void setId(MyId id) {
+    public void setId(RecordId id) {
         this.id = id;
     }
 
     @Override
     public String toString() {
-        return "MyEmbeddedIdEntity{" +
+        return "RecordEmbeddedIdEntity{" +
                 "id=" + id +
                 '}';
     }
 
-    public static record MyId(String id) {
+    public static record RecordId(String id) {
     }
 }

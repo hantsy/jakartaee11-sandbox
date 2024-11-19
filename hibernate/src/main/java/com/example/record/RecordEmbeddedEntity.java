@@ -5,18 +5,18 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class MyEmbeddedEntity {
+public class RecordEmbeddedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Embedded
-    private MyEmbedded myEmbedded;
+    private RecordEmbedded myEmbedded;
 
-    public MyEmbeddedEntity() {
+    public RecordEmbeddedEntity() {
     }
 
-    public MyEmbeddedEntity(MyEmbedded myEmbedded) {
+    public RecordEmbeddedEntity(RecordEmbedded myEmbedded) {
         this.myEmbedded = myEmbedded;
     }
 
@@ -28,21 +28,21 @@ public class MyEmbeddedEntity {
         this.id = id;
     }
 
-    public MyEmbedded getMyEmbedded() {
+    public RecordEmbedded getMyEmbedded() {
         return myEmbedded;
     }
 
-    public void setMyEmbedded(MyEmbedded myEmbedded) {
+    public void setMyEmbedded(RecordEmbedded myEmbedded) {
         this.myEmbedded = myEmbedded;
     }
 
-    public static record MyEmbedded(String name, int age) { }
+    public static record RecordEmbedded(String name, int age) { }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MyEmbeddedEntity that = (MyEmbeddedEntity) o;
+        RecordEmbeddedEntity that = (RecordEmbeddedEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(myEmbedded, that.myEmbedded);
     }
 
@@ -53,7 +53,7 @@ public class MyEmbeddedEntity {
 
     @Override
     public String toString() {
-        return "MyEmbeddedEntity{" +
+        return "RecordEmbeddedEntity{" +
                 "id=" + id +
                 ", myEmbedded=" + myEmbedded +
                 '}';
