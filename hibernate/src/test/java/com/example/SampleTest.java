@@ -94,12 +94,10 @@ public class SampleTest {
                         .getSingleResult();
                 LOG.debug(" count(this) result:{}", count);
 
-                // id and version does not work
-                // Function "ID" not found
-                // Function "VERSION" not found;
-//                em.createQuery("select id(), version() from Book", Object[].class)
-//                        .getResultList()
-//                        .forEach(book -> LOG.debug("id and version result:{}", book));
+                // id and version function
+                em.createQuery("select id(this), version(this) from Book", Object[].class)
+                        .getResultList()
+                        .forEach(book -> LOG.debug("id and version result:{}", book));
 
                 em.createQuery("""
                                 select left(name, 5),
