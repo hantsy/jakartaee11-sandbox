@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 
 @RequestScoped
 @Named
-public class CustomerBean {
-    private final static Logger LOGGER= Logger.getLogger(CustomerBean.class.getName());
+public class CustomerBean2 {
+    private final static Logger LOGGER= Logger.getLogger(CustomerBean2.class.getName());
 
     @Inject
     FacesContext facesContext;
@@ -36,9 +36,12 @@ public class CustomerBean {
         customer = new Customer(
                 "Foo",
                 "Bar",
-                Optional.empty(),
-                null,
-                null
+                Optional.of(new PhoneNumber("1", "1234567890")),
+                new EmailAddress[]{
+                        new EmailAddress("foo@example.com", true),
+                        new EmailAddress("bar@example.com", false)
+                },
+                new Address("123 Main St", "Anytown", "CA", "12345")
         );
         LOGGER.log(Level.INFO, "initialized");
     }

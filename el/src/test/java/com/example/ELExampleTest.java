@@ -65,14 +65,21 @@ class ELExampleTest {
         elProcessor.defineBean("customer", new Customer(
                         "Foo",
                         "Bar",
-                        Optional.of(new PhoneNumber("001", "3334445555")),
-                        new EmailAddress[]{
-                                new EmailAddress("foo@example.com", true),
-                                new EmailAddress("bar@example.com", false)
-                        },
-                       null //
+                        Optional.empty(),
+                        null,
+                        null //
                 )
         );
+
+        // access optional phonenumber
+        String phoneNumber = elProcessor.eval("customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')");
+        System.out.println("Phone number = " + phoneNumber);
+
+        // access email
+        String email = elProcessor.eval("customer.emailAddresses[0].email");
+        System.out.println("email = " + email);
+
+        // access address
         String zip = elProcessor.eval("customer.address.zipCode");
         System.out.println("zip = " + zip);
     }
