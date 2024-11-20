@@ -127,14 +127,21 @@ public class EmployeeTest {
         assertNotNull(saved.getId());
 
         // id and version function
-        String idVersionFunQuery = """
-                SELECT id(this), version(this) FROM Employee WHERE email = 'FOObar@gmail.com'
+        String idFunQuery = """
+                SELECT id(this) FROM Employee WHERE email = 'FOObar@gmail.com'
                 """;
-        var idVersion = em.createQuery(idVersionFunQuery, Object[].class)
+        var idValue = em.createQuery(idFunQuery, Object.class)
                 .getSingleResult();
-        LOGGER.log(Level.INFO, "Id and version: {0}", idVersion);
-        assertNotNull(idVersion[0]);
-        assertNotNull(idVersion[1]);
+        LOGGER.log(Level.INFO, "id(this): {0}", idValue);
+        assertNotNull(idValue);
+
+        String versionFunQuery = """
+                SELECT version(this) FROM Employee WHERE email = 'FOObar@gmail.com'
+                """;
+        var version = em.createQuery(versionFunQuery, Object.class)
+                .getSingleResult();
+        LOGGER.log(Level.INFO, "version(this): {0}", version);
+        assertNotNull(version);
 
         // count function
         String countFunQuery = """
@@ -155,6 +162,5 @@ public class EmployeeTest {
         assertNotNull(firstNameAndLastName[0]);
         assertNotNull(firstNameAndLastName[1]);
         assertNotNull(firstNameAndLastName[2]);
-
     }
 }
