@@ -4,14 +4,14 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 
 @Entity
-public class MyEmbeddedIdEntity {
+public class RecordEmbeddedIdEntity {
     @EmbeddedId
     MyId id;
 
-    public MyEmbeddedIdEntity() {
+    public RecordEmbeddedIdEntity() {
     }
 
-    public MyEmbeddedIdEntity(MyId id) {
+    public RecordEmbeddedIdEntity(MyId id) {
         this.id = id;
     }
 
@@ -25,7 +25,7 @@ public class MyEmbeddedIdEntity {
 
     @Override
     public String toString() {
-        return "MyEmbeddedIdEntity{" +
+        return "RecordEmbeddedIdEntity{" +
                 "id=" + id +
                 '}';
     }

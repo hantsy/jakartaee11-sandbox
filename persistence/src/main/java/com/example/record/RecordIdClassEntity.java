@@ -5,18 +5,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 
 @Entity
-@IdClass(MyIdClassEntity.MyIdClass.class)
-public class MyIdClassEntity {
+@IdClass(RecordIdClassEntity.RecordIdClass.class)
+public class RecordIdClassEntity {
 
     @Id
     String id1;
     @Id
     String id2;
 
-    public MyIdClassEntity() {
+    public RecordIdClassEntity() {
     }
 
-    public MyIdClassEntity(MyIdClass classId) {
+    public RecordIdClassEntity(RecordIdClass classId) {
         this.id1 = classId.id1();
         this.id2 = classId.id2();
     }
@@ -39,13 +39,13 @@ public class MyIdClassEntity {
 
     @Override
     public String toString() {
-        return "MyClassIdEntity{" +
+        return "RecordIdClassEntity{" +
                 "id1='" + id1 + '\'' +
                 ", id2='" + id2 + '\'' +
                 '}';
     }
 
-    public static record MyIdClass(
+    public static record RecordIdClass(
             String id1,
             String id2
     ) {
