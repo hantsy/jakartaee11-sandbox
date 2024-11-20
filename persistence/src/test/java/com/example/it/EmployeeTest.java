@@ -49,7 +49,18 @@ public class EmployeeTest {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class)
-                .addPackage(Employee.class.getPackage())
+                .addClasses(
+                        Address.class,
+                        Employee.class,
+                        EmploymentPeriod.class,
+                        Gender.class,
+                        Money.class,
+                        MoneyConverter.class,
+                        PhoneNumber.class,
+                        PhoneServiceProvider.class,
+                        Publication.class,
+                        ZipCode.class
+                )
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
