@@ -33,6 +33,9 @@ public class Employee {
 
     private Instant createdAt;
 
+    @Version
+    private Long version;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = Instant.now();
