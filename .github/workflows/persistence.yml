@@ -16,7 +16,7 @@ on:
       - reopened
 
 jobs:
-  jpa:
+  persistence:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -34,5 +34,5 @@ jobs:
       if: failure()
       with:
         name: server-log
-        path: jpa/target/glassfish*/glassfish/domains/domain1/logs/server.log
+        path: persistence/target/glassfish*/glassfish/domains/domain1/logs/server.log
               
