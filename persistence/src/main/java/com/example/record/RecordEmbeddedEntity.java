@@ -36,6 +36,7 @@ public class RecordEmbeddedEntity {
         this.myEmbedded = myEmbedded;
     }
 
+    @Embeddable
     public static record RecordEmbedded(String name, int age) { }
 
     @Override

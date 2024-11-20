@@ -1,7 +1,10 @@
 package com.example.employee;
 
+import jakarta.persistence.Embeddable;
+
 import java.time.LocalDate;
 
+@Embeddable
 public record EmploymentPeriod(
         LocalDate startDate,
         LocalDate endDate

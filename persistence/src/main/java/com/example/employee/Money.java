@@ -1,10 +1,13 @@
 package com.example.employee;
 
+import jakarta.persistence.Embeddable;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Currency;
 
+@Embeddable
 public record Money(
         BigDecimal amount,
         Currency currency
