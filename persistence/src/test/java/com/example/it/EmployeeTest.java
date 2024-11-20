@@ -128,7 +128,7 @@ public class EmployeeTest {
 
         // id and version function
         String idFunQuery = """
-                SELECT id(this) FROM Employee WHERE email = 'FOObar@gmail.com'
+                SELECT ID(this) FROM Employee WHERE email = 'FOObar@gmail.com'
                 """;
         var idValue = em.createQuery(idFunQuery, Object.class)
                 .getSingleResult();
@@ -136,7 +136,7 @@ public class EmployeeTest {
         assertNotNull(idValue);
 
         String versionFunQuery = """
-                SELECT version(this) FROM Employee WHERE email = 'FOObar@gmail.com'
+                SELECT VERSION(this) FROM Employee WHERE email = 'FOObar@gmail.com'
                 """;
         var version = em.createQuery(versionFunQuery, Object.class)
                 .getSingleResult();
@@ -145,7 +145,7 @@ public class EmployeeTest {
 
         // count function
         String countFunQuery = """
-                SELECT count(this) FROM Employee
+                SELECT COUNT(this) FROM Employee
                 """;
         var count = em.createQuery(countFunQuery, Long.class)
                 .getSingleResult();
@@ -154,7 +154,7 @@ public class EmployeeTest {
 
         // firstname and last name concat, left, right
         String firstNameAndLastNameQuery = """
-                SELECT firstName || ' ' || lastName, left(firstName, 1), right(lastName, 2) FROM Employee WHERE email = 'FOObar@gmail.com'
+                SELECT firstName || ' ' || lastName, LEFT(firstName, 1), RIGHT(lastName, 2) FROM Employee WHERE email = 'FOObar@gmail.com'
                 """;
         var firstNameAndLastName = em.createQuery(firstNameAndLastNameQuery, Object[].class)
                 .getSingleResult();
