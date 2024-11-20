@@ -90,7 +90,7 @@ public class SampleTest {
 
                 // new functions
                 // count(this): org.hibernate.query.SemanticException: Could not interpret path expression 'this'
-                var count = em.createQuery("select count(b) from Book b")
+                var count = em.createQuery("select count(this) from Book")
                         .getSingleResult();
                 LOG.debug(" count(this) result:{}", count);
 

@@ -102,7 +102,7 @@ public class EmployeeTest {
 
         startTx();
         em.persist(chinaUnicomProvider);
-        em.persist(chinaUnicomProvider);
+        em.persist(chinaMobileProvider);
 
         em.persist(entity);
         entity.setPhoneNumber(new PhoneNumber("86", "12345678", chinaMobileProvider));
@@ -125,7 +125,36 @@ public class EmployeeTest {
 
         LOGGER.log(Level.INFO, "Saved employee: {0}", saved);
         assertNotNull(saved.getId());
+
+        // id and version function
+        String idVersionFunQuery = """
+                SELECT id(this), version(this) FROM Employee WHERE email = 'FOObar@gmail.com'
+                """;
+        var idVersion = em.createQuery(idVersionFunQuery, Object[].class)
+                .getSingleResult();
+        LOGGER.log(Level.INFO, "Id and version: {0}", idVersion);
+        assertNotNull(idVersion[0]);
+        assertNotNull(idVersion[1]);
+
+        // count function
+        String countFunQuery = """
+                SELECT count(this) FROM Employee
+                """;
+        var count = em.createQuery(countFunQuery, Long.class)
+                .getSingleResult();
+        LOGGER.log(Level.INFO, "Count: {0}", count);
+        assertNotNull(count);
+
+        // firstname and last name concat, left, right
+        String firstNameAndLastNameQuery = """
+                SELECT firstName || ' ' || lastName, left(firstName, 1), right(lastName, 2) FROM Employee WHERE email = 'FOObar@gmail.com'
+                """;
+        var firstNameAndLastName = em.createQuery(firstNameAndLastNameQuery, Object[].class)
+                .getSingleResult();
+        LOGGER.log(Level.INFO, "First name and last name: {0}", firstNameAndLastName);
+        assertNotNull(firstNameAndLastName[0]);
+        assertNotNull(firstNameAndLastName[1]);
+        assertNotNull(firstNameAndLastName[2]);
+
     }
-
-
 }

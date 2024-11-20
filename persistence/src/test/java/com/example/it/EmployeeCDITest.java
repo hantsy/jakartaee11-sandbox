@@ -127,7 +127,7 @@ public class EmployeeCDITest {
 
         startTx();
         em.persist(chinaUnicomProvider);
-        em.persist(chinaUnicomProvider);
+        em.persist(chinaMobileProvider);
 
         em.persist(entity);
         entity.setPhoneNumber(new PhoneNumber("86", "12345678", chinaMobileProvider));
