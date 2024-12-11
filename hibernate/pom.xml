@@ -26,12 +26,6 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate.orm</groupId>
-                    <artifactId>hibernate-scan-jandex</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
