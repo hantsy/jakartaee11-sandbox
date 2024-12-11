@@ -67,7 +67,8 @@ public class GreetingResourceTest {
                         GreetingService.class,
                         AsyncConfig.class,
                         JsonbContextResolver.class,
-                        RestActivator.class
+                        RestActivator.class,
+                        MyQualifier.class
                 )
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, "war deployment: {0}", new Object[]{war.toString(true)});
