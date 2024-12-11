@@ -268,8 +268,6 @@ public class SampleTest {
                 .transactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL)
                 .provider(HibernatePersistenceProvider.class.getName())
                 // .nonJtaDataSource("java:global/jdbc/BookstoreData")
-                .managedClass(Book.class)
-                .managedClass(Author.class)
                 .property(PersistenceConfiguration.LOCK_TIMEOUT, 5000)
                 .property("hibernate.type.prefer_java_type_jdbc_types", true)
                 .property("hibernate.hbm2ddl.auto", "create-drop")
