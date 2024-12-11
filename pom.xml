@@ -51,7 +51,7 @@
         <awaitility.version>4.2.1</awaitility.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M8</glassfish.version>
+        <glassfish.version>8.0.0-M9</glassfish.version>
         <jersey.version>4.0.0-M1</jersey.version>
         <eclipselink.version>5.0.0-B03</eclipselink.version>
         <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
