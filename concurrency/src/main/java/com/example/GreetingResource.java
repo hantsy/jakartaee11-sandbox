@@ -2,16 +2,13 @@ package com.example;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Flow;
 
-@Path("greeting")
 @RequestScoped
 public class GreetingResource {
 
@@ -19,10 +16,17 @@ public class GreetingResource {
     GreetingService greetingService;
 
     @GET
-    @Path("{name}")
+    @Path("async")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<Response> sayHello(@PathParam("name") String name) {
+    public CompletionStage<Response> sayHello(@QueryParam("name") String name) {
         return greetingService.greetAsync(name)
                 .thenApplyAsync(greetingRecord -> Response.ok(greetingRecord).build());
+    }
+
+    @GET
+    @Path("flow")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Flow.Publisher<GreetingRecord> sayHelloFlow(@QueryParam("name") String name) {
+        return greetingService.greetFlow(name);
     }
 }

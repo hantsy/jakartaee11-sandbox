@@ -94,7 +94,23 @@ public class GreetingResourceTest {
     @Test
     @RunAsClient
     public void testGreeting() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting/Hantsy"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/async?name=Hantsy"));
+        String jsonString;
+        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
+            LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());
+            assertEquals(200, r.getStatus());
+            jsonString = r.readEntity(String.class);
+        }
+        LOGGER.log(Level.INFO, "Get greeting result string: {0}", jsonString);
+        assertThat(jsonString).doesNotContain("email");
+        assertThat(jsonString).contains("name");
+        assertThat(jsonString).contains("sent_at");
+    }
+
+    @Test
+    @RunAsClient
+    public void testGreetingFlow() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/flow?name=Hantsy"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());

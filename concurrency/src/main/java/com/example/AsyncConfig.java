@@ -3,6 +3,7 @@ package com.example;
 
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -26,6 +27,13 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
         context = "java:comp/MyContextService",
         qualifiers = {MyQualifier.class},
         virtual = true
+)
+@ManagedScheduledExecutorDefinition(
+        name = "java:comp/MyScheduleExecutor",
+        maxAsync = 10,
+        context = "java:comp/MyContextService",
+        virtual = true,
+        qualifiers = {MyQualifier.class}
 )
 @ApplicationScoped
 public class AsyncConfig {

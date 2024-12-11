@@ -9,11 +9,12 @@ import jakarta.inject.Inject;
 import java.time.DayOfWeek;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationScoped
 public class StandUpMeeting {
-    private final static Logger LOGGER = Logger.getLogger(ScheduleConfig.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(StandUpMeeting.class.getName());
 
     private final static Map<String, String> members = Map.of(
             "jack", "jack@example.com",
@@ -44,9 +45,13 @@ public class StandUpMeeting {
     CompletableFuture<Void> inviteToMeeting() {
 
         ForkJoinPool pool = new ForkJoinPool(
-                Runtime.getRuntime().availableProcessors(), threadFactory, null, true);
+                Runtime.getRuntime().availableProcessors(),
+                threadFactory,
+                (t, e) -> LOGGER.log(Level.INFO, "Thread: {0}, error: {1}", new Object[]{t.getName(), e.getMessage()}),
+                true
+        );
 
-        var callables = members.keySet().stream()
+        java.util.List<Callable<Void>> callables = members.keySet().stream()
                 .map(
                         name -> (Callable<Void>) () -> {
                             LOGGER.info("inviting " + name + '-' + members.get(name));
