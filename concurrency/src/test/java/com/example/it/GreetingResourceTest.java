@@ -95,7 +95,7 @@ public class GreetingResourceTest {
     @Test
     @RunAsClient
     public void testGreeting() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/async?name=Hantsy"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting/async?name=Hantsy"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());
@@ -111,7 +111,7 @@ public class GreetingResourceTest {
     @Test
     @RunAsClient
     public void testGreetingFlow() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/flow?name=Hantsy"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting/flow?name=Hantsy"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());

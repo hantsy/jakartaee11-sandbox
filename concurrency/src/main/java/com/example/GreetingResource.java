@@ -10,6 +10,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow;
 
 @RequestScoped
+@Path("greeting")
 public class GreetingResource {
 
     @Inject
