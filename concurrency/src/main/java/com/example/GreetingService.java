@@ -39,7 +39,6 @@ public class GreetingService {
         });
     }
 
-    @Asynchronous
     public Flow.Publisher<GreetingRecord> greetFlow(String name) {
         class LogPublisher extends SubmissionPublisher<GreetingRecord> {
             public LogPublisher(Executor executor, int maxBufferCapacity) {
