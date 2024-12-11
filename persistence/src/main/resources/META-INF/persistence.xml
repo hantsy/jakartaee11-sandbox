@@ -18,4 +18,22 @@
             <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
+    <persistence-unit name="cdiPU" transaction-type="JTA">
+        <qualifier>com.example.employee.MyCustom</qualifier>
+        <scope>jakarta.enterprise.context.ApplicationScoped</scope>
+        <jta-data-source>java:comp/DefaultDataSource</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+
+            <!-- for  Glassfish/Payara/EclipseLink -->
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+
+            <!-- for WildFly/Hibernate -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
 </persistence>
