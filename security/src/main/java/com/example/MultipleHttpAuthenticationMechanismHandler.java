@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
-public class CustomHttpAuthenticationMechanismHandler implements HttpAuthenticationMechanismHandler {
+public class MultipleHttpAuthenticationMechanismHandler implements HttpAuthenticationMechanismHandler {
 
     @Inject
     @RestAuthenticationQualifier
@@ -24,7 +24,7 @@ public class CustomHttpAuthenticationMechanismHandler implements HttpAuthenticat
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
         String path = request.getRequestURI().substring(request.getContextPath().length());
-        System.out.println("The request path: " + path);
+        System.out.println("The request path(without context path): " + path);
         if (path.startsWith("/api")) {
             return restAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
         }

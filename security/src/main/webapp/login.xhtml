@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="jakarta.faces.core"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:jsf="jakarta.faces"
       xmlns:h="jakarta.faces.html">
@@ -10,20 +9,27 @@
     <title>Title</title>
 </h:head>
 <h:body>
-    <p>
+    <h1>
         Login to continue
-    </p>
+    </h1>
+
+    <ui:fragment rendered="#{request.parameterMap.containsKey('error')}">
+        <div style="color: red">
+            Login failed.
+        </div>
+    </ui:fragment>
+
     <form jsf:id="form">
         <p>
             <strong>Username </strong>
-            <input jsf:id="username" type="text" jsf:value="#{loginBean.username}" />
+            <input jsf:id="username" type="text" jsf:value="#{loginBean.username}"/>
         </p>
         <p>
             <strong>Password </strong>
-            <input jsf:id="password" type="password" jsf:value="#{loginBean.password}" />
+            <input jsf:id="password" type="password" jsf:value="#{loginBean.password}"/>
         </p>
         <p>
-            <input type="submit" value="Login" jsf:action="#{loginBean.login}" />
+            <input type="submit" value="Login" jsf:action="#{loginBean.login}"/>
         </p>
     </form>
 </h:body>

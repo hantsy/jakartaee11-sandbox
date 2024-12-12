@@ -9,7 +9,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
 @RequestScoped
-@Path("/hello")
+@Path("hello")
 @RolesAllowed("rest")
 public class GreetingResource {
 
@@ -17,6 +17,7 @@ public class GreetingResource {
     SecurityContext securityContext;
 
     @GET
+    @Path("")
     public String hello() {
         return "Hello " + securityContext.getCallerPrincipal().getName();
     }

@@ -10,18 +10,14 @@ import jakarta.security.enterprise.identitystore.InMemoryIdentityStoreDefinition
 
 @BasicAuthenticationMechanismDefinition(
         realmName = "BasicAuth",
-        qualifiers = {
-                RestAuthenticationQualifier.class
-        }
+        qualifiers = {RestAuthenticationQualifier.class}
 )
 @CustomFormAuthenticationMechanismDefinition(
         loginToContinue = @LoginToContinue(
                 loginPage = "/login.faces",
                 errorPage = "/login.faces?error"
         ),
-        qualifiers = {
-                WebAuthenticationQualifier.class
-        }
+        qualifiers = {WebAuthenticationQualifier.class}
 )
 @InMemoryIdentityStoreDefinition(
         value = {
