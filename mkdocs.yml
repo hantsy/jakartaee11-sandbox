@@ -1,7 +1,7 @@
-site_name: Migrating to Jakarta EE 10
+site_name: Migrating to Jakarta EE 11
 
-repo_url: https://github.com/hantsy/jakartaee10-sandbox
-repo_name: hantsy/jakartaee10-sandbox
+repo_url: https://github.com/hantsy/jakartaee11-sandbox
+repo_name: hantsy/jakartaee11-sandbox
 theme:
   palette:
     - media: "(prefers-color-scheme: light)"
@@ -25,7 +25,7 @@ theme:
   icon:
     repo: fontawesome/brands/git-alt
 
-copyright: Copyright &copy;2022 Hantsy
+copyright: Copyright &copy;2024 Hantsy
 extra:
   social:
     - icon: fontawesome/brands/twitter
@@ -51,26 +51,12 @@ nav:
   - Persistence:
       - jpa/index.md
       - "What's New in Jakarta Persistence 3.1": jpa/new.md
-      - "Example: Hibernate 6.1": jpa/hibernate.md
+      - "Example: Hibernate 7.x": jpa/hibernate.md
       - "Example: JPA and Jakarta EE Runtimes": jpa/jakartaee.md
-  - REST:
-      - rest/index.md
-      - "What's New in Jakarta REST 3.1": rest/new.md
-      - "Java SE Bootstrap API": rest/se-bootstrap.md
-      - "Support for MultiPart media type": rest/multipart.md
-      - "Better alignment with JSONB": rest/jsonb.md
-      - "Better alignment with CDI": rest/cdi-inject.md
+  - Data: data.md    
+  - REST: rest.md
   - Concurrency: concurrency.md
-  - Security: 
-      - security/index.md
-      - "What's New in Jakarta Security 3.1": security/new.md
-      - "Example Project": security/example.md
-      - "OIDC with Keycloak": security/kc.md
-      - "OIDC with Auth0": security/auth0.md
-      - "OIDC with Okta": security/okta.md
-      - "Summary": security/summary.md
-  - Faces: 
-      - faces/index.md
-      - "What's new in Faces 4.0": faces/new.md
-      - "Clean Up Deprecated Staff": faces/cleanup.md
-      - "New Features and Improvements": faces/faces.md
+  - Security: security.md
+  - "Expression Language": el.md
+  - Validation: validation.md
+  - Faces: faces.md
