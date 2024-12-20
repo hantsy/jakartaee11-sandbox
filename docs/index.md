@@ -2,8 +2,6 @@
 
 Jakarta EE 11 continuously improves CDI alignments and the developer's productivity.
 
-Let's have a look at what's new in Jakarta EE 11.
-
 ## History 
 
 Since Eclipse Foundation handed over the Java EE development, Jakarta EE has evolved steadily. 
@@ -13,7 +11,7 @@ Since Eclipse Foundation handed over the Java EE development, Jakarta EE has evo
  * Jakarta EE 10 updated a collection of specifications to align with the new Java runtime requirement. Jakarta EE 10 API requires Java 11 as the minimal and also supports Java 17 at runtime.
  * Jakarta EE 11 continuously improved the developer's experience and deprecated more APIs. Jakarta EE 11 requires Java 17 as the minimal and also supports Java 21 at runtime.
 
-Let's glance at the new features in the upcoming Jakarta EE 11. 
+Let's have a look at what's new in Jakarta EE 11.
 
 ## What's New In Jakarta EE 11
 
