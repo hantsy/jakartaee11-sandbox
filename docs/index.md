@@ -7,6 +7,7 @@ Let's have a look at what's new in Jakarta EE 11.
 ## History 
 
 Since Eclipse Foundation handed over the Java EE development, Jakarta EE has evolved steadily. 
+
  * Jakarta EE 8 mainly resolved the trademark issues, and renamed the Maven coordinates from `javax` to `jakarta`. 
  * Jakarta EE 9/9.1 cleaned up the new Jakarta namespace at the API source code level.
  * Jakarta EE 10 updated a collection of specifications to align with the new Java runtime requirement. Jakarta EE 10 API requires Java 11 as the minimal and also supports Java 17 at runtime.
