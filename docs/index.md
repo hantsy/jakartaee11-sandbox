@@ -15,9 +15,11 @@ Let's have a look at what's new in Jakarta EE 11.
 
 ## What's New In Jakarta EE 11
 
-*Jakarta Data* was incubated two years ago and is always under active development. Eventually, it joined the Jakarta EE 11 family. 
+Jakarta EE 11 added a new specification - *Jakarta Data*. 
 
-*CDI* is the kernel of the Jakarta EE ecosystem. The new CDI 4.1 did not bring huge changes, just added some small enhancements. For developers, allowing `@Priorty` on producers is a highlight. For implementations, the EE integration was moved to the platform specification. Check [What's new in CDI 4.1?](https://jakartaee.github.io/cdi/2024/02/27/whats-new-in-cdi41.html) for more details.
+*Jakarta Data* was incubated two years ago and is always under active development. Eventually, it joined the Jakarta EE 11 family. Read the [Jakarta Data specification](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0) to learn it from scratch. Hibernate reference document included a chapter - [Hibernate Data Repositories](https://docs.jboss.org/hibernate/orm/7.0/repositories/html_single/Hibernate_Data_Repositories.html) to demonstrate Jakarta Data usage by examples.
+
+*CDI* is the kernel of the Jakarta EE ecosystem. The new CDI 4.1 did not bring huge changes, just added some small enhancements. For developers, allowing `@Priorty` on producers is a highlight. For implementations, the EE integration was moved to the platform specification. Check [What's new in CDI 4.1?](https://jakartaee.github.io/cdi/2024/02/27/whats-new-in-cdi41.html) for more details. 
 
 *Persistence* 3.2 added many small improvements, including adding the `record` type as embeddable classes, porting more SQL-specific functions to JPQL, and providing programmatic configuration instead of the `persistence.xml`.   
 
