@@ -9,7 +9,7 @@ Since Eclipse Foundation handed over the Java EE development, Jakarta EE has evo
  * Jakarta EE 8 mainly resolved the trademark issues, and renamed the Maven coordinates from `javax` to `jakarta`. 
  * Jakarta EE 9/9.1 cleaned up the new Jakarta namespace at the API source code level.
  * Jakarta EE 10 updated a collection of specifications to align with the new Java runtime requirement. Jakarta EE 10 requires Java 11 as the minimal and supports Java 17 at runtime.
- * Jakarta EE 11 continuously improved the developer's experience and deprecated more APIs. Jakarta EE 11 updates Java 17 as the minimal and also supports Java 21 at runtime.
+ * Jakarta EE 11 continuously improved the developer's experience and deprecated more APIs. Jakarta EE 11 updates Java 17 as the baseline and supports Java 21 at runtime.
 
 Let's have a look at what's new in Jakarta EE 11.
 
@@ -17,17 +17,19 @@ Let's have a look at what's new in Jakarta EE 11.
 
 Jakarta EE 11 added a new specification - *Jakarta Data*. 
 
-*Jakarta Data* was incubated two years ago and is always under active development. Eventually, it joined the Jakarta EE 11 family. Read the [Jakarta Data specification](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0) to learn it from scratch. Hibernate reference document included a chapter - [Hibernate Data Repositories](https://docs.jboss.org/hibernate/orm/7.0/repositories/html_single/Hibernate_Data_Repositories.html) to demonstrate Jakarta Data usage by examples.
+*Jakarta Data* was incubated two years ago and is always under active development. Eventually, it joined the Jakarta EE 11 family. Go to the [Jakarta Data specification](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0) and learn it from scratch. Hibernate reference document also included a chapter - [Hibernate Data Repositories](https://docs.jboss.org/hibernate/orm/7.0/repositories/html_single/Hibernate_Data_Repositories.html) to demonstrate Jakarta Data usage by examples.
 
-*CDI* is the kernel of the Jakarta EE ecosystem. The new CDI 4.1 did not bring huge changes, just added some small enhancements. For developers, allowing `@Priorty` on producers is a highlight. For implementations, the EE integration was moved to the platform specification. Check [What's new in CDI 4.1?](https://jakartaee.github.io/cdi/2024/02/27/whats-new-in-cdi41.html) for more details. 
+Several specifications were updated in Jakarta EE 11.
+
+*CDI* is the kernel of the Jakarta EE ecosystem. The new CDI 4.1 did not bring huge changes but contains a few small enhancements. For developers, allowing `@Priority` on producers is a highlight. For implementations, the big change is that the CDI EE integration part was moved to the Jakarta platform specification. Check [What's new in CDI 4.1](https://jakartaee.github.io/cdi/2024/02/27/whats-new-in-cdi41.html) for more details. 
 
 *Persistence* 3.2 added many small improvements, including adding the `record` type as embeddable classes, porting more SQL-specific functions to JPQL, and providing programmatic configuration instead of the `persistence.xml`.   
 
-*Concurrency* specification added optional Java 21 virtual thread support and a new `@Scheduled` to replace the existing one in the legacy EJB specification.
+*Concurrency* 3.1 adopted Java 21 virtual thread in managed execution service and Java 9 `Flow`(aka ReactiveStreams support) in context propagation, and also added a new `@Scheduled` to replace the existing one in the legacy EJB specification.
 
-The *REST* specification added JSON Patch support.
+The *REST* 4.0 added JSON Merge Patch support.
 
-*Security* 3.1 introduced a new in-memory `identity store` which is very useful in development. It also added multiple HTTP authentication mechanisms.
+*Security* 4.0 introduced a new in-memory `IdentityStore` which is very useful in development. It also added the ability to handle multiple authentication mechanisms.
 
 Faces, EL, Validation, etc. also add `record` type support. 
 
