@@ -8,28 +8,28 @@ Since Eclipse Foundation handed over the Java EE development, Jakarta EE has evo
 
  * Jakarta EE 8 mainly resolved the trademark issues, and renamed the Maven coordinates from `javax` to `jakarta`. 
  * Jakarta EE 9/9.1 cleaned up the new Jakarta namespace at the API source code level.
- * Jakarta EE 10 updated a collection of specifications to align with the new Java runtime requirement. Jakarta EE 10 API requires Java 11 as the minimal and also supports Java 17 at runtime.
- * Jakarta EE 11 continuously improved the developer's experience and deprecated more APIs. Jakarta EE 11 requires Java 17 as the minimal and also supports Java 21 at runtime.
+ * Jakarta EE 10 updated a collection of specifications to align with the new Java runtime requirement. Jakarta EE 10 requires Java 11 as the minimal and supports Java 17 at runtime.
+ * Jakarta EE 11 continuously improved the developer's experience and deprecated more APIs. Jakarta EE 11 updates Java 17 as the minimal and also supports Java 21 at runtime.
 
 Let's have a look at what's new in Jakarta EE 11.
 
 ## What's New In Jakarta EE 11
 
-Jakarta Data was incubated two years ago and is always under active development. And finally, it joined the Jakarta EE 11 family. 
+*Jakarta Data* was incubated two years ago and is always under active development. Eventually, it joined the Jakarta EE 11 family. 
 
-CDI is the kernel of Jakarta EE ecosystem, Faces, REST, Concurrency, Persistence, etc. add more alignments to the new CDI.
+*CDI* is the kernel of the Jakarta EE ecosystem. The new CDI 4.1 did not bring huge changes, just added some small enhancements. For developers, allowing `@Priorty` on producers is a highlight. For implementations, the EE integration was moved to the platform specification. Check [What's new in CDI 4.1?](https://jakartaee.github.io/cdi/2024/02/27/whats-new-in-cdi41.html) for more details.
 
-The Persistence specification adds the `record` type as embeddable classes, ports more SQL-specific functions to JPQL, and provides programmatic configuration instead of the `persistence.xml`. 
+*Persistence* 3.2 added many small improvements, including adding the `record` type as embeddable classes, porting more SQL-specific functions to JPQL, and providing programmatic configuration instead of the `persistence.xml`.   
 
-The Concurrency specification adds optional Java 21 virtual thread support and also adds a new `@Scheduled` to replace the existing one in the legacy EJB specification.
+*Concurrency* specification added optional Java 21 virtual thread support and a new `@Scheduled` to replace the existing one in the legacy EJB specification.
 
-The REST specification adds JSON Patch support.
+The *REST* specification added JSON Patch support.
 
-Security 3.1 supports in-memory `identity store` and adds multiple HTTP authentication mechanisms.
+*Security* 3.1 introduced a new in-memory `identity store` which is very useful in development. It also added multiple HTTP authentication mechanisms.
 
-The Faces, EL, Validation, etc. also add `record` type support. 
+Faces, EL, Validation, etc. also add `record` type support. 
 
-Jakarta EE 11 removes the `ManagedBean` specification, deprecates SOAP-based `Web Service`, and cleans up the reference for `SecurityManager` which will be removed in a further Java version.
+Jakarta EE 11 removed the `ManagedBean` specification, deprecated the SOAP-based *Web Service* specification, and cleaned up the reference for `SecurityManager` because it will be removed in a future Java SE runtime.
 
 We will explore the new features by example codes in future posts.
 
