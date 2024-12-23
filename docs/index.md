@@ -15,9 +15,13 @@ Let's have a look at what's new in Jakarta EE 11.
 
 ## What's New In Jakarta EE 11
 
+### New Specifications
+
 Jakarta EE 11 added a new specification - *Jakarta Data*. 
 
 *Jakarta Data* was incubated two years ago and is always under active development. Eventually, it joined the Jakarta EE 11 family. Go to the [Jakarta Data specification](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0) and learn it from scratch. Hibernate reference document also included a chapter - [Hibernate Data Repositories](https://docs.jboss.org/hibernate/orm/7.0/repositories/html_single/Hibernate_Data_Repositories.html) to demonstrate Jakarta Data usage by examples.
+
+### Updates
 
 Several specifications were updated in Jakarta EE 11.
 
@@ -36,6 +40,18 @@ Faces, EL, Validation, etc. also add `record` type support.
 Jakarta EE 11 removed the `ManagedBean` specification, deprecated the SOAP-based *Web Service* specification, and cleaned up the reference for `SecurityManager` because it will be removed in a future Java SE runtime.
 
 We will explore the new features by example codes in future posts.
+
+### Under Maintenance
+
+The following specifications have no updates in Jakarta EE 11. 
+* Jakarta JSON-B
+* Jakarta JSON-P
+* Jakarta Messaging  
+* Jakarta Batch
+* Jakarta Activation
+* Jakarta Mail
+
+
 
 ## The Future of Jakarta EE
 
