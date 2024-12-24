@@ -1,6 +1,8 @@
 package com.example;
 
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Alternative;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
@@ -13,6 +15,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static jakarta.interceptor.Interceptor.Priority.APPLICATION;
+
+// see: https://github.com/jakartaee/security/blob/master/tck/app-custom-authentication-mechanism-handler2/src/main/java/ee/jakarta/tck/security/test/CustomAuthenticationMechanismHandler.java
+@Alternative
+@Priority(APPLICATION)
 @ApplicationScoped
 public class MultipleHttpAuthenticationMechanismHandler implements HttpAuthenticationMechanismHandler {
     private final static Logger LOGGER = Logger.getLogger(MultipleHttpAuthenticationMechanismHandler.class.getName());

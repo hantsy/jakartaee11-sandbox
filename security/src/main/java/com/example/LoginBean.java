@@ -28,9 +28,6 @@ import static jakarta.security.enterprise.authentication.mechanism.http.Authenti
 @RequestScoped
 public class LoginBean {
 
-    @Inject
-    private SecurityContext securityContext;
-
     @NotNull
     @Size(min = 3, max = 15, message = "Username must be between 3 and 15 characters")
     private String username;
@@ -41,6 +38,9 @@ public class LoginBean {
 
     @Inject
     Logger LOG;
+
+    @Inject
+    private SecurityContext securityContext;
 
     @Inject
     FacesContext facesContext;

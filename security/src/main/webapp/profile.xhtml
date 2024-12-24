@@ -3,9 +3,13 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:jsf="jakarta.faces"
+      xmlns:f="jakarta.faces.core"
       xmlns:h="jakarta.faces.html">
 
 <h:head>
+    <f:metadata>
+        <f:viewAction action="#{profileBean.init()}" immediate="true"/>
+    </f:metadata>
     <title>Profile</title>
 </h:head>
 <h:body>
