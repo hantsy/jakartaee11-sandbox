@@ -93,7 +93,7 @@ public class ChatResourceTest {
 
     @Test
     @RunAsClient
-    @Order(2)
+    @Order(1)
     public void testSendMessages() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat"));
         try (SseEventSource eventSource = SseEventSource.target(target).build()) {
