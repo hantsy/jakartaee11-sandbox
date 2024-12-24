@@ -35,10 +35,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
@@ -49,10 +46,10 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(ArquillianExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ChatResourceTest {
 
     private final static Logger LOGGER = Logger.getLogger(ChatResourceTest.class.getName());
@@ -63,7 +60,7 @@ public class ChatResourceTest {
                 .resolver()
                 .loadPomFromFile("pom.xml")
                 .importCompileAndRuntimeDependencies()
-                .resolve("org.assertj:assertj-core", "io.lettuce:lettuce-core")
+                .resolve("org.assertj:assertj-core")
                 .withTransitivity()
                 .asFile();
         var war = ShrinkWrap.create(WebArchive.class, "test.war")
@@ -101,8 +98,8 @@ public class ChatResourceTest {
             // EventSource#register(Consumer<InboundSseEvent>)
             // Registered event handler will print the received message.
             eventSource.register(inboundSseEvent -> {
-                var data =inboundSseEvent.readData(ChatMessage.class);
-                LOGGER.info("received data:" + data);
+                var data = inboundSseEvent.readData(ChatMessage.class, MediaType.APPLICATION_JSON_TYPE);
+                LOGGER.log(Level.INFO, "received event data: {0}" , new Object[]{data});
             });
 
             // Subscribe to the event stream.
@@ -126,7 +123,7 @@ public class ChatResourceTest {
     @Test
     @RunAsClient
     @Order(2)
-    public void testMessages() throws Exception {
+    public void testGetMessages() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/sync"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
@@ -143,7 +140,7 @@ public class ChatResourceTest {
     @Test
     @RunAsClient
     @Order(3)
-    public void testMessagesAsync() throws Exception {
+    public void testGetMessagesAsync() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/async"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
@@ -160,6 +157,7 @@ public class ChatResourceTest {
     @Test
     @RunAsClient
     @Order(4)
+    @Disabled("see: https://github.com/jakartaee/rest/issues/1281")
     public void testGetMessagesFlow() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/flow"));
         String jsonString;
