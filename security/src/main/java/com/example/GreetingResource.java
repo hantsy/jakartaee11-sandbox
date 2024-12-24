@@ -10,7 +10,7 @@ import jakarta.ws.rs.Path;
 
 @RequestScoped
 @Path("hello")
-@RolesAllowed("rest")
+@Authorized(roles = {"rest"})
 public class GreetingResource {
 
     @Inject

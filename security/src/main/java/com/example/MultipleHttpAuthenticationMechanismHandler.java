@@ -10,8 +10,12 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageCont
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @ApplicationScoped
 public class MultipleHttpAuthenticationMechanismHandler implements HttpAuthenticationMechanismHandler {
+    private final static Logger LOGGER = Logger.getLogger(MultipleHttpAuthenticationMechanismHandler.class.getName());
 
     @Inject
     @RestAuthenticationQualifier
@@ -24,7 +28,7 @@ public class MultipleHttpAuthenticationMechanismHandler implements HttpAuthentic
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
         String path = request.getRequestURI().substring(request.getContextPath().length());
-        System.out.println("The request path(without context path): " + path);
+        LOGGER.log(Level.INFO, "The request path(without context path): {0}", path);
         if (path.startsWith("/api")) {
             return restAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
         }

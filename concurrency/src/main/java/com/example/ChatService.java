@@ -4,7 +4,6 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.reactive.RedisReactiveCommands;
 import io.lettuce.core.api.sync.RedisCommands;
-import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,19 +17,17 @@ import org.reactivestreams.FlowAdapters;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
-import javax.annotation.processing.Completion;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Flow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationScoped
 public class ChatService {
-    private final static Logger LOGGER = Logger.getLogger(ChatService.class.getName());
-
     @Inject
     @MyQualifier
     private ManagedExecutorService executor;
@@ -56,19 +53,18 @@ public class ChatService {
 
     private final Map<String, SseRequest> requests = new ConcurrentHashMap<>();
 
-    public void register(String uuid, SseRequest request) {
-        LOG.log(Level.FINEST, "register request:{0}", uuid);
-        requests.put(uuid, request);
+    public void register(String id, SseRequest request) {
+        LOG.log(Level.FINEST, "register request:{0}", id);
+        requests.put(id, request);
     }
 
     public void deregister(String uuid) {
         LOG.log(Level.FINEST, "deregister request:{0}", uuid);
         SseRequest req = requests.remove(uuid);
-        try {
-            SseEventSink eventSink = req.sink();
-            eventSink.close();
-        } catch (IOException e) {
-            LOG.log(Level.FINEST, e.getMessage());
+        try (SseEventSink eventSink = req.sink()) {
+            LOG.log(Level.FINEST, "closing sink: {0}", eventSink);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             LOG.log(Level.ALL, "closed SSE event sink");
         }

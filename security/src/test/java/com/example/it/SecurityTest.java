@@ -49,18 +49,7 @@ public class SecurityTest {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive webArchive = ShrinkWrap.create(WebArchive.class)
-                .addClasses(
-                        FacesActivator.class,
-                        LoginBean.class,
-                        Resources.class,
-                        SecurityConfig.class,
-                        TestServlet.class,
-                        GreetingResource.class,
-                        RestActivator.class,
-                        RestAuthenticationQualifier.class,
-                        WebAuthenticationQualifier.class,
-                        MultipleHttpAuthenticationMechanismHandler.class
-                )
+                .addPackage(MultipleHttpAuthenticationMechanismHandler.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource("test-web.xml", "web.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -95,10 +84,22 @@ public class SecurityTest {
     public void testServletPathWithAuth() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/hello"));
         try (var response = target.request()
-                .header(HttpHeaders.AUTHORIZATION, "Basic " + new String(Base64.getEncoder().encode("webuser:password".getBytes(StandardCharsets.UTF_8))))
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + new String(Base64.getEncoder().encode("restuser:password".getBytes(StandardCharsets.UTF_8))))
                 .get()) {
             LOGGER.info("response status: " + response.getStatus());
             Assertions.assertEquals(200, response.getStatus());
+        }
+    }
+
+    @Test
+    @RunAsClient
+    public void testServletPathWithWrongRoles() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/hello"));
+        try (var response = target.request()
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + new String(Base64.getEncoder().encode("webuser:password".getBytes(StandardCharsets.UTF_8))))
+                .get()) {
+            LOGGER.info("response status: " + response.getStatus());
+            Assertions.assertEquals(401, response.getStatus());
         }
     }
 }

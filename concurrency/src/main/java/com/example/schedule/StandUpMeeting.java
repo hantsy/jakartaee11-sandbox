@@ -32,7 +32,7 @@ public class StandUpMeeting {
 
     @PostConstruct
     public void init() {
-        LOGGER.config(() -> "init from scheduled tasks....");
+        LOGGER.log(Level.ALL, "init from scheduled tasks....");
     }
 
     @Asynchronous(
@@ -88,7 +88,7 @@ public class StandUpMeeting {
 
         var result = CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         result.join();
-        pool.close();
+        pool.shutdown();
         return result;
     }
 }
