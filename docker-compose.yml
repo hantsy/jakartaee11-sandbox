@@ -1,0 +1,48 @@
+services:
+   
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+      
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
+      POSTGRES_USER: user
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql
+      - ./pg-initdb.d:/docker-entrypoint-initdb.d
+      
+  mongodb: 
+    image: mongo 
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27017:27017"
+#    command: --smallfiles 
+#   command: --smallfiles --rest --auth  // if there is a password set in mongo.
+      
+  neo4j:
+    image: neo4j # use the latest version of neo4j
+    environment:
+      - "NEO4J_AUTH=neo4j/test" # disable authentication by passing --env=NEO4J_AUTH=none
+      - "SECURE_FILE_PERMISSIONS=yes" # To enforce stricter file permissions checking 
+    #  - "NEO4J_ACCEPT_LICENSE_AGREEMENT=yes" # required for enterprise editon: neo4j:4.0.0-enterprise
+    ports:
+      - "7687:7687" 
+      - "7474:7474" 
+
+  
+volumes:
+  mongodata:  
+#    driver: local-persist
+#    driver_opts:
+#      mountpoint: ./data  
+  esdata1:
+    driver: local
+       

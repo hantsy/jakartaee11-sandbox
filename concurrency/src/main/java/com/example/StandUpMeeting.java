@@ -1,5 +1,6 @@
 package com.example;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.Schedule;
@@ -25,6 +26,11 @@ public class StandUpMeeting {
     @MyQualifier
     ManagedThreadFactory threadFactory;
 
+    @PostConstruct
+    public void init() {
+        LOGGER.config(() -> "init from scheduled tasks....");
+    }
+
     @Asynchronous(
             executor = "java:comp/MyScheduleExecutor", // can not refer by Qualifier???
             runAt = {
@@ -43,6 +49,8 @@ public class StandUpMeeting {
             }
     )
     CompletableFuture<Void> inviteToMeeting() {
+
+        LOGGER.log(Level.ALL, "running scheduled tasks....");
 
         ForkJoinPool pool = new ForkJoinPool(
                 Runtime.getRuntime().availableProcessors(),

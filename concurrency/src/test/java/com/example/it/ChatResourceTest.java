@@ -46,9 +46,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(ArquillianExtension.class)
-public class GreetingResourceTest {
+public class ChatResourceTest {
 
-    private final static Logger LOGGER = Logger.getLogger(GreetingResourceTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(ChatResourceTest.class.getName());
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
@@ -56,15 +56,15 @@ public class GreetingResourceTest {
                 .resolver()
                 .loadPomFromFile("pom.xml")
                 .importCompileAndRuntimeDependencies()
-                .resolve("org.assertj:assertj-core")
+                .resolve("org.assertj:assertj-core", "io.lettuce:lettuce-core")
                 .withTransitivity()
                 .asFile();
         var war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
                 .addClasses(
-                        GreetingResource.class,
-                        GreetingRecord.class,
-                        GreetingService.class,
+                        ChatResource.class,
+                        ChatMessage.class,
+                        ChatService.class,
                         AsyncConfig.class,
                         JsonbContextResolver.class,
                         RestActivator.class,
@@ -94,15 +94,15 @@ public class GreetingResourceTest {
 
     @Test
     @RunAsClient
-    public void testGreeting() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting/async?name=Hantsy"));
+    public void testMessages() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/sync"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
-            LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());
+            LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());
             jsonString = r.readEntity(String.class);
         }
-        LOGGER.log(Level.INFO, "Get greeting result string: {0}", jsonString);
+        LOGGER.log(Level.INFO, "Get messages result string: {0}", jsonString);
         assertThat(jsonString).doesNotContain("email");
         assertThat(jsonString).contains("name");
         assertThat(jsonString).contains("sent_at");
@@ -110,15 +110,31 @@ public class GreetingResourceTest {
 
     @Test
     @RunAsClient
-    public void testGreetingFlow() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/greeting/flow?name=Hantsy"));
+    public void testMessagesAsync() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/async"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
-            LOGGER.log(Level.INFO, "Get greeting response status: {0}", r.getStatus());
+            LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());
             jsonString = r.readEntity(String.class);
         }
-        LOGGER.log(Level.INFO, "Get greeting result string: {0}", jsonString);
+        LOGGER.log(Level.INFO, "Get messages result string: {0}", jsonString);
+        assertThat(jsonString).doesNotContain("email");
+        assertThat(jsonString).contains("name");
+        assertThat(jsonString).contains("sent_at");
+    }
+
+    @Test
+    @RunAsClient
+    public void testGetMessagesFlow() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/flow"));
+        String jsonString;
+        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
+            LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
+            assertEquals(200, r.getStatus());
+            jsonString = r.readEntity(String.class);
+        }
+        LOGGER.log(Level.INFO, "Get messages result string: {0}", jsonString);
         assertThat(jsonString).doesNotContain("email");
         assertThat(jsonString).contains("name");
         assertThat(jsonString).contains("sent_at");
