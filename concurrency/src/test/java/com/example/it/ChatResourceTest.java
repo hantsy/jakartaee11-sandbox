@@ -18,11 +18,15 @@ under the License.
  */
 package com.example.it;
 
-import com.example.*;
+import com.example.ChatMessage;
+import com.example.ChatResource;
+import com.example.NewMessageCommand;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.sse.SseEventSource;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -33,6 +37,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -41,8 +46,10 @@ import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(ArquillianExtension.class)
@@ -61,15 +68,7 @@ public class ChatResourceTest {
                 .asFile();
         var war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
-                .addClasses(
-                        ChatResource.class,
-                        ChatMessage.class,
-                        ChatService.class,
-                        AsyncConfig.class,
-                        JsonbContextResolver.class,
-                        RestActivator.class,
-                        MyQualifier.class
-                )
+                .addPackage(ChatResource.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, "war deployment: {0}", new Object[]{war.toString(true)});
         return war;
@@ -94,6 +93,39 @@ public class ChatResourceTest {
 
     @Test
     @RunAsClient
+    @Order(2)
+    public void testSendMessages() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat"));
+        try (SseEventSource eventSource = SseEventSource.target(target).build()) {
+
+            // EventSource#register(Consumer<InboundSseEvent>)
+            // Registered event handler will print the received message.
+            eventSource.register(inboundSseEvent -> {
+                var data =inboundSseEvent.readData(ChatMessage.class);
+                LOGGER.info("received data:" + data);
+            });
+
+            // Subscribe to the event stream.
+            eventSource.open();
+
+            // send chat messages
+            IntStream.rangeClosed(1, 30).forEach(i -> {
+                try (Response r = target.request().post(Entity.json(new NewMessageCommand("test " + i)))) {
+                    LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
+                    assertEquals(204, r.getStatus());
+                }
+            });
+
+            // Consume events for just 500 ms
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @RunAsClient
+    @Order(2)
     public void testMessages() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/sync"));
         String jsonString;
@@ -104,12 +136,13 @@ public class ChatResourceTest {
         }
         LOGGER.log(Level.INFO, "Get messages result string: {0}", jsonString);
         assertThat(jsonString).doesNotContain("email");
-        assertThat(jsonString).contains("name");
+        assertThat(jsonString).contains("body");
         assertThat(jsonString).contains("sent_at");
     }
 
     @Test
     @RunAsClient
+    @Order(3)
     public void testMessagesAsync() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/async"));
         String jsonString;
@@ -120,12 +153,13 @@ public class ChatResourceTest {
         }
         LOGGER.log(Level.INFO, "Get messages result string: {0}", jsonString);
         assertThat(jsonString).doesNotContain("email");
-        assertThat(jsonString).contains("name");
+        assertThat(jsonString).contains("body");
         assertThat(jsonString).contains("sent_at");
     }
 
     @Test
     @RunAsClient
+    @Order(4)
     public void testGetMessagesFlow() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/flow"));
         String jsonString;
@@ -136,7 +170,7 @@ public class ChatResourceTest {
         }
         LOGGER.log(Level.INFO, "Get messages result string: {0}", jsonString);
         assertThat(jsonString).doesNotContain("email");
-        assertThat(jsonString).contains("name");
+        assertThat(jsonString).contains("body");
         assertThat(jsonString).contains("sent_at");
     }
 

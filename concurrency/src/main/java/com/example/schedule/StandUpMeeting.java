@@ -1,5 +1,6 @@
-package com.example;
+package com.example.schedule;
 
+import com.example.MyQualifier;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
@@ -26,6 +27,9 @@ public class StandUpMeeting {
     @MyQualifier
     ManagedThreadFactory threadFactory;
 
+    @Inject
+    Invite invite;
+
     @PostConstruct
     public void init() {
         LOGGER.config(() -> "init from scheduled tasks....");
@@ -45,7 +49,7 @@ public class StandUpMeeting {
                             hours = 8
                     ), // daily standup
                     @Schedule(daysOfMonth = {1}, hours = 12), // monthly meeting,
-                    @Schedule(cron = "*/5 * * * *") // every 5 minutes for test purpose
+                    @Schedule(cron = "*/5 * * * * *") // every 5 seconds for test purpose
             }
     )
     CompletableFuture<Void> inviteToMeeting() {
@@ -62,7 +66,8 @@ public class StandUpMeeting {
         java.util.List<Callable<Void>> callables = members.keySet().stream()
                 .map(
                         name -> (Callable<Void>) () -> {
-                            LOGGER.info("inviting " + name + '-' + members.get(name));
+                            LOGGER.info("calling invite:" + name);
+                            invite.send(name, members.get(name));
                             return null;
                         }
                 )
@@ -83,7 +88,7 @@ public class StandUpMeeting {
 
         var result = CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         result.join();
-        pool.shutdown();
+        pool.close();
         return result;
     }
 }

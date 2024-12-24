@@ -18,7 +18,7 @@ public class LogSubscriber implements Flow.Subscriber<Long> {
 
     @Override
     public void onSubscribe(Flow.Subscription subscription) {
-        LOG.info("subscription:" + subscription);
+        LOG.info("onSubscribe:" + subscription);
         this.subscription = subscription;
         this.subscription.request(1);
     }
@@ -27,7 +27,7 @@ public class LogSubscriber implements Flow.Subscriber<Long> {
     public void onNext(Long item) {
         LOG.info("onNext:" + item);
         if (requestCount % MAX_REQUESTS == 0) {
-            this.subscription.request(2);
+            this.subscription.request(MAX_REQUESTS);
         }
 
         requestCount++;
