@@ -23,8 +23,16 @@ import com.example.MyQualifier;
 import com.example.schedule.Invite;
 import com.example.schedule.StandUpMeeting;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -35,18 +43,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(ArquillianExtension.class)
 public class ScheduleTest {
 
     private final static Logger LOGGER = Logger.getLogger(ScheduleTest.class.getName());
 
-    @Deployment
+    @Deployment(testable = false)
     public static WebArchive createDeployment() {
         File[] extraJars = Maven
                 .resolver()
@@ -63,12 +74,15 @@ public class ScheduleTest {
         return war;
     }
 
-    @Inject
-    Invite invite;
+    @ArquillianResource
+    private URL baseUrl;
+
+    Client client;
 
     @BeforeEach
     public void before() {
         LOGGER.log(Level.INFO, "before running tests.");
+        client = ClientBuilder.newClient();
     }
 
     @AfterEach
@@ -77,11 +91,22 @@ public class ScheduleTest {
     }
 
     @Test
+    @RunAsClient
     public void testSchedule() throws Exception {
-        assertThat(invite).isNotNull();
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/invites"));
+        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).method("POST")) {
+            LOGGER.log(Level.INFO, "sending invites status: {0}", r.getStatus());
+            assertEquals(201, r.getStatus());
+        }
+
         Thread.sleep(6_000);
-        List<String> names = invite.getNames();
-        LOGGER.log(Level.INFO, "invites are sent to: {0}", new Object[]{names});
-        assertThat(names).isNotEmpty();
+
+        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
+            LOGGER.log(Level.INFO, "get invited names status: {0}", r.getStatus());
+            assertEquals(200, r.getStatus());
+            var names = r.readEntity(new GenericType<List<String>>(){});
+            LOGGER.log(Level.INFO, "invited names: {0}", names);
+            assertThat(names).isNotEmpty();
+        }
     }
 }
