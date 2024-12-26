@@ -52,7 +52,13 @@ under the License.
         <dependency>
             <groupId>io.helidon.microprofile.config</groupId>
             <artifactId>helidon-microprofile-config</artifactId>
-            <version>4.0.11</version>
+            <version>4.1.6</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.helidon.common/helidon-common-types -->
+        <dependency>
+            <groupId>io.helidon.common</groupId>
+            <artifactId>helidon-common-types</artifactId>
+            <version>4.1.6</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
