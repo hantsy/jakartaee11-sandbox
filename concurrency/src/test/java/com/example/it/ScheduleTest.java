@@ -20,6 +20,7 @@ package com.example.it;
 
 import com.example.AsyncConfig;
 import com.example.MyQualifier;
+import com.example.RestActivator;
 import com.example.schedule.StandUpMeeting;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -64,6 +65,7 @@ public class ScheduleTest {
         var war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
                 .addPackage(StandUpMeeting.class.getPackage())
+                .addClasses(RestActivator.class)
                 .addClasses(AsyncConfig.class, MyQualifier.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, "war deployment: {0}", new Object[]{war.toString(true)});
