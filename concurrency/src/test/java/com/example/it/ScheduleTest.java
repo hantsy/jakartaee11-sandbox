@@ -94,7 +94,7 @@ public class ScheduleTest {
     @Order(1)
     public void testStartSchedule() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/invites"));
-        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).post(null)) {
+        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).method("POST")) {
             LOGGER.log(Level.INFO, "sending invites status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());
         }
