@@ -31,11 +31,13 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
@@ -51,7 +53,15 @@ public class ApplicationTest {
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
+        File[] extraJars = Maven
+                .resolver()
+                .loadPomFromFile("pom.xml")
+                .importCompileAndRuntimeDependencies()
+                .resolve("org.assertj:assertj-core")
+                .withTransitivity()
+                .asFile();
         WebArchive war = ShrinkWrap.create(WebArchive.class)
+                .addAsLibraries(extraJars)
                 .addPackage(RestActivator.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
