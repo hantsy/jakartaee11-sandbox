@@ -73,6 +73,9 @@
 		<module>hibernate</module>
 		<module>el</module>
 		<module>validation</module>
+        <module>cdi</module>
+        <module>concurrency</module>
+        <module>security</module>
     </modules>
 
     <dependencyManagement>
@@ -122,6 +125,13 @@
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
                 <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-bom</artifactId>
+                <version>${assertj.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

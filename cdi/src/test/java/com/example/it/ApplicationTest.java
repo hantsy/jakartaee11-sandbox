@@ -43,6 +43,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -97,8 +98,8 @@ public class ApplicationTest {
             appInfo = r.readEntity(ApplicationProperties.class);
         }
         LOGGER.log(Level.INFO, "Get application info result: {0}", appInfo);
-        assertNotNull(appInfo);
-        assertNotNull(appInfo.name());
-        assertNotNull(appInfo.description());
+        assertThat(appInfo).isNotNull();
+        assertThat(appInfo.name()).isEqualTo("test name");
+        assertThat(appInfo.description()).isEqualTo("test description");
     }
 }
