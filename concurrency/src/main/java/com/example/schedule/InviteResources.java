@@ -20,7 +20,6 @@ public class InviteResources {
     @Inject StandUpMeeting meeting;
 
     @POST
-    @Path("")
     public Response sendInvites() {
         return Response.ok(meeting.inviteToMeeting()).build();
     }
