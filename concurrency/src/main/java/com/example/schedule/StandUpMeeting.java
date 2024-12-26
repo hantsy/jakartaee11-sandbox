@@ -87,8 +87,8 @@ public class StandUpMeeting {
                 .toList();
 
         var result = CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-        result.join();
-        pool.shutdown();
+//        result.join();
+//        pool.shutdown();
         return result;
     }
 }
