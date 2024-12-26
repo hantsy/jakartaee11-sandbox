@@ -48,7 +48,7 @@ public class StandUpMeeting {
                             },
                             hours = 8
                     ), // daily standup
-                    @Schedule(daysOfMonth = {1}, hours = 12), // monthly meeting,
+                    // @Schedule(daysOfMonth = {1}, hours = {12}), // monthly meeting,
                     @Schedule(cron = "*/5 * * * * *") // every 5 seconds for test purpose
             }
     )
