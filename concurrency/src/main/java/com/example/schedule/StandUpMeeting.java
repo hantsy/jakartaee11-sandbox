@@ -48,47 +48,44 @@ public class StandUpMeeting {
                             },
                             hours = 8
                     ), // daily standup
-                    // @Schedule(daysOfMonth = {1}, hours = {12}), // monthly meeting,
+                    @Schedule(daysOfMonth = {1}, hours = {12}), // monthly meeting,
                     @Schedule(cron = "*/5 * * * * *") // every 5 seconds for test purpose
             }
     )
-    CompletableFuture<Void> inviteToMeeting() {
-
+    void inviteToMeeting() {
         LOGGER.log(Level.ALL, "running scheduled tasks....");
-
-        ForkJoinPool pool = new ForkJoinPool(
+        try (ForkJoinPool pool = new ForkJoinPool(
                 Runtime.getRuntime().availableProcessors(),
                 threadFactory,
                 (t, e) -> LOGGER.log(Level.INFO, "Thread: {0}, error: {1}", new Object[]{t.getName(), e.getMessage()}),
                 true
-        );
+        )) {
 
-        java.util.List<Callable<Void>> callables = members.keySet().stream()
-                .map(
-                        name -> (Callable<Void>) () -> {
-                            LOGGER.info("calling invite:" + name);
-                            invite.send(name, members.get(name));
-                            return null;
-                        }
-                )
-                .toList();
-
-        var futures = pool.invokeAll(callables)
-                .stream()
-                .map(
-                        r -> {
-                            try {
-                                return CompletableFuture.completedFuture(r.get(100, TimeUnit.MILLISECONDS));
-                            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                                throw new CompletionException(e);
+            var callables = members.keySet().stream()
+                    .map(
+                            name -> (Callable<Void>) () -> {
+                                LOGGER.info("calling invite:" + name);
+                                invite.send(name, members.get(name));
+                                return null;
                             }
-                        }
-                )
-                .toList();
+                    )
+                    .toList();
 
-        var result = CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-//        result.join();
-//        pool.shutdown();
-        return result;
+            var futures = pool.invokeAll(callables)
+                    .stream()
+                    .map(
+                            r -> {
+                                try {
+                                    return CompletableFuture.completedFuture(r.get(100, TimeUnit.MILLISECONDS));
+                                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                                    throw new CompletionException(e);
+                                }
+                            }
+                    )
+                    .toList();
+
+            var result = CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+            result.join();
+        }
     }
 }

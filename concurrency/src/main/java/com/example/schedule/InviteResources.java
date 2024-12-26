@@ -21,7 +21,8 @@ public class InviteResources {
 
     @POST
     public Response sendInvites() {
-        return Response.ok(meeting.inviteToMeeting()).build();
+        meeting.inviteToMeeting();
+        return Response.ok().build();
     }
 
     @GET
