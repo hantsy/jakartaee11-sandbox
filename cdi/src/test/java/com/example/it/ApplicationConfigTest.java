@@ -48,9 +48,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(ArquillianExtension.class)
-public class ApplicationTest {
+public class ApplicationConfigTest {
 
-    private final static Logger LOGGER = Logger.getLogger(ApplicationTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(ApplicationConfigTest.class.getName());
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
@@ -65,6 +65,7 @@ public class ApplicationTest {
                 .addAsLibraries(extraJars)
                 .addPackage(RestActivator.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+                .addAsResource("test-config.properties", "META-INF/microprofile-config.properties")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
         return war;
