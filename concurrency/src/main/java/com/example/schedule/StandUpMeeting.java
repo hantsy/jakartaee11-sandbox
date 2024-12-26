@@ -37,20 +37,20 @@ public class StandUpMeeting {
 
     @Asynchronous(
             executor = "java:comp/MyScheduleExecutor", // can not refer by Qualifier???
-//            runAt = {
-//                    @Schedule(
-//                            daysOfWeek = {
-//                                    DayOfWeek.MONDAY,
-//                                    DayOfWeek.TUESDAY,
-//                                    DayOfWeek.WEDNESDAY,
-//                                    DayOfWeek.THURSDAY,
-//                                    DayOfWeek.FRIDAY
-//                            },
-//                            hours = 8
-//                    ), // daily standup
-//                    @Schedule(daysOfMonth = {1}, hours = {12}), // monthly meeting,
-//                    @Schedule(cron = "*/5 * * * * *") // every 5 seconds for test purpose
-//            }
+            runAt = {
+                    @Schedule(
+                            daysOfWeek = {
+                                    DayOfWeek.MONDAY,
+                                    DayOfWeek.TUESDAY,
+                                    DayOfWeek.WEDNESDAY,
+                                    DayOfWeek.THURSDAY,
+                                    DayOfWeek.FRIDAY
+                            },
+                            hours = 8
+                    ), // daily standup
+                    @Schedule(daysOfMonth = {1}, hours = {12}), // monthly meeting,
+                    @Schedule(cron = "*/5 * * * * *") // every 5 seconds for test purpose
+            }
     )
     void inviteToMeeting() {
         LOGGER.log(Level.ALL, "running scheduled tasks....");
