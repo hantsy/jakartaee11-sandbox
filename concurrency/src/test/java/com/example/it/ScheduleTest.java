@@ -20,12 +20,9 @@ package com.example.it;
 
 import com.example.AsyncConfig;
 import com.example.MyQualifier;
-import com.example.schedule.Invite;
 import com.example.schedule.StandUpMeeting;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -37,9 +34,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
@@ -53,6 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(ArquillianExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ScheduleTest {
 
     private final static Logger LOGGER = Logger.getLogger(ScheduleTest.class.getName());
@@ -82,6 +78,7 @@ public class ScheduleTest {
     @BeforeEach
     public void before() {
         LOGGER.log(Level.INFO, "before running tests.");
+        LOGGER.log(Level.INFO, "baseURL: {0}", new Object[]{baseUrl.toExternalForm()});
         client = ClientBuilder.newClient();
     }
 
@@ -92,19 +89,26 @@ public class ScheduleTest {
 
     @Test
     @RunAsClient
-    public void testSchedule() throws Exception {
+    @Order(1)
+    public void testStartSchedule() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/invites"));
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).post(null)) {
             LOGGER.log(Level.INFO, "sending invites status: {0}", r.getStatus());
-            assertEquals(201, r.getStatus());
+            assertEquals(200, r.getStatus());
         }
+    }
 
+    @Test
+    @RunAsClient
+    @Order(2)
+    public void testInvitedNames() throws Exception {
         Thread.sleep(6_000);
-
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/invites"));
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "get invited names status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());
-            var names = r.readEntity(new GenericType<List<String>>(){});
+            var names = r.readEntity(new GenericType<List<String>>() {
+            });
             LOGGER.log(Level.INFO, "invited names: {0}", names);
             assertThat(names).isNotEmpty();
         }
