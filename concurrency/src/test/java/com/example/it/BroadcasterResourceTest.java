@@ -18,12 +18,23 @@ under the License.
  */
 package com.example.it;
 
-import com.example.ApplicationProperties;
-import com.example.RestActivator;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.sse.SseEventSource;
+
+import com.example.BroadcasterResource;
+import com.example.RestActivator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
@@ -37,42 +48,34 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(ArquillianExtension.class)
-public class ApplicationConfigTest {
+public class BroadcasterResourceTest {
 
-    private final static Logger LOGGER = Logger.getLogger(ApplicationConfigTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(BroadcasterResourceTest.class.getName());
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
         File[] extraJars = Maven
                 .resolver()
                 .loadPomFromFile("pom.xml")
-                .importCompileAndRuntimeDependencies()
+                //.importCompileAndRuntimeDependencies()
                 .resolve("org.assertj:assertj-core")
                 .withTransitivity()
                 .asFile();
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        var war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
-                .addPackage(RestActivator.class.getPackage())
-                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
-                .addAsResource("test-config.properties", "META-INF/microprofile-config.properties")
+                .addClass(BroadcasterResource.class)
+                .addClass(RestActivator.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        LOGGER.log(Level.INFO, war.toString(true));
+        LOGGER.log(Level.INFO, "war deployment: {0}", new Object[]{war.toString(true)});
         return war;
     }
 
     @ArquillianResource
-    URL baseUrl;
+    private URL baseUrl;
 
     Client client;
 
@@ -80,28 +83,47 @@ public class ApplicationConfigTest {
     public void before() {
         LOGGER.log(Level.INFO, "baseURL: {0}", new Object[]{baseUrl.toExternalForm()});
         client = ClientBuilder.newClient();
-        //client.register(JsonbContextResolver.class);
-        LOGGER.log(Level.INFO, "before running tests.");
     }
 
     @AfterEach
-    public void after() throws Exception {
-        LOGGER.log(Level.INFO, "after running tests.");
+    public void after() {
+        client.close();
     }
 
     @Test
     @RunAsClient
-    public void testApplicationInfo() {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/app/info"));
-        ApplicationProperties appInfo;
-        try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
-            LOGGER.log(Level.INFO, "Get application info status: {0}", r.getStatus());
-            assertEquals(200, r.getStatus());
-            appInfo = r.readEntity(ApplicationProperties.class);
+    public void testSendMessages() throws Exception {
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/broadcast"));
+        AtomicReference<String> eventData = new AtomicReference<>();
+        var latch = new CountDownLatch(1);
+        try (SseEventSource eventSource = SseEventSource.target(target).build()) {
+
+            // EventSource#register(Consumer<InboundSseEvent>)
+            // Registered event handler will print the received message.
+            eventSource.register(inboundSseEvent -> {
+                        var data = inboundSseEvent.readData();
+                        LOGGER.log(Level.INFO, "received event data: {0}", new Object[]{data});
+                        eventData.set(data);
+                        latch.countDown();
+                    },
+                    Throwable::printStackTrace);
+
+            // Subscribe to the event stream.
+            eventSource.open();
+
+            // send messages
+            try (Response r = target.request().post(Entity.text("hello"))) {
+                LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
+                assertEquals(200, r.getStatus());
+            }
+
+            latch.await(1000, TimeUnit.MILLISECONDS);
+
+            LOGGER.log(Level.INFO, "message from broadcaster: {0}", eventData.get());
+            assertThat(eventData.get()).isNotNull();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        LOGGER.log(Level.INFO, "Get application info result: {0}", appInfo);
-        assertThat(appInfo).isNotNull();
-        assertThat(appInfo.name()).isEqualTo("test name");
-        assertThat(appInfo.description()).isEqualTo("test description");
     }
+
 }
