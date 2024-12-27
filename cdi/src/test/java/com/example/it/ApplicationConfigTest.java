@@ -81,11 +81,12 @@ public class ApplicationConfigTest {
         LOGGER.log(Level.INFO, "baseURL: {0}", new Object[]{baseUrl.toExternalForm()});
         client = ClientBuilder.newClient();
         //client.register(JsonbContextResolver.class);
+        LOGGER.log(Level.INFO, "before running tests.");
     }
 
     @AfterEach
     public void after() throws Exception {
-        LOGGER.log(Level.INFO, "base url: {0}", baseUrl);
+        LOGGER.log(Level.INFO, "after running tests.");
     }
 
     @Test
