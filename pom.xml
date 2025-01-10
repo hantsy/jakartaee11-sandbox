@@ -52,7 +52,7 @@
 
         <!-- Glassfish server -->
         <glassfish.version>8.0.0-M9</glassfish.version>
-        <jersey.version>4.0.0-M1</jersey.version>
+        <jersey.version>4.0.0-M2</jersey.version>
         <eclipselink.version>5.0.0-B03</eclipselink.version>
         <arquillian-glassfish-jakarta.version>7.0.10</arquillian-glassfish-jakarta.version>
 
