@@ -27,9 +27,13 @@ target/
 
 installs/
 
-*.impl
-
+# IDEA
 .idea
+*.iml
+
+# eclipse
 .project
 .classpath
 .factorypath
+
+
