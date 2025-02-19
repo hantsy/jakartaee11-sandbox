@@ -105,7 +105,7 @@
                         <annotationProcessorPath>
                             // add hibernate model gen apt
                             <groupId>org.hibernate.orm</groupId>
-                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <artifactId>hibernate-processor</artifactId>
                             <version>${hibernate.version}</version>
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
