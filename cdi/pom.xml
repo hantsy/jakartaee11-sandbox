@@ -52,7 +52,7 @@ under the License.
         <dependency>
             <groupId>io.helidon.microprofile.config</groupId>
             <artifactId>helidon-microprofile-config</artifactId>
-            <version>4.1.6</version>
+            <version>4.2.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.helidon.common/helidon-common-types -->
         <dependency>
