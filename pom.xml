@@ -53,7 +53,7 @@
         <!-- Glassfish server -->
         <glassfish.version>8.0.0-M10</glassfish.version>
         <jersey.version>4.0.0-M2</jersey.version>
-        <eclipselink.version>5.0.0-B03</eclipselink.version>
+        <eclipselink.version>5.0.0-B06</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
 
         <!-- WildFly -->
