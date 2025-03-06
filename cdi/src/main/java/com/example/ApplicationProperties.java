@@ -12,4 +12,7 @@ public record ApplicationProperties(
         @ConfigProperty(name = "server.host", defaultValue = "localhost")
         String host
 ) {
+
+        public ApplicationProperties() {
+        }
 }
