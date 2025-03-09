@@ -4,6 +4,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.config.inject.ConfigProperties;
 
 @RequestScoped
@@ -11,11 +12,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperties;
 public class ApplicationResource {
 
     @Inject
-    @ConfigProperties
-    ApplicationProperties appInfo;
+    ApplicationService applicationService;
 
     @GET
-    public ApplicationProperties info() {
-        return appInfo;
+    public String info(@QueryParam("name") String name) {
+        return applicationService.hello(name);
     }
 }

@@ -38,4 +38,13 @@ public class ApplicationProperties {
     public void setHost(String host) {
         this.host = host;
     }
+
+    @Override
+    public String toString() {
+        return "ApplicationProperties{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", host='" + host + '\'' +
+                '}';
+    }
 }

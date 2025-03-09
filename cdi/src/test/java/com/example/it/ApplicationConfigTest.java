@@ -92,16 +92,15 @@ public class ApplicationConfigTest {
     @Test
     @RunAsClient
     public void testApplicationInfo() {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/app/info"));
-        ApplicationProperties appInfo;
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/app/info?name=Hantsy"));
+        String appInfo;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get application info status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());
-            appInfo = r.readEntity(ApplicationProperties.class);
+            appInfo = r.readEntity(String.class);
         }
         LOGGER.log(Level.INFO, "Get application info result: {0}", appInfo);
         assertThat(appInfo).isNotNull();
-        assertThat(appInfo.name()).isEqualTo("test name");
-        assertThat(appInfo.description()).isEqualTo("test description");
+        assertThat(appInfo).isEqualTo("Hantsy");
     }
 }
