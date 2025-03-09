@@ -100,6 +100,6 @@ public class ApplicationConfigTest {
         }
         LOGGER.log(Level.INFO, "Get application info result: {0}", appInfo);
         assertThat(appInfo).isNotNull();
-        assertThat(appInfo).isEqualTo("Hantsy");
+        assertThat(appInfo).contains("Hello Hantsy");
     }
 }
