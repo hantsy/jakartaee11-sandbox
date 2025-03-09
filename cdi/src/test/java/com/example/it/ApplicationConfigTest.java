@@ -64,7 +64,6 @@ public class ApplicationConfigTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class)
                 .addAsLibraries(extraJars)
                 .addPackage(RestActivator.class.getPackage())
-                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsResource("test-config.properties", "META-INF/microprofile-config.properties")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
@@ -92,7 +91,7 @@ public class ApplicationConfigTest {
     @Test
     @RunAsClient
     public void testApplicationInfo() {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/app/info?name=Hantsy"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/app?name=Hantsy"));
         String appInfo;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get application info status: {0}", r.getStatus());
