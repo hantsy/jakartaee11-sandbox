@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperties;
 
 @ApplicationScoped
 public record ApplicationService(ApplicationProperties properties) {
@@ -13,7 +14,7 @@ public record ApplicationService(ApplicationProperties properties) {
     }
 
     @Inject
-    public ApplicationService(ApplicationProperties properties) {
+    public ApplicationService(@ConfigProperties ApplicationProperties properties) {
         this.properties = properties;
     }
     
