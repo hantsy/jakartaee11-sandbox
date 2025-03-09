@@ -5,9 +5,10 @@ import jakarta.inject.Singleton;
 import org.eclipse.microprofile.config.inject.ConfigProperties;
 
 @Singleton
-public record ApplicationService(ApplicationProperties properties) {
+public record ApplicationService(@ConfigProperties ApplicationProperties properties) {
 
     @Inject
+    // see: https://github.com/jakartaee/cdi/issues/832
     public ApplicationService {
     }
 
