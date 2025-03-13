@@ -18,6 +18,10 @@ public class Copy {
     Copy() {
     }
 
+    public CopyId id() {
+        return this.id;
+    }
+
     public Copy(BookId bookId, BarCode barCode) {
         Objects.requireNonNull(bookId, "bookId must not be null");
         Objects.requireNonNull(barCode, "barCode must not be null");
@@ -33,5 +37,9 @@ public class Copy {
 
     public void makeAvailable() {
         this.available = true;
+    }
+
+    public boolean isAvailable() {
+        return this.available;
     }
 }

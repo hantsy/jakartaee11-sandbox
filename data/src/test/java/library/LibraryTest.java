@@ -18,28 +18,34 @@ under the License.
  */
 package library;
 
-import com.example.Comment;
-import com.example.CommentRepository;
-import com.example.Post;
-import com.example.PostRepository;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
+import library.catalog.domain.*;
+import library.lending.application.RentBookUseCase;
+import library.lending.application.ReturnBookUseCase;
+import library.lending.domain.Loan;
+import library.lending.domain.LoanRepository;
+import library.lending.domain.UserId;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.AfterEach;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.File;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(ArquillianExtension.class)
 public class LibraryTest {
@@ -48,7 +54,15 @@ public class LibraryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
+        File[] extraJars = Maven
+                .resolver()
+                .loadPomFromFile("pom.xml")
+                .importCompileAndRuntimeDependencies()
+                .resolve("org.assertj:assertj-core", "org.awaitility:awaitility")
+                .withTransitivity()
+                .asFile();
         WebArchive war = ShrinkWrap.create(WebArchive.class)
+                .addAsLibraries(extraJars)
                 .addPackages(true, "library")
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -60,22 +74,26 @@ public class LibraryTest {
     private EntityManager em;
 
     @Inject
-    private PostRepository postRepository;
+    private UserTransaction ux;
 
     @Inject
-    CommentRepository commentRepository;
+    private BookRepository bookRepository;
 
     @Inject
-    UserTransaction ux;
+    private CopyRepository copyRepository;
+
+    @Inject
+    private RentBookUseCase rentBookUseCase;
+
+    @Inject
+    private ReturnBookUseCase returnBookUseCase;
+
+    @Inject
+    private LoanRepository loanRepository;
 
     private void startTx() throws Exception {
         ux.begin();
         em.joinTransaction();
-    }
-
-    @AfterEach
-    public void after() throws Exception {
-        endTx();
     }
 
     private void endTx() throws Exception {
@@ -89,40 +107,66 @@ public class LibraryTest {
         }
     }
 
-    @Test
-    public void testEmployeeCurd() throws Exception {
-        var post = new Post();
-        post.setTitle("My Post");
-        post.setContent("My Post Content");
-        startTx();
-        em.persist(post);
-        endTx();
-        assertNotNull(post.getId());
-
-        var found = postRepository.findById(post.getId());
-        assertTrue(found.isPresent());
-        assertEquals(post.getTitle(), found.get().getTitle());
-
-        postRepository.delete(found.get());
-        found = postRepository.findById(post.getId());
-        assertFalse(found.isPresent());
-
-        var comment = new Comment();
-        comment.setContent("My Comment");
-        comment.setPost(post);
-        startTx();
-        em.persist(comment);
-        endTx();
-        assertNotNull(comment.getId());
-
-        var foundComment = commentRepository.findById(comment.getId());
-        assertTrue(foundComment.isPresent());
-        assertEquals(comment.getContent(), foundComment.get().getContent());
-
-        commentRepository.delete(foundComment.get());
-        foundComment = commentRepository.findById(comment.getId());
-        assertFalse(foundComment.isPresent());
+    private void withTx(Runnable action) throws Exception {
+        try {
+            startTx();
+            action.run();
+            endTx();
+        } catch (Exception e) {
+            ux.rollback();
+            throw new RuntimeException(e);
+        }
     }
 
+    @Test
+    public void testLibraryCrud() throws Exception {
+        withTx(() -> {
+            // Add a new Book
+            Book book = new Book("Effective Java", new Isbn("978-0134685991"));
+            bookRepository.save(book);
 
+            // Add some copies of the book
+            Copy copy1 = new Copy(book.getId(), new BarCode("BC001"));
+            Copy copy2 = new Copy(book.getId(), new BarCode("BC002"));
+            copyRepository.save(copy1);
+            copyRepository.save(copy2);
+        });
+
+        UserId userId = new UserId();
+
+        withTx(() -> {
+            var allCopies = copyRepository.findAll().toList();
+            assertThat(allCopies.size()).isEqualTo(2);
+            // Rent a book
+            CopyId copyId = allCopies.getFirst().id();
+            rentBookUseCase.execute(new library.lending.domain.CopyId(copyId.id()), userId);
+
+            // Verify that if the book copy available
+            await().atMost(5000, TimeUnit.MILLISECONDS).untilAsserted(() -> {
+                copyRepository.findById(copyId).ifPresent(
+                        copy -> assertThat(copy.isAvailable()).isFalse()
+                );
+
+                // rent again should throw exception
+                assertThrows(Exception.class, () -> rentBookUseCase.execute(new library.lending.domain.CopyId(copyId.id()), userId));
+            });
+        });
+
+        withTx(() -> {
+            var allLoans = loanRepository.findAll().toList();
+            assertThat(allLoans.size()).isEqualTo(1);
+
+            // Retrieve Loan and Return the book
+            Loan loan = loanRepository.findByIdOrThrow(allLoans.getFirst().id()); // Update this to the actual LoanID
+            returnBookUseCase.execute(loan.id());
+
+            // Verify that the book is now available
+            await().atMost(5000, TimeUnit.MILLISECONDS).untilAsserted(() -> {
+                copyRepository.findById(new library.catalog.domain.CopyId(loan.copyId().id())).ifPresent(
+                        copy -> assertThat(copy.isAvailable()).isTrue()
+                );
+
+            });
+        });
+    }
 }

@@ -26,6 +26,10 @@ public class Loan {
     Loan() {
     }
 
+    public LoanId id() {
+        return loanId;
+    }
+
     public CopyId copyId() {
         return this.copyId;
     }
