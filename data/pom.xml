@@ -36,7 +36,11 @@ under the License.
 
     <name>data-examples</name>
     <description>Jakarta EE 11 Sandbox: Jakarta Data 1.0 Examples</description>
-    <properties></properties>
+    <properties>
+        <commons-validator.version>1.9.0</commons-validator.version>
+        <lombok.version>1.18.36</lombok.version>
+        <hibernate.version>6.6.7.Final</hibernate.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -44,9 +48,14 @@ under the License.
             <artifactId>jakarta.jakartaee-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>${commons-validator.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.36</version>
+            <version>${lombok.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
