@@ -6,8 +6,8 @@ import library.common.UseCase;
 
 @UseCase
 public class AddBookToCatalogUseCase {
-    private final BookSearchService bookSearchService;
-    private final BookRepository bookRepository;
+    private BookSearchService bookSearchService;
+    private BookRepository bookRepository;
 
     // required by CDI spec
     AddBookToCatalogUseCase() {

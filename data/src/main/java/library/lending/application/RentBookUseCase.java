@@ -5,10 +5,14 @@ import jakarta.inject.Inject;
 import library.common.UseCase;
 import library.lending.domain.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @UseCase
 public class RentBookUseCase {
-    private final LoanRepository loanRepository;
-    private final Event<LoanCreated> loanCreatedEvent;
+    private static final Logger LOGGER = Logger.getLogger(RentBookUseCase.class.getName());
+    private LoanRepository loanRepository;
+    private Event<LoanCreated> loanCreatedEvent;
 
     public RentBookUseCase() {
     }
@@ -22,6 +26,8 @@ public class RentBookUseCase {
     public void execute(CopyId copyId, UserId userId) {
         // TODO: ensure rented copy is not rented again
         loanRepository.save(new Loan(copyId, userId, loanRepository));
+
+        LOGGER.log(Level.INFO, "firing LoanCreated with copy id = " + copyId);
         loanCreatedEvent.fireAsync(new LoanCreated(copyId));
     }
 }

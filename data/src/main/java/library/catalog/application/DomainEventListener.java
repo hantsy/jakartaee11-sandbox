@@ -9,9 +9,13 @@ import library.catalog.domain.CopyRepository;
 import library.lending.domain.LoanClosed;
 import library.lending.domain.LoanCreated;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @ApplicationScoped
 public class DomainEventListener {
-    private final CopyRepository copyRepository;
+    private static final Logger LOGGER = Logger.getLogger(DomainEventListener.class.getName());
+    private CopyRepository copyRepository;
 
     public DomainEventListener() {
     }
@@ -22,6 +26,7 @@ public class DomainEventListener {
     }
 
     public void onLoanCreated(@ObservesAsync LoanCreated event) {
+        LOGGER.log(Level.INFO, "handling LoanCreated:{0}", new Object[]{event});
         Copy copy = copyRepository.findById(new CopyId(event.copyId().id())).orElseThrow();
         copy.makeUnavailable();
         copyRepository.save(copy);
@@ -29,6 +34,7 @@ public class DomainEventListener {
 
 
     public void onLoanClosed(@ObservesAsync LoanClosed event) {
+        LOGGER.log(Level.INFO, "handling LoanClosed:{0}", new Object[]{event});
         Copy copy = copyRepository.findById(new CopyId(event.copyId().id())).orElseThrow();
         copy.makeAvailable();
         copyRepository.save(copy);

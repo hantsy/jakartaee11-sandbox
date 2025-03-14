@@ -10,7 +10,7 @@ import library.catalog.domain.CopyRepository;
 
 @UseCase
 public class RegisterBookCopyUseCase {
-    private final CopyRepository copyRepository;
+    private CopyRepository copyRepository;
 
     // required by CDI spec
     RegisterBookCopyUseCase() {
