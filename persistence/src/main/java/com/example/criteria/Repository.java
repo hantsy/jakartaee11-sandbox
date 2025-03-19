@@ -1,4 +1,4 @@
-package com.example.spec;
+package com.example.criteria;
 
 import jakarta.persistence.EntityManager;
 
