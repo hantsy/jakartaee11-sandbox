@@ -25,7 +25,6 @@ public class StandUpMeeting {
     );
 
     @Inject
-    @MyQualifier
     ManagedThreadFactory threadFactory;
 
     @Inject
