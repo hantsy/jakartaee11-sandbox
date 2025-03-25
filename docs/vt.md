@@ -54,7 +54,7 @@ ManagedThreadFactory threadFactory;
 ManagedScheduledExecutorService scheduledExecutor;
 ```
 
-Alternatively, Jakarta Concurrency 3.1 allows managed resources to be injected using custom CDI `@Qualifier` annotations. When specifying the `qualifiers` attribute on the resource annotations, these resources can be injected with type-safe `@Qualifer`s in CDI beans like other normal CDI beans. 
+Alternatively, Jakarta Concurrency 3.1 allows managed resources to be injected using CDI `@Inject`. To differentiate the above virtual thread aware managed resources from the built-in managed resources, you can use custom CDI `@Qualifier` annotations to qualify them. When specifying the `qualifiers` attribute on the resource annotations, these resources can be injected with type-safe `@Qualifer' in CDI beans like other normal CDI beans. 
 
 For example, create a custom `@Qualifier` annotation:
 
