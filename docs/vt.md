@@ -2,12 +2,12 @@
 
 Java 21 introduces Virtual Threads, a lightweight threading solution that allows applications to create a large number of concurrent threads with minimal memory consumption. Unlike Platform Threads, which are resource-intensive and heavily dependent on system processor cores, Virtual Threads are designed to be efficient and scalable. This new feature significantly enhances the concurrency capabilities of Java applications, making it easier to handle high-throughput workloads with improved performance and reduced overhead.
 
-Jakarta EE 11 sets Java 17 as the baseline and also requires its implementations to align with Java 21. Jakarta Concurrency 3.1 introduces support for virtual threads, enhancing the concurrency capabilities of Jakarta EE applications.
+Jakarta EE 11 sets Java 17 as the baseline but it also requires all implementations to support Java 21. To align with Java 21, Jakarta Concurrency 3.1 introduces support for virtual threads, enhancing the concurrency capabilities of Jakarta EE applications.
 
-In Jakarta Concurrency 3.1, a new attribute `virtual` is added to existing annotations such as `@ManagedExecutorDefinition`, `@ManagedScheduledExecutorDefinition` and `@ManagedThreadFactoryDefinition`. This attribute specifies whether to create the managed resources using virtual threads. By default, `virtual` is set to `false`. To enable virtual thread support, simply set it to `true`.
+In Jakarta Concurrency 3.1, a new attribute `virtual` is added to existing annotations such as `@ManagedExecutorDefinition`, `@ManagedScheduledExecutorDefinition`, and `@ManagedThreadFactoryDefinition`. This attribute specifies whether to create the managed resources using virtual threads. By default, the virtual thread support is not enabled (`virtual=false`). To enable it, simply set the value of the `virtual` attribute to `true`.
 
 > [!NOTE]
-> To leverage Virtual Threads in Jakarta EE, ensure your applications are running on Java 21 or later with a Jakarta EE 11 implementation.
+> To leverage Virtual Threads in Jakarta EE, ensure your applications are running on a Jakarta EE 11 implementation with a Java 21+ runtime.
 
 For example, declare virtual thread-based resources:
 
@@ -54,7 +54,7 @@ ManagedThreadFactory threadFactory;
 ManagedScheduledExecutorService scheduledExecutor;
 ```
 
-Alternatively, Jakarta Concurrency 3.1 allows managed resources to be injected using custom CDI `@Qualifier` annotations. By adding the `qualifiers` attribute to resource declarations, these resources become CDI beans, enabling easy injection into CDI components.
+Alternatively, Jakarta Concurrency 3.1 allows managed resources to be injected using custom CDI `@Qualifier` annotations. When specifying the `qualifiers` attribute on the resource annotations, these resources can be injected with type-safe `@Qualifer`s in CDI beans like other normal CDI beans. 
 
 For example, create a custom `@Qualifier` annotation:
 
@@ -143,4 +143,4 @@ try (var scope = new StructuredTaskScope("vt", threadFactory)) {
 }
 ```
 
-While virtual threads are not a silver bullet for all performance issues, they can significantly enhance overall application performance by increasing throughput in scenarios such as database calls, handling HTTP interactions, and more.
+While virtual threads are not a silver bullet for all performance issues, they can significantly enhance overall application performance by increasing throughput in some scenarios, such as database calls, handling HTTP interactions, etc.
