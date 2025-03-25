@@ -38,7 +38,7 @@
         <!-- Hibernate 7.0.0 or higher implements JPA 3.2 -->
         <hibernate.version>7.0.0.Beta5</hibernate.version>
         <h2.version>2.3.232</h2.version>
-	<hibernate-validator.version>9.0.0.Beta3</hibernate-validator.version>
+	<hibernate-validator.version>9.0.0.CR1</hibernate-validator.version>
         <expressly.version>6.0.0-M2</expressly.version>
 
         <!-- Arquillian BOM -->
