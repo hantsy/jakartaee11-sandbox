@@ -1,4 +1,4 @@
-# Virtual Thread in Jakarta EE 11
+# Virtual Thread Support in Jakarta EE 11
 
 Java 21 introduces Virtual Threads, a lightweight threading solution that allows applications to create a large number of concurrent threads with minimal memory consumption. Unlike Platform Threads, which are resource-intensive and heavily dependent on system processor cores, Virtual Threads are designed to be efficient and scalable. This new feature significantly enhances the concurrency capabilities of Java applications, making it easier to handle high-throughput workloads with improved performance and reduced overhead.
 
