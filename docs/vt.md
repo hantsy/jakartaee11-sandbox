@@ -4,7 +4,7 @@ Java 21 introduces Virtual Threads, a lightweight threading solution that allows
 
 Jakarta EE 11 sets Java 17 as the baseline but it also requires all implementations to support Java 21. To align with Java 21, Jakarta Concurrency 3.1 introduces support for virtual threads, enhancing the concurrency capabilities of Jakarta EE applications.
 
-In Jakarta Concurrency 3.1, a new attribute `virtual` is added to existing annotations such as `@ManagedExecutorDefinition`, `@ManagedScheduledExecutorDefinition`, and `@ManagedThreadFactoryDefinition`. This attribute specifies whether to create the managed resources using virtual threads. By default, the virtual thread support is not enabled, the `virtual` attribute is implicit `false`. To enable it, simply set the value of the `virtual` attribute to `true`.
+In Jakarta Concurrency 3.1, a new attribute `virtual` is added to existing annotations such as `@ManagedExecutorDefinition`, `@ManagedScheduledExecutorDefinition`, and `@ManagedThreadFactoryDefinition`. This attribute specifies whether to create the managed resources using virtual threads. By default, the virtual thread support is not enabled, the `virtual` attribute is `false` implicitly. To enable it, explicitly set the value of the `virtual` attribute to `true`.
 
 > [!NOTE]
 > To leverage Virtual Threads in Jakarta EE, ensure your applications are running on a Jakarta EE 11 implementation with a Java 21+ runtime.
