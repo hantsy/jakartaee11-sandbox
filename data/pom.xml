@@ -38,7 +38,7 @@ under the License.
     <description>Jakarta EE 11 Sandbox: Jakarta Data 1.0 Examples</description>
     <properties>
         <commons-validator.version>1.9.0</commons-validator.version>
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <hibernate.version>6.6.11.Final</hibernate.version>
     </properties>
 
