@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
     <artifactId>jakartaee11-sandbox-parent</artifactId>
@@ -34,32 +34,32 @@
         <slf4j.version>2.0.17</slf4j.version>
         <logback.version>1.5.18</logback.version>
         <lombok.version>1.18.36</lombok.version>
-	    
+
         <!-- Hibernate 7.0.0 or higher implements JPA 3.2 -->
         <hibernate.version>7.0.0.Beta5</hibernate.version>
         <h2.version>2.3.232</h2.version>
-	<hibernate-validator.version>9.0.0.CR1</hibernate-validator.version>
+        <hibernate-validator.version>9.0.0.CR1</hibernate-validator.version>
         <expressly.version>6.0.0-M2</expressly.version>
 
         <!-- Arquillian BOM -->
         <arquillian-bom.version>1.9.4.Final</arquillian-bom.version>
-    	<!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
-    	<arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
-    	<shrinkwrap-resolver-bom.version>3.3.4</shrinkwrap-resolver-bom.version>    
+        <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
+        <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
+        <shrinkwrap-resolver-bom.version>3.3.4</shrinkwrap-resolver-bom.version>
         <junit-jupiter.version>5.12.1</junit-jupiter.version>
         <assertj.version>3.27.3</assertj.version>
         <awaitility.version>4.3.0</awaitility.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M10</glassfish.version>
+        <glassfish.version>8.0.0-M11</glassfish.version>
         <jersey.version>4.0.0-M2</jersey.version>
-        <eclipselink.version>5.0.0-B06</eclipselink.version>
+        <eclipselink.version>5.0.0-B07</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
 
         <!-- WildFly -->
-        <wildfly.version>34.0.0.Final</wildfly.version>
+        <wildfly.version>36.0.0.Beta1</wildfly.version>
         <wildfly-maven-plugin.version>5.1.2.Final</wildfly-maven-plugin.version>
-        <resteasy.version>6.2.12.Final</resteasy.version>
+        <resteasy.version>7.0.0.Beta1</resteasy.version>
 
         <!-- by default skip tests -->
         <skip.unit.tests>false</skip.unit.tests>
@@ -67,12 +67,12 @@
     </properties>
     <modules>
         <module>faces</module>
-		<module>rest</module>
-		<module>persistence</module>
-		<module>data</module>
-		<module>hibernate</module>
-		<module>el</module>
-		<module>validation</module>
+        <module>rest</module>
+        <module>persistence</module>
+        <module>data</module>
+        <module>hibernate</module>
+        <module>el</module>
+        <module>validation</module>
         <module>cdi</module>
         <module>concurrency</module>
         <module>security</module>
@@ -107,20 +107,20 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-	        <dependency>
+            <dependency>
                 <groupId>org.jboss.arquillian.jakarta</groupId>
                 <artifactId>arquillian-jakarta-bom</artifactId>
                 <version>${arquillian-jakarta-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>	
-    	    <dependency>
+            </dependency>
+            <dependency>
                 <groupId>org.jboss.shrinkwrap.resolver</groupId>
                 <artifactId>shrinkwrap-resolver-bom</artifactId>
                 <version>${shrinkwrap-resolver-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
-    	    </dependency>	
+            </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
