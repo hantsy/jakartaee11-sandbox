@@ -1,7 +1,9 @@
-# Jakarta EE 11 正式发布：Java 企业开发的新时代
+# Jakarta EE 11 Web Profile 正式发布：Java 企业开发的新时代
 
-在全球 Java 开发者的期待中，Jakarta EE 11 于近日正式发布。这一版本标志着企业级 Java 开发框架进入了全新的阶段，它不仅带来了更强大的功能支持，还为开发者提供了更加高效、现代化的开发体验。
-截止发稿时, Jakarta Platform 代码库已经加上了正式版本 Tag，这标志着继 Core Profile, Web Profile 发布后，Jakarta EE 11 规范所有版本已经完成。
+在全球 Java 开发者的期待中，Jakarta EE 11 Web Profile 于近日正式发布。这一版本标志着企业级 Java 开发框架进入了全新的阶段，它不仅带来了更强大的功能支持，还为开发者提供了更加高效、现代化的开发体验。
+
+> [!NOTE]
+> 截止发稿时, Jakarta Platform 代码库已经加上了正式版本 Tag，这标志着继 Core Profile, Web Profile 发布后，Jakarta EE 11 规范所有版本基本完成，在接下来时间里接受开发社区的验证反馈，等待最后正式发布。
 
 ## 持续进化的 Jakarta EE
 
