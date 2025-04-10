@@ -9,7 +9,7 @@
 
 - **Jakarta EE 8 和 9**：主要完成了从 `javax` 到 `jakarta` 命名空间的迁移。
 - **Jakarta EE 10**：引入了全新的 Core Profile， 强化 CDI 的核心地位，为生态系统注入了活力。Spring 6 已经向这一版本对齐。
-- **Jakarta EE 11**：在开发者体验优化上更进一步，同时将 Java 17 设为基础版本，并支持 Java 21 的运行时环境。
+- **Jakarta EE 11**：在开发者体验优化上更进一步，同时将 Java 17 设为基础版本，并支持 Java 21 的运行时环境。正在开发的 Spring 7 会跟进这一版本。
 
 ## 亮点抢先看
 
