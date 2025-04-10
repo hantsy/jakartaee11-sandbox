@@ -17,7 +17,7 @@
 
 作为 Jakarta EE 11 的重磅新增内容，**Jakarta Data** 专注于数据处理领域。经过两年的孵化和开发，这一规范终于正式加入 Jakarta EE 的生态体系，填补了企业级 Java 开发在数据处理方面的空白。
 
-更多详情请访问 [Jakarta Data 规范文档](https://jakarta.ee/specifications/data/)。
+更多详情请阅读 [Jakarta Data 规范文档](https://jakarta.ee/specifications/data/)。
 
 ### Java `record` 类型全面支持
 
@@ -46,4 +46,4 @@ Jakarta EE 11 的发布不仅是企业级 Java 的一小步，更是开发者社
 * JakartaOne：[https://jakartaone.org](https://jakartaone.org)，敬请关注 [JakartaONE 2025 LiveStream](https://jakartaone.org/2025/) 和 [中文社区专场](https://jakartaone.org/2025/chinese/)
 * Slack: JakartaEE Development
 
-➡️➡️➡️  如果你也对 Jakarta EE 的未来充满期待，不妨参与官方的 [开发者调查问卷](https://www.surveymonkey.com/r/TanjaJakartaEE)，为 Jakarta EE 的未来添砖加瓦！
+如果你也对 Jakarta EE 的未来充满期待，不妨参与官方的 [开发者调查问卷](https://www.surveymonkey.com/r/TanjaJakartaEE)，为 Jakarta EE 的未来添砖加瓦！
