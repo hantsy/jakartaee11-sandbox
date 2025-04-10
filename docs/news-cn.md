@@ -42,8 +42,8 @@ Jakarta EE 11 将 Java 的 `record` 类型提升为一等公民，大大简化�
 ## 加入 Jakarta EE 的发展之旅
 
 Jakarta EE 的发布不仅是企业级 Java 的一小步，更是开发者社区的一大步。更多 Jakarta EE 信息，请关注：
-* 官方网站：https://jakarta.ee
-* JakartaOne：https://jakartaone.org，敬请关注 [JakartaONE 2025 LiveStream](https://jakartaone.org/2025/) 和[中文专场](https://jakartaone.org/2025/chinese/)
+* 官方网站：[https://jakarta.ee](https://jakarta.ee)
+* JakartaOne：[https://jakartaone.org](https://jakartaone.org)，敬请关注 [JakartaONE 2025 LiveStream](https://jakartaone.org/2025/) 和 [中文社区专场](https://jakartaone.org/2025/chinese/)
 * Slack: JakartaEE Development
 
 如果你也对 Jakarta EE 的未来充满期待，不妨参与官方的 [开发者调查问卷](https://www.surveymonkey.com/r/TanjaJakartaEE)，为 Jakarta EE 的未来添砖加瓦！
