@@ -17,7 +17,7 @@
 
 作为 Jakarta EE 11 的重磅新增内容，**Jakarta Data** 专注于数据处理领域。经过两年的孵化和开发，这一规范终于正式加入 Jakarta EE 的生态体系，填补了企业级 Java 开发在数据处理方面的空白。
 
-更多详情请访问 [Jakarta Data 规范](https://jakarta.ee/specifications/data/)。
+更多详情请访问 [Jakarta Data 规范文档](https://jakarta.ee/specifications/data/)。
 
 ### Java `record` 类型全面支持
 
@@ -32,7 +32,7 @@ Jakarta EE 11 将 Java 的 `record` 类型提升为一等公民，大大简化�
 
 ### 规范清理与优化
 
-- `ManagedBean` 规范已被移除，所有使用 ManagedBean 的代码请务必迁移到 CDI。
+- `ManagedBean` 规范已被移除，所有使用 `ManagedBean` 的代码请务必迁移到 CDI。
 - 基于 SOAP 的 *Web Service* 规范被标记为废弃，不再推荐在新项目中使用。
 
 ## 社区驱动的未来
@@ -41,7 +41,7 @@ Jakarta EE 11 将 Java 的 `record` 类型提升为一等公民，大大简化�
 
 ## 加入 Jakarta EE 的发展之旅
 
-Jakarta EE 的发布不仅是企业级 Java 的一小步，更是开发者社区的一大步。更多 Jakarta EE 信息，请关注：
+Jakarta EE 11 的发布不仅是企业级 Java 的一小步，更是开发者社区的一大步。更多 Jakarta EE 信息，请关注：
 * 官方网站：[https://jakarta.ee](https://jakarta.ee)
 * JakartaOne：[https://jakartaone.org](https://jakartaone.org)，敬请关注 [JakartaONE 2025 LiveStream](https://jakartaone.org/2025/) 和 [中文社区专场](https://jakartaone.org/2025/chinese/)
 * Slack: JakartaEE Development
