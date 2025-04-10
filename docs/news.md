@@ -3,7 +3,7 @@
 In a highly anticipated move by the global Java development community, Jakarta EE 11 has officially been launched, marking a significant milestone in enterprise-level Java development. This release introduces a new phase for the framework, offering enhanced functionalities and optimized developer experiences.
 
 > [!NOTE]
-> As of the release announcement, the Jakarta Platform repository has been tagged with the official version, signifying the completion of all Jakarta EE 11 specifications, following the earlier releases of the Core Profile and Web Profile.
+> As of the release announcement, the Jakarta Platform codes have been tagged with the official version, signifying the completion of all Jakarta EE 11 specifications, following the earlier releases of the Core Profile and Web Profile.
 
 ## The Evolution of Jakarta EE
 
