@@ -57,7 +57,7 @@
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
 
         <!-- WildFly -->
-        <wildfly.version>36.0.0.Beta1</wildfly.version>
+        <wildfly.version>36.0.0.Final</wildfly.version>
         <wildfly-maven-plugin.version>5.1.2.Final</wildfly-maven-plugin.version>
         <resteasy.version>7.0.0.Beta1</resteasy.version>
 
