@@ -39,7 +39,6 @@ under the License.
     <properties>
         <commons-validator.version>1.9.0</commons-validator.version>
         <lombok.version>1.18.38</lombok.version>
-        <hibernate.version>6.6.11.Final</hibernate.version>
     </properties>
 
     <dependencies>
@@ -203,7 +202,7 @@ under the License.
                                 </annotationProcessorPath>
                                 <annotationProcessorPath>
                                     <groupId>org.hibernate.orm</groupId>
-                                    <artifactId>hibernate-jpamodelgen</artifactId>
+                                    <artifactId>hibernate-processor</artifactId>
                                     <version>${hibernate.version}</version>
                                 </annotationProcessorPath>
                             </annotationProcessorPaths>
@@ -250,11 +249,6 @@ under the License.
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
                         <version>${wildfly-maven-plugin.version}</version>
-                        <configuration>
-                            <scripts>
-                                <script>add-jakarta-data.cli</script>
-                            </scripts>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
