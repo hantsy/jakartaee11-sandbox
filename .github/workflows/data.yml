@@ -26,7 +26,11 @@ jobs:
         java-version: '21'
         distribution: 'zulu'
         cache: maven
-    - name: Build with Maven
+    - name: Build with Maven(WildFly)
+      run: |
+        cd data
+        mvn -B -q clean verify -Parq-wildfly-managed    
+    - name: Build with Maven(GlassFish)
       run: |
         cd data
         mvn -B -q clean verify -Parq-glassfish-managed
