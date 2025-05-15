@@ -28,7 +28,9 @@ public class Employee {
     }
 
     public Employee(String name, int age) {
-        assert age > 0;
+        if (age <= 0) {
+            throw new IllegalArgumentException("age should be greater than 0");
+        }
         this.name = name;
         this.age = age;
     }
