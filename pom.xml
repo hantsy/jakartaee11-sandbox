@@ -30,7 +30,7 @@
         <cargo-maven3-plugin.version>1.10.19</cargo-maven3-plugin.version>
 
         <!-- Jakarta EE API -->
-        <jakartaee-api.version>11.0.0-RC1</jakartaee-api.version>
+        <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <slf4j.version>2.0.17</slf4j.version>
         <logback.version>1.5.18</logback.version>
         <lombok.version>1.18.36</lombok.version>
