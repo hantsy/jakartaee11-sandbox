@@ -1,4 +1,4 @@
-package com.example;
+package com.example.chat;
 
 import jakarta.validation.constraints.NotBlank;
 

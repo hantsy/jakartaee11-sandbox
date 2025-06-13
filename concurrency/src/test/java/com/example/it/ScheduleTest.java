@@ -18,8 +18,6 @@ under the License.
  */
 package com.example.it;
 
-import com.example.AsyncConfig;
-import com.example.MyQualifier;
 import com.example.RestActivator;
 import com.example.schedule.StandUpMeeting;
 import jakarta.ws.rs.client.Client;
@@ -65,8 +63,7 @@ public class ScheduleTest {
         var war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
                 .addPackage(StandUpMeeting.class.getPackage())
-                .addClasses(RestActivator.class)
-                .addClasses(AsyncConfig.class, MyQualifier.class)
+                .addPackage(RestActivator.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, "war deployment: {0}", new Object[]{war.toString(true)});
         return war;
@@ -93,7 +90,7 @@ public class ScheduleTest {
     @RunAsClient
     @Order(1)
     public void testStartSchedule() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/invites"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/schedule"));
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).method("POST")) {
             LOGGER.log(Level.INFO, "sending invites status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());
@@ -105,7 +102,7 @@ public class ScheduleTest {
     @Order(2)
     public void testInvitedNames() throws Exception {
         Thread.sleep(6_000);
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/invites"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/schedule"));
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "get invited names status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());

@@ -26,7 +26,6 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -65,7 +64,6 @@ public class CdiTest {
         return war;
     }
 
-
     @BeforeEach
     public void before() {
         LOGGER.log(Level.INFO, "before running tests.");
@@ -77,16 +75,28 @@ public class CdiTest {
     }
 
     @Inject
-    ContextService contextService;
+    ContextService defaultContextService;
 
     @Inject
-    ManagedExecutorService managedExecutorService;
+    ManagedExecutorService defaultExecutorService;
 
     @Inject
-    ManagedThreadFactory managedThreadFactory;
+    ManagedThreadFactory defaultThreadFactory;
 
     @Inject
-    ManagedScheduledExecutorService managedScheduledExecutorService;
+    ManagedScheduledExecutorService defaultScheduledExecutorService;
+
+    @Resource(lookup = "java:comp/DefaultManagedExecutorService")
+    ManagedExecutorService defaultExecutorServiceResource;
+
+    @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
+    ManagedThreadFactory defaultThreadFactoryResource;
+
+    @Resource(lookup = "java:comp/DefaultContextService")
+    ContextService defaultContextServiceResource;
+
+    @Resource(lookup = "java:comp/DefaultManagedScheduledExecutorService")
+    ManagedScheduledExecutorService defaultScheduleExecutorServiceResource;
 
     @Inject
     @CustomQualifier
@@ -104,60 +114,59 @@ public class CdiTest {
     @CustomQualifier
     ManagedScheduledExecutorService cdiScheduleExecutorService;
 
-//    @Inject
-//    @Named("java:comp/cdiExecutor")
-//    ManagedExecutorService cdiExecutorServiceNamed;
+    /*
+    @Inject
+    @Named("java:comp/cdiExecutor")
+    ManagedExecutorService cdiExecutorServiceNamed;
+
+    @Test
+    public void testCdiExecutorServiceNamedExistence() {
+        assertThat(cdiExecutorServiceNamed).isNotNull();
+    }
+    */
 
     @Resource(lookup = "java:comp/cdiExecutor")
     ManagedExecutorService cdiExecutorServiceResource;
 
-//    @Test
-//    public void testCdiExecutorServiceNamedExistence() {
-//        assertThat(cdiExecutorServiceNamed).isNotNull();
-//    }
+    @Resource(lookup = "java:comp/cdiThreadFactory")
+    ManagedThreadFactory cdiThreadFactoryResource;
+
+    @Resource(lookup = "java:comp/cdiContextService")
+    ContextService cdiContextServiceResource;
+
+    @Resource(lookup = "java:comp/cdiScheduleExecutor")
+    ManagedScheduledExecutorService cdiScheduleExecutorServiceResource;
 
     @Test
-    public void testCdiExecutorServiceResourceExistence() {
-      assertThat(cdiExecutorServiceResource).isNotNull();
+    public void testResourceExistence_InjectDefault() {
+        assertThat(defaultContextService).isNotNull();
+        assertThat(defaultExecutorService).isNotNull();
+        assertThat(defaultThreadFactory).isNotNull();
+        assertThat(defaultScheduledExecutorService).isNotNull();
     }
 
     @Test
-    public void testContextServiceExistence() {
-        assertThat(contextService).isNotNull();
+    public void testResourceExistence_InjectDefaultByResource() {
+        assertThat(defaultExecutorServiceResource).isNotNull();
+        assertThat(defaultThreadFactoryResource).isNotNull();
+        assertThat(defaultContextServiceResource).isNotNull();
+        assertThat(defaultScheduleExecutorServiceResource).isNotNull();
     }
 
     @Test
-    public void testManagedExecutorServiceExistence() {
-        assertThat(managedExecutorService).isNotNull();
+    public void testExistence_InjectedByResource() {
+        assertThat(cdiExecutorServiceResource).isNotNull();
+        assertThat(cdiThreadFactoryResource).isNotNull();
+        assertThat(cdiContextServiceResource).isNotNull();
+        assertThat(cdiScheduleExecutorServiceResource).isNotNull();
     }
 
     @Test
-    public void testManagedThreadFactoryExistence() {
-        assertThat(managedThreadFactory).isNotNull();
-    }
-
-    @Test
-    public void testManagedScheduledExecutorServiceExistence() {
-        assertThat(managedScheduledExecutorService).isNotNull();
-    }
-
-    @Test
-    public void testCustomExecutorServiceExistence() {
+    public void testResourceExistence_InjectedByQualifier() {
         assertThat(cdiExecutorService).isNotNull();
-    }
-
-    @Test
-    public void testCustomThreadFactoryExistence() {
         assertThat(cdiThreadFactory).isNotNull();
-    }
-
-    @Test
-    public void testCustomContextServiceExistence() {
         assertThat(cdiContextService).isNotNull();
-    }
-
-    @Test
-    public void testCustomScheduledExecutorServiceExistence() {
         assertThat(cdiScheduleExecutorService).isNotNull();
     }
+
 }

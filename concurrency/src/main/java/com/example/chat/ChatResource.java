@@ -1,6 +1,7 @@
-package com.example;
+package com.example.chat;
 
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -13,23 +14,31 @@ import jakarta.ws.rs.sse.SseEventSink;
 import java.util.UUID;
 import java.util.concurrent.Flow;
 
-@RequestScoped
+@ApplicationScoped
 @Path("chat")
 public class ChatResource {
 
     @Inject
     ChatService chatService;
 
+    @Context
+    Sse sse;
+
+    @PostConstruct
+    public void init() {
+        chatService.setSse(this.sse);
+    }
+
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public void join(@Context Sse sse, @Context SseEventSink sink) {
-        var userId = UUID.randomUUID().toString();
-        chatService.register(userId, new SseRequest(sse, sink));
+    public void join(@Context SseEventSink sink) {
+        var userId = UUID.randomUUID();
+        chatService.register(userId, sink);
     }
 
     @DELETE
     @Path("{id}")
-    public void quit(@PathParam("id") String id) {
+    public void quit(@PathParam("id") UUID id) {
         chatService.deregister(id);
     }
 

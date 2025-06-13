@@ -18,9 +18,10 @@ under the License.
  */
 package com.example.it;
 
-import com.example.ChatMessage;
-import com.example.ChatResource;
-import com.example.NewMessageCommand;
+import com.example.RestActivator;
+import com.example.chat.ChatMessage;
+import com.example.chat.ChatResource;
+import com.example.chat.NewMessageCommand;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -63,9 +64,10 @@ public class ChatResourceTest {
                 .resolve("org.assertj:assertj-core")
                 .withTransitivity()
                 .asFile();
-        var war = ShrinkWrap.create(WebArchive.class, "test.war")
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsLibraries(extraJars)
                 .addPackage(ChatResource.class.getPackage())
+                .addPackage(RestActivator.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, "war deployment: {0}", new Object[]{war.toString(true)});
         return war;
@@ -92,14 +94,14 @@ public class ChatResourceTest {
     @RunAsClient
     @Order(1)
     public void testSendMessages() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat"));
+        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat"));
         try (SseEventSource eventSource = SseEventSource.target(target).build()) {
 
             // EventSource#register(Consumer<InboundSseEvent>)
             // Registered event handler will print the received message.
             eventSource.register(inboundSseEvent -> {
-                var data = inboundSseEvent.readData(ChatMessage.class, MediaType.APPLICATION_JSON_TYPE);
-                LOGGER.log(Level.INFO, "received event data: {0}" , new Object[]{data});
+                ChatMessage data = inboundSseEvent.readData(ChatMessage.class, MediaType.APPLICATION_JSON_TYPE);
+                LOGGER.log(Level.INFO, "received event data: {0}", new Object[]{data});
             });
 
             // Subscribe to the event stream.
@@ -124,7 +126,7 @@ public class ChatResourceTest {
     @RunAsClient
     @Order(2)
     public void testGetMessages() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/sync"));
+        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/sync"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
@@ -141,7 +143,7 @@ public class ChatResourceTest {
     @RunAsClient
     @Order(3)
     public void testGetMessagesAsync() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/async"));
+        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/async"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
@@ -159,7 +161,7 @@ public class ChatResourceTest {
     @Order(4)
     @Disabled("see: https://github.com/jakartaee/rest/issues/1281")
     public void testGetMessagesFlow() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/flow"));
+        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/flow"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());

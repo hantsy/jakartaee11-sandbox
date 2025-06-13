@@ -1,13 +1,11 @@
 package com.example.schedule;
 
-import com.example.MyQualifier;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 
 import java.time.DayOfWeek;
 import java.util.Map;
@@ -28,7 +26,7 @@ public class StandUpMeeting {
     ManagedThreadFactory threadFactory;
 
     @Inject
-    Invite invite;
+    NotificationService notificationService;
 
     @PostConstruct
     public void init() {
@@ -36,7 +34,7 @@ public class StandUpMeeting {
     }
 
     @Asynchronous(
-            executor = "java:comp/MyScheduleExecutor", // can not refer by Qualifier???
+            //executor = "java:comp/MyScheduleExecutor", // can not refer by Qualifier???
             runAt = {
                     @Schedule(
                             daysOfWeek = {
@@ -52,7 +50,7 @@ public class StandUpMeeting {
                     @Schedule(cron = "*/5 * * * * *") // every 5 seconds for test purpose
             }
     )
-    void inviteToMeeting() {
+    void sendInviteNotifications() {
         LOGGER.log(Level.ALL, "running scheduled tasks....");
         try (ForkJoinPool pool = new ForkJoinPool(
                 Runtime.getRuntime().availableProcessors(),
@@ -65,7 +63,7 @@ public class StandUpMeeting {
                     .map(
                             name -> (Callable<Void>) () -> {
                                 LOGGER.info("calling invite:" + name);
-                                invite.send(name, members.get(name));
+                                notificationService.send(name, members.get(name));
                                 return null;
                             }
                     )

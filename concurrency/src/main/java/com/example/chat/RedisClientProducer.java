@@ -1,4 +1,4 @@
-package com.example;
+package com.example.chat;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;

@@ -53,12 +53,6 @@ under the License.
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-            <version>${eclipselink.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.arquillian.junit5</groupId>
             <artifactId>arquillian-junit5-container</artifactId>
             <scope>test</scope>
@@ -86,7 +80,6 @@ under the License.
             <version>${assertj.version}</version>
         </dependency>
     </dependencies>
-
     <profiles>
         <profile>
             <id>glassfish</id>

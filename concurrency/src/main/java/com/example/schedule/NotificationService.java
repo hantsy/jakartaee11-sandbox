@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationScoped
-public class Invite {
-    private static final Logger LOGGER = Logger.getLogger(Invite.class.getName());
+public class NotificationService {
+    private static final Logger LOGGER = Logger.getLogger(NotificationService.class.getName());
     private final List<String> names = new CopyOnWriteArrayList<>();
 
     public void send(String name, String email) {

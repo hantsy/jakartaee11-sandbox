@@ -13,21 +13,24 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 @RequestScoped
-@Path("invites")
-public class InviteResources {
+@Path("schedule")
+public class ScheduleResources {
 
-    @Inject Invite invite;
-    @Inject StandUpMeeting meeting;
+    @Inject
+    NotificationService notificationService;
+
+    @Inject
+    StandUpMeeting meeting;
 
     @POST
-    public Response sendInvites() {
-        meeting.inviteToMeeting();
+    public Response invite() {
+        meeting.sendInviteNotifications();
         return Response.ok().build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> getInvites() {
-        return invite.getNames();
+    public List<String> getInvitedNames() {
+        return notificationService.getNames();
     }
 }

@@ -1,4 +1,4 @@
-package com.example;
+package com.example.chat;
 
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
@@ -12,6 +12,8 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.sse.OutboundSseEvent;
+import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
 import org.reactivestreams.FlowAdapters;
 import reactor.core.publisher.Flux;
@@ -29,11 +31,9 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class ChatService {
     @Inject
-    @MyQualifier
     private ManagedExecutorService executor;
 
     @Inject
-    @MyQualifier
     private ContextService contextService;
 
     @Inject
@@ -51,17 +51,20 @@ public class ChatService {
     @Inject
     Event<ChatMessage> chatMessageEvent;
 
-    private final Map<String, SseRequest> requests = new ConcurrentHashMap<>();
+    private Sse sse;
 
-    public void register(String id, SseRequest request) {
+    private final Map<UUID, SseEventSink> requests = new ConcurrentHashMap<>();
+
+    public void register(UUID id, SseEventSink request) {
         LOG.log(Level.FINEST, "register request:{0}", id);
         requests.put(id, request);
     }
 
-    public void deregister(String uuid) {
+    public void deregister(UUID uuid) {
         LOG.log(Level.FINEST, "deregister request:{0}", uuid);
-        SseRequest req = requests.remove(uuid);
-        try (SseEventSink eventSink = req.sink()) {
+        SseEventSink eventSink = requests.remove(uuid);
+        try {
+            eventSink.close();
             LOG.log(Level.FINEST, "closing sink: {0}", eventSink);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -87,16 +90,17 @@ public class ChatService {
     }
 
     public void onMessage(@Observes ChatMessage msg) {
-        requests.values().forEach(
-                req -> req.sink().send(
-                        req.sse().newEventBuilder()
-                                .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                                .id(UUID.randomUUID().toString())
-                                .name("message from cdi")
-                                .data(msg)
-                                .build()
-                )
-        );
+        requests.values()
+                .forEach(sink -> {
+                            OutboundSseEvent outboundSseEvent = this.sse.newEventBuilder()
+                                    .mediaType(MediaType.APPLICATION_JSON_TYPE)
+                                    .id(UUID.randomUUID().toString())
+                                    .name("message from cdi")
+                                    .data(msg)
+                                    .build();
+                            sink.send(outboundSseEvent);
+                        }
+                );
     }
 
     public List<ChatMessage> latest10Messages() {
@@ -131,4 +135,7 @@ public class ChatService {
         return FlowAdapters.toFlowPublisher(messageFlux);
     }
 
+    public void setSse(Sse sse) {
+        this.sse = sse;
+    }
 }

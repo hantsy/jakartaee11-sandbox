@@ -7,8 +7,7 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.*;
 
 @ManagedExecutorDefinition(
         name = "java:comp/vtExecutor",

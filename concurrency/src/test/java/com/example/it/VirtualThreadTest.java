@@ -29,17 +29,17 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ArquillianExtension.class)
 public class VirtualThreadTest {
@@ -75,15 +75,15 @@ public class VirtualThreadTest {
 
     @Inject
     ContextService contextService;
-    
-    @Inject
-    ManagedExecutorService managedExecutorService;
 
     @Inject
-    ManagedThreadFactory managedThreadFactory;
+    ManagedExecutorService executorService;
 
     @Inject
-    ManagedScheduledExecutorService managedScheduledExecutorService;
+    ManagedThreadFactory threadFactory;
+
+    @Inject
+    ManagedScheduledExecutorService scheduledExecutorService;
 
     @Inject
     @WithVirtualThread
@@ -101,55 +101,14 @@ public class VirtualThreadTest {
     @WithVirtualThread
     ManagedScheduledExecutorService vtScheduleExecutorService;
 
-
-    @Test
-    public void testContextServiceExistence() {
-        assertThat(contextService).isNotNull();
-    }
-
-    @Test
-    public void testManagedExecutorServiceExistence() {
-        assertThat(managedExecutorService).isNotNull();
-    }
-
-    @Test
-    public void testManagedThreadFactoryExistence() {
-        assertThat(managedThreadFactory).isNotNull();
-    }
-
-    @Test
-    public void testManagedScheduledExecutorServiceExistence() {
-        assertThat(managedScheduledExecutorService).isNotNull();
-    }
-
-    @Test
-    public void testVirtualExecutorServiceExistence() {
-        assertThat(vtExecutorService).isNotNull();
-    }
-
-    @Test
-    public void testVirtualThreadFactoryExistence() {
-        assertThat(vtThreadFactory).isNotNull();
-    }
-
-    @Test
-    public void testVirtualContextServiceExistence() {
-        assertThat(vtContextService).isNotNull();
-    }
-
-    @Test
-    public void testVirtualScheduledExecutorServiceExistence() {
-        assertThat(vtScheduleExecutorService).isNotNull();
-    }
-
     @Test
     public void testVirtualThreadName() {
-        managedExecutorService.execute(() -> {
+        executorService.execute(() -> {
             LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
         });
 
         vtExecutorService.execute(() -> {
-            LOGGER.log(Level.INFO, "current thread name on Virtual Thread: {0}", new Object[]{Thread.currentThread().getName()});
+            LOGGER.log(Level.INFO, "current thread name of vtExecutorService: {0}", new Object[]{Thread.currentThread().getName()});
         });
 
 //        [2025-03-20T17:51:55.651097+08:00] [GF 8.0.0-M10] [INFO] [] [com.example.it.VirtualThreadTest] [tid: _ThreadID=147 _ThreadName=concurrent/__defaultManagedExecutorService-ManagedThreadFactory-Thread-1] [levelValue: 800] [[
@@ -157,5 +116,35 @@ public class VirtualThreadTest {
 //
 //[2025-03-20T17:51:55.657913+08:00] [GF 8.0.0-M10] [INFO] [] [com.example.it.VirtualThreadTest] [tid: _ThreadID=148 _ThreadName=java:comp/vtExecutor-ManagedThreadFactory-Thread-1] [levelValue: 800] [[
 //        current thread name on Virtual Thread: java:comp/vtExecutor-ManagedThreadFactory-Thread-1]]
+
+        contextService.contextualRunnable(() -> {
+            LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
+        }).run();
+
+        vtContextService.contextualRunnable(() -> {
+            LOGGER.log(Level.INFO, "current thread name of vtContextService: {0}", new Object[]{Thread.currentThread().getName()});
+        }).run();
+
+        threadFactory.newThread(new Thread(() -> {
+            LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
+        })).start();
+
+        vtThreadFactory.newThread(new Thread(() -> {
+            LOGGER.log(Level.INFO, "current thread name of vtThreadFactory: {0}", new Object[]{Thread.currentThread().getName()});
+        })).start();
+
+        scheduledExecutorService.schedule(() -> {
+            LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
+        }, 1_000, TimeUnit.MILLISECONDS);
+
+//        Runnable canceller = () -> handle.cancel(false);
+//        scheduledExecutorService.schedule(canceller, 5_000, TimeUnit.MILLISECONDS);
+
+        vtScheduleExecutorService.schedule(() -> {
+            LOGGER.log(Level.INFO, "current thread name of vtScheduleExecutorService: {0}", new Object[]{Thread.currentThread().getName()});
+        }, 1_000, TimeUnit.MILLISECONDS);
+
+//        Runnable vtcanceller = () -> vthandle.cancel(false);
+//        vtScheduleExecutorService.schedule(vtcanceller, 5_000, TimeUnit.MILLISECONDS);
     }
 }
