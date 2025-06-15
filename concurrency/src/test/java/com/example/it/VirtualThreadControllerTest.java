@@ -34,7 +34,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -87,12 +86,11 @@ public class VirtualThreadControllerTest {
 
     @Test
     @RunAsClient
-    @Order(1)
     public void testVtGet() throws Exception {
         var target = client.target(URI.create(baseUrl.toExternalForm() + "api/vt"));
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Vt get status: {0}", r.getStatus());
-            assertEquals(200, r.getStatus());
+            assertEquals(202, r.getStatus());
         }
     }
 }

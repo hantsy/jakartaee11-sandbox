@@ -37,7 +37,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -102,7 +104,7 @@ public class VirtualThreadTest {
     ManagedScheduledExecutorService vtScheduleExecutorService;
 
     @Test
-    public void testVirtualThreadName() {
+    void testExecutor() {
         executorService.execute(() -> {
             LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
         });
@@ -116,35 +118,73 @@ public class VirtualThreadTest {
 //
 //[2025-03-20T17:51:55.657913+08:00] [GF 8.0.0-M10] [INFO] [] [com.example.it.VirtualThreadTest] [tid: _ThreadID=148 _ThreadName=java:comp/vtExecutor-ManagedThreadFactory-Thread-1] [levelValue: 800] [[
 //        current thread name on Virtual Thread: java:comp/vtExecutor-ManagedThreadFactory-Thread-1]]
+    }
 
-        contextService.contextualRunnable(() -> {
-            LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
-        }).run();
-
-        vtContextService.contextualRunnable(() -> {
-            LOGGER.log(Level.INFO, "current thread name of vtContextService: {0}", new Object[]{Thread.currentThread().getName()});
-        }).run();
-
-        threadFactory.newThread(new Thread(() -> {
-            LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
-        })).start();
-
-        vtThreadFactory.newThread(new Thread(() -> {
-            LOGGER.log(Level.INFO, "current thread name of vtThreadFactory: {0}", new Object[]{Thread.currentThread().getName()});
-        })).start();
-
-        scheduledExecutorService.schedule(() -> {
+    @Test
+    void testScheduledExecutor() {
+        var handle = scheduledExecutorService.schedule(() -> {
             LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
         }, 1_000, TimeUnit.MILLISECONDS);
 
-//        Runnable canceller = () -> handle.cancel(false);
-//        scheduledExecutorService.schedule(canceller, 5_000, TimeUnit.MILLISECONDS);
+        Runnable canceller = () -> handle.cancel(false);
+        scheduledExecutorService.schedule(canceller, 5_000, TimeUnit.MILLISECONDS);
 
-        vtScheduleExecutorService.schedule(() -> {
+        var vthandle = vtScheduleExecutorService.schedule(() -> {
             LOGGER.log(Level.INFO, "current thread name of vtScheduleExecutorService: {0}", new Object[]{Thread.currentThread().getName()});
         }, 1_000, TimeUnit.MILLISECONDS);
 
-//        Runnable vtcanceller = () -> vthandle.cancel(false);
-//        vtScheduleExecutorService.schedule(vtcanceller, 5_000, TimeUnit.MILLISECONDS);
+        Runnable vtcanceller = () -> vthandle.cancel(false);
+        vtScheduleExecutorService.schedule(vtcanceller, 5_000, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    void testThreadFactory() {
+        Thread pThread = threadFactory.newThread(Thread.ofPlatform().name("pThread", 1_000).start(() -> {
+            LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
+        }));
+        pThread.start();
+
+        try {
+            Thread.sleep(5_000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        pThread.interrupt();
+
+        Thread vtThread = vtThreadFactory.newThread(Thread.ofVirtual().name("testVt", 1_000).start(() -> {
+            LOGGER.log(Level.INFO, "current thread name of vtThreadFactory: {0}", new Object[]{Thread.currentThread().getName()});
+        }));
+        vtThread.start();
+        try {
+            Thread.sleep(5_000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        vtThread.interrupt();
+    }
+
+    @Test
+    void testContextService() {
+        var runnable = contextService.contextualRunnable(() -> {
+            LOGGER.log(Level.INFO, "current thread name: {0}", new Object[]{Thread.currentThread().getName()});
+        });
+
+        var runnableProxy = contextService.createContextualProxy(runnable, Runnable.class);
+        try {
+            executorService.submit(runnableProxy).get(1_000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+
+        var vtrunnable = vtContextService.contextualRunnable(() -> {
+            LOGGER.log(Level.INFO, "current thread name of vtContextService: {0}", new Object[]{Thread.currentThread().getName()});
+        });
+
+        var vtrunnableProxy = vtContextService.createContextualProxy(vtrunnable, Runnable.class);
+        try {
+            vtExecutorService.submit(vtrunnableProxy).get(1_000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.vt;
 
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -17,7 +18,7 @@ public class VirtualThreadController {
 
     @Inject
     @WithVirtualThread
-    ThreadFactory vtThreadFactory;
+    ManagedThreadFactory vtThreadFactory;
 
     @GET
     @Path("")

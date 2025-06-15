@@ -94,7 +94,7 @@ public class ChatResourceTest {
     @RunAsClient
     @Order(1)
     public void testSendMessages() throws Exception {
-        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat"));
         try (SseEventSource eventSource = SseEventSource.target(target).build()) {
 
             // EventSource#register(Consumer<InboundSseEvent>)
@@ -126,7 +126,7 @@ public class ChatResourceTest {
     @RunAsClient
     @Order(2)
     public void testGetMessages() throws Exception {
-        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/sync"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/sync"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
@@ -143,7 +143,7 @@ public class ChatResourceTest {
     @RunAsClient
     @Order(3)
     public void testGetMessagesAsync() throws Exception {
-        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/async"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/async"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
@@ -161,7 +161,7 @@ public class ChatResourceTest {
     @Order(4)
     @Disabled("see: https://github.com/jakartaee/rest/issues/1281")
     public void testGetMessagesFlow() throws Exception {
-        jakarta.ws.rs.client.WebTarget target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/flow"));
+        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/chat/flow"));
         String jsonString;
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
