@@ -42,7 +42,7 @@ public class Post {
 
     private ModerationStatus status;
 
-    @Column(name = "created_at", secondPrecision = 3)
+    @Column(name = "created_at", secondPrecision = 3) // secondPrecision to truncate the seconds
     private Instant createdAt;
 
     @OneToMany(mappedBy = Comment_.POST,
