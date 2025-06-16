@@ -38,6 +38,8 @@ public class VirtualThreadAsyncConfig {
 }
 ```
 
+In this example, a dedicated `ContextService` is defined specifically for the virtual thread-based resources. This ensures that all related executors and thread factories share a consistent context configuration optimized for virtual thread usage.
+
 To utilize these resources within your CDI beans, simply inject them using the `@Resource` annotation with their respective JNDI names:
 
 ```java

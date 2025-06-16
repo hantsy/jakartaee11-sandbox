@@ -2,6 +2,8 @@ package com.example.blog;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
+
 @Entity
 public class Comment {
     @Id
@@ -10,19 +12,21 @@ public class Comment {
 
     private String content;
 
+    private Instant createdAt;
+
     @ManyToOne
     private Post post;
+
+    @Embedded
+    @AttributeOverride(name = "name", column = @Column(name = "author"))
+    private Author author;
 
     public Comment() {
     }
 
     public Comment(String content) {
         this.content = content;
-    }
-
-    public Comment(Post post, String content) {
-        this.post = post;
-        this.content = content;
+        this.createdAt = Instant.now();
     }
 
     public Long getId() {
