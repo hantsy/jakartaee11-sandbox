@@ -11,7 +11,7 @@ Jakarta Persistence 3.2 includes a large number of enhancements and additions. F
 
 Before 3.2 in a Java SE environment, if you want to build an `EntityManagerFactory` object, you should construct a *persistence.xml* in the project `src/main/resources/META-INF` folder. 
 
-The following is a *persistence.xml* example. 
+The following is an example of a *persistence.xml*. 
 
 ```xml
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
@@ -63,13 +63,13 @@ PersistenceConfiguration configuration = new PersistenceConfiguration("bookstore
 	.property(PersistenceConfiguration.JDBC_USER, "sa");
 ```
 
-You can create the `EntityManagerFactory` like this.
+You can create the `EntityManagerFactory` using `PersistenceConfiguration.createEntityManagerFactory` method.
 
 ```java 
 var emf = configuration.createEntityManagerFactory();
 ```
 
-Or  
+Or using `Persistence.createEntityManagerFactory(PersistenceConfiguration configuration)`.
 
 ```java
 
@@ -140,15 +140,14 @@ Do not worry about the lifecycle of the `Connection` object; be careful not to c
 
 Before version 3.2, you could configure and export the database schema in the classic *persistence.xml* file as follows.
 
-
 ```xml
 <persistence ...>
 	<persistence-unit>
 	    <properties>
-			<property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create" />
-			<property name="jakarta.persistence.schema-generation.scripts.create-target" value="/tmp/create.ddl" />
-			<property name="jakarta.persistence.schema-generation.scripts.drop-target" value="/tmp/drop.ddl" />
-		</properties>
+		<property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create" />
+		<property name="jakarta.persistence.schema-generation.scripts.create-target" value="/tmp/create.ddl" />
+		<property name="jakarta.persistence.schema-generation.scripts.drop-target" value="/tmp/drop.ddl" />
+            </properties>
 	</persistence-unit>
 </persistence>
 ```
