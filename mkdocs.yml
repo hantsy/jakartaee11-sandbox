@@ -48,11 +48,7 @@ plugins:
 
 nav:
   - Preface: index.md
-  - Persistence:
-      - jpa/index.md
-      - "What's New in Jakarta Persistence 3.1": jpa/new.md
-      - "Example: Hibernate 7.x": jpa/hibernate.md
-      - "Example: JPA and Jakarta EE Runtimes": jpa/jakartaee.md
+  - Persistence:jpa.md
   - Data: data.md    
   - REST: rest.md
   - Concurrency: concurrency.md
