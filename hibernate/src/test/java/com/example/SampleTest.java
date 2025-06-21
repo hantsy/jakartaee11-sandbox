@@ -259,6 +259,18 @@ public class SampleTest {
                     LOG.debug("content: {}", rs.getString("content"));
                 }
             });
+
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            try {
+                Post entity = new Post("What's new in Jakarta EE 11?",
+                        "dummy content of What's new in Jakarta EE 11");
+                em.persist(entity);
+            } catch (Exception e) {
+                tx.rollback();
+            } finally {
+                tx.commit();
+            }
         }
     }
 

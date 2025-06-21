@@ -29,6 +29,12 @@ public class Comment {
         this.createdAt = Instant.now();
     }
 
+    public Comment(Post entity, String content) {
+        this.post =entity;
+        this.content = content;
+        this.createdAt = Instant.now();
+    }
+
     public Long getId() {
         return id;
     }
