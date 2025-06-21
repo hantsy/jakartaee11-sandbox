@@ -290,6 +290,7 @@ public class SampleTest {
                 .property(PersistenceConfiguration.JDBC_DRIVER, "org.h2.Driver")
                 .property(PersistenceConfiguration.JDBC_USER, "sa");
 
+
         // val emf =configuration.createEntityManagerFactory();
         try (var emf = Persistence.createEntityManagerFactory(configuration)) {
 
@@ -303,9 +304,19 @@ public class SampleTest {
                 em.persist(entity);
             });
 
-            emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
-                            .getResultList())
+            emf.callInTransaction(em -> em.createQuery("from Book", Book.class).getResultList())
                     .forEach(book -> LOG.debug("saved book: {}", book));
+
+//
+//            Persistence.generateSchema(
+//                    "bookstore",
+//                    Map.of(
+//                            "jakarta.persistence.schema-generation.scripts.action", "drop-and-create",
+//                            "jakarta.persistence.schema-generation.scripts.create-target", "/tmp/schema.sql",
+//                            "jakarta.persistence.schema-generation.scripts.drop-target", "/tmp/drop.sql"
+//                    )
+//            );
+
         }
     }
 }
