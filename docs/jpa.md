@@ -5,9 +5,7 @@ Jakarta Persistence API (JPA) is a standard for persistence and object-relationa
 Jakarta Persistence 3.2 includes a large number of enhancements and additions. For more information, please refer to the feature list on the [Jakarta Persistence 3.2 specification page](https://jakarta.ee/specifications/persistence/3.2/).
 
 
-## Programmatic API 
-
-### Fluent Configuration API
+## Programmatic Configuration API
 
 Before 3.2 in a Java SE environment, if you want to build an `EntityManagerFactory` object, you should construct a *persistence.xml* in the project `src/main/resources/META-INF` folder. 
 
@@ -76,66 +74,6 @@ Or using `Persistence.createEntityManagerFactory(PersistenceConfiguration config
 var emf = Persistence.createEntityManagerFactory(configuration);
 ```
 
-
-### Declartive Transaction Boundary
-
-Before 3.2, you controlled the transaction boundaries.
-
-```java
-EntityTransaction tx = em.getTransaction();
-tx.begin();
-try {
-	// ...
-	em.persist(entity);
-} catch (Exception e) {
-	tx.rollback();
-} finally {
-	tx.commit();
-}
-```
-
-In Jakarta Persistence 3.2, there are two callback methods, `runInTransaction` and `callInTransaction`, in `EntityManagerFactory` to wrap a unit of work in a transaction.  
-
-
-```java
- emf.runInTransaction(em -> {
-		Book entity = new Book(
-				new Isbn("9781932394887"),
-				"Java Persistence with Hibernate",
-				new Author("Gavin King"),
-				new BigDecimal("50.1234")
-		);
-		em.persist(entity);
-		LOG.debug("persisted book: {}", entity);
-});	
-
-emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
-                            .getResultList())
-                    .forEach(book -> LOG.debug("saved book: {}", book));	
-```
-
-The `runInTransaction` accept a `EntityManager` as input parameter, and a `Runnable` body as output, it is suitable the case that does not need to return a result. 
-In reverse, the `callInTransaction` accepts a `Callable` like body as output and returns the execution result.
-
-There is no need to worry about the `begin` and `commit` operations of the transaction, as they are performed automatically at execution time. 
-
-Similarly, the `EntityManager` includes a new method to bind operations on an immutable `Connection` object.
-
-```java
- em.runWithConnection((Connection conn) -> {
-	var rs = conn.prepareStatement("select * from posts").executeQuery();
-	while (rs.next()) {
-		LOG.debug("query result:");
-		LOG.debug("id: {}", rs.getLong("id"));
-		LOG.debug("title: {}", rs.getString("title"));
-		LOG.debug("content: {}", rs.getString("content"));
-	}
-});
-
-```
-
-Do not worry about the lifecycle of the `Connection` object; be careful not to close it within the execution block. 
-
 ### Schema Management
 
 Before version 3.2, you could configure and export the database schema in the classic *persistence.xml* file as follows.
@@ -152,9 +90,11 @@ Before version 3.2, you could configure and export the database schema in the cl
 </persistence>
 ```
 
-In Jakarta Persistence 3.2, unfortunately, the `Persistence.generate(PersistenceConfiguration)` method is not added as expected for the programmatic configuration API. 
+You can use `Persistence.generate(String persistenceUinit, Map<String Object> properties)` method in the specified path in the above properties. 
 
-Additionally, a `SchemaManager` is available, which allows you to validate and create the database schema, clean up data, and more. 
+Unfortunately, in 3.2 this method does not involve a variant to acccept the new the programmatic configuration API - `Persistence.generate(PersistenceConfiguration)`. 
+
+The good news, a new `SchemaManager` is introduced in 3.2, which allows you to validate and create or drop the database schema, clean up data, etc. against the persistence configuration of the application. 
 
 ```java
 emf.getSchemaManager().validate();
@@ -220,7 +160,7 @@ em.createQuery("""
 	.forEach(book -> LOG.debug("query book author name equals customer firstName and lastName: {}", book));
 ```
 
-### Null handling in the Order By clause
+### Null handling in the `Order By` clause
 
 The `nulls first` and `nulls last` features, which existed in the SQL standard, are now ported to JPQL.
 
@@ -233,9 +173,9 @@ em.createQuery("from Book order by name nulls first", Book.class)
 	.forEach(book -> LOG.debug("improved sort nulls first:{}", book));
 ```					
 
-The above query makes null name based result come first when executing the select clause.		
+The above query makes `null` name based result come first when executing the select clause.		
 
-### SQL functions: left, right, cast, replace
+### Backporting SQL functions: `left`, `right`, `cast`, `replace`
 
 Some standard SQL functions, such as `left`, `right`, `cast`, and `replace`, are ported to JPQL, allowing developers to avoid using native queries in Jakarta Persistence code.
 
@@ -252,4 +192,65 @@ em.createQuery("""
 	.forEach(book -> LOG.debug("new functions result:{}", Stream.of(book).toList()));	
 ```	
 
+
+## API enhancements
+
+### Declartive Transaction Boundary
+
+Before 3.2, you controlled the transaction boundaries like the following codes.
+
+```java
+EntityTransaction tx = em.getTransaction();
+tx.begin();
+try {
+	// ...
+	em.persist(entity);
+} catch (Exception e) {
+	tx.rollback();
+} finally {
+	tx.commit();
+}
+```
+
+In Jakarta Persistence 3.2, there are two callback methods - `runInTransaction` and `callInTransaction` added in `EntityManagerFactory` to wrap a unit of work within a transaction.  
+
+```java
+ emf.runInTransaction(em -> {
+		Book entity = new Book(
+				new Isbn("9781932394887"),
+				"Java Persistence with Hibernate",
+				new Author("Gavin King"),
+				new BigDecimal("50.1234")
+		);
+		em.persist(entity);
+		LOG.debug("persisted book: {}", entity);
+});	
+
+emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
+                            .getResultList())
+                    .forEach(book -> LOG.debug("saved book: {}", book));	
+```
+
+The `runInTransaction` accept a functional interface which using a `EntityManager` as input parameter and a `Runnable` block as output. It is suitable the case that does not need to return a result, eg. executing some mutation operations, such as updating and deleting entities.
+
+The `callInTransaction` accepts a `Callable` block as output instead and returns the execution result of the `Callable`.
+
+There is no need to worry about the `begin` and `commit` operations of the transaction, as they are performed automatically at execution time. 
+
+Similarly, the `EntityManager` includes a new method to bind operations on an immutable `Connection` object.
+
+```java
+ em.runWithConnection((Connection conn) -> {
+	var rs = conn.prepareStatement("select * from posts").executeQuery();
+	while (rs.next()) {
+		LOG.debug("query result:");
+		LOG.debug("id: {}", rs.getLong("id"));
+		LOG.debug("title: {}", rs.getString("title"));
+		LOG.debug("content: {}", rs.getString("content"));
+	}
+});
+
+```
+
+Do not worry about the lifecycle of the `Connection` object and be careful not to close it within the execution block. 
 
