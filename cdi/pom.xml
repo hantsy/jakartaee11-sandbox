@@ -19,19 +19,15 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
     <artifactId>cdi-examples</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <parent>
         <groupId>com.example</groupId>
         <artifactId>jakartaee11-sandbox-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <name>cdi-examples</name>
@@ -148,7 +144,7 @@ under the License.
                                 <!-- the configuration used to deploy -->
                                 <home>${project.build.directory}/glassfish8x-home</home>
                                 <properties>
-                                    <cargo.remote.password></cargo.remote.password>
+                                    <cargo.remote.password />
                                     <cargo.glassfish.removeDefaultDatasource>true
                                     </cargo.glassfish.removeDefaultDatasource>
                                 </properties>
