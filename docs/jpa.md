@@ -92,7 +92,7 @@ Before version 3.2, you could configure and export the database schema in the cl
 
 You can use `Persistence.generate(String persistenceUinit, Map<String Object> properties)` method in the specified path in the above properties. 
 
-A new `SchemaManager` is introduced in 3.2, which allows you to validate and create or drop the database schema, clean up data, etc. against the persistence configuration of the application. 
+A new `SchemaManager` is introduced in 3.2, which allows you to validate and create or drop the database schema, clean up data, etc., against the persistence configuration of the application. 
 
 ```java
 emf.getSchemaManager().validate();
@@ -108,12 +108,11 @@ However, the `SchemaManager` does not support exporting the schema into DDL scri
 
 ## JPQL Improvements
 
-Jakarta Persistence 3.2 enhances the Jakarta Persistence Query Language and introduces new syntax, while also backporting some functions and operations from SQL (Structured Query Language).
+Jakarta Persistence 3.2 enhances the Jakarta Persistence Query Language and introduces new syntax, while also porting some functions from SQL (Structured Query Language).
  
+### Query without select clause
 
-### Query with select clause
-
-The feature has existed in Hibernate for a long time; now it is standardized in Jakarta Persistence 3.2. 
+The feature has existed in Hibernate for a long time, now it is standardized in Jakarta Persistence 3.2. 
 
 ```java
  em.createQuery("from Book where name like '%Hibernate'", Book.class)
@@ -144,7 +143,7 @@ em.createQuery("select id(this), version(this) from Book", Object[].class)
 
 ### String concatenation
 
-In Jakarta Persistence 3.2, it supports SQL like `|` to concatenate string fields into one field in the query result. For example.
+In Jakarta Persistence 3.2, it supports SQL-like `||` to concatenate string fields into a single field in the query result, for example.
 
 ```java
 // query book author name equals customer firstName and lastName
@@ -162,7 +161,7 @@ em.createQuery("""
 
 ### Null handling in the `Order By` clause
 
-The `nulls first` and `nulls last` features, which existed in the SQL standard, are now ported to JPQL.
+The `nulls first` and `nulls last` features, which were previously part of the SQL standard, are now supported in JPQL.
 
 For example: 
 
@@ -173,7 +172,7 @@ em.createQuery("from Book order by name nulls first", Book.class)
 	.forEach(book -> LOG.debug("improved sort nulls first:{}", book));
 ```					
 
-The above query makes `null` name based result come first when executing the select clause.		
+The above query prioritizes the `null` name-based result when executing the query.		
 
 ### Backporting SQL functions: `left`, `right`, `cast`, `replace`
 
@@ -191,7 +190,6 @@ em.createQuery("""
 	.getResultStream()
 	.forEach(book -> LOG.debug("new functions result:{}", Stream.of(book).toList()));	
 ```	
-
 
 ## API enhancements
 
