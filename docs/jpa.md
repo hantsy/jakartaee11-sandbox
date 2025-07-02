@@ -112,7 +112,7 @@ Jakarta Persistence 3.2 enhances the Jakarta Persistence Query Language and intr
  
 ### Query without select clause
 
-The feature has existed in Hibernate for a long time, now it is standardized in Jakarta Persistence 3.2. 
+The feature has existed in Hibernate for a long time,  and it is standardized in Jakarta Persistence 3.2. 
 
 ```java
  em.createQuery("from Book where name like '%Hibernate'", Book.class)
@@ -120,7 +120,7 @@ The feature has existed in Hibernate for a long time, now it is standardized in 
 	.forEach(book -> LOG.debug("query result without select:{}", book));
 ```
 
-The `select` is omitted, and the above JPQL is equivalent to the following:
+The `select` is omitted, and the above JPQL is equivalent to the following classic form:
 
 ```java
 select b  from Book b ...
@@ -174,7 +174,7 @@ em.createQuery("from Book order by name nulls first", Book.class)
 
 The above query prioritizes the `null` name-based result when executing the query.		
 
-### Backporting SQL functions: `left`, `right`, `cast`, `replace`
+### Porting SQL functions: `left`, `right`, `cast`, `replace`
 
 Some standard SQL functions, such as `left`, `right`, `cast`, and `replace`, are ported to JPQL, allowing developers to avoid using native queries in Jakarta Persistence code.
 
@@ -193,9 +193,9 @@ em.createQuery("""
 
 ## API enhancements
 
-### Declartive Transaction Boundary
+### Functional Transaction Operation
 
-Before 3.2, you controlled the transaction boundaries like the following codes.
+Before version 3.2, you could control the transaction boundaries using the following code.
 
 ```java
 EntityTransaction tx = em.getTransaction();
@@ -210,7 +210,7 @@ try {
 }
 ```
 
-In Jakarta Persistence 3.2, there are two callback methods - `runInTransaction` and `callInTransaction` added in `EntityManagerFactory` to wrap a unit of work within a transaction.  
+In Jakarta Persistence 3.2, two callback methods - `runInTransaction` and `callInTransaction`- have been added to `EntityManagerFactory` to wrap a unit of work within a transaction.  
 
 ```java
  emf.runInTransaction(em -> {
@@ -229,11 +229,10 @@ emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
                     .forEach(book -> LOG.debug("saved book: {}", book));	
 ```
 
-The `runInTransaction` accept a functional interface which using a `EntityManager` as input parameter and a `Runnable` block as output. It is suitable the case that does not need to return a result, eg. executing some mutation operations, such as updating and deleting entities.
+* The `runInTransaction` accepts a functional interface that uses an `EntityManager` as the input parameter and does not return a result. The behavior is similar to a `Runnable` block. It is suitable for cases that involve executing mutation operations, such as updating and deleting entities.
+* The `callInTransaction` returns the query execution result instead, which behaves like a `Callable` block. It is suitable for the selection query case.
 
-The `callInTransaction` accepts a `Callable` block as output instead and returns the execution result of the `Callable`.
-
-There is no need to worry about the `begin` and `commit` operations of the transaction, as they are performed automatically at execution time. 
+No worries about the `begin` and `commit` operations of the transaction, as they are performed automatically at runtime. 
 
 Similarly, the `EntityManager` includes a new method to bind operations on an immutable `Connection` object.
 
@@ -250,5 +249,7 @@ Similarly, the `EntityManager` includes a new method to bind operations on an im
 
 ```
 
-Do not worry about the lifecycle of the `Connection` object and be careful not to close it within the execution block. 
+Do not worry about the lifecycle of the `Connection` object, and be careful not to close it within the execution block. 
+
+
 
