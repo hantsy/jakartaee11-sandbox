@@ -5,7 +5,7 @@ Jakarta Persistence API (JPA) is a standard for persistence and object-relationa
 Jakarta Persistence 3.2 includes a large number of enhancements and additions. For more information, please refer to the feature list on the [Jakarta Persistence 3.2 specification page](https://jakarta.ee/specifications/persistence/3.2/).
 
 
-## Programmatic Configuration API
+## Programmatic Configuration
 
 Before 3.2 in a Java SE environment, if you want to build an `EntityManagerFactory` object, you should construct a *persistence.xml* in the project `src/main/resources/META-INF` folder. 
 
@@ -92,9 +92,7 @@ Before version 3.2, you could configure and export the database schema in the cl
 
 You can use `Persistence.generate(String persistenceUinit, Map<String Object> properties)` method in the specified path in the above properties. 
 
-Unfortunately, in 3.2 this method does not involve a variant to acccept the new the programmatic configuration API - `Persistence.generate(PersistenceConfiguration)`. 
-
-The good news, a new `SchemaManager` is introduced in 3.2, which allows you to validate and create or drop the database schema, clean up data, etc. against the persistence configuration of the application. 
+A new `SchemaManager` is introduced in 3.2, which allows you to validate and create or drop the database schema, clean up data, etc. against the persistence configuration of the application. 
 
 ```java
 emf.getSchemaManager().validate();
@@ -103,7 +101,9 @@ emf.getSchemaManager().drop(true); // if ture, apply the changes on db
 emf.getSchemaManager().create(true); // if true, apply the changes on db
 ```
 
-Unfortunately, the `SchemaManager` does not support exporting the schema into DDL scripts. 
+However, the `SchemaManager` does not support exporting the schema into DDL scripts. 
+
+> In 3.2, `Persistence.generate` does not have a variant to accept `PersistenceConfiguration` as input parameter - `Persistence.generate(PersistenceConfiguration)`. 
 
 
 ## JPQL Improvements
