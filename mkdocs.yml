@@ -48,7 +48,7 @@ plugins:
 
 nav:
   - Preface: index.md
-  - Persistence:jpa.md
+  - Persistence: jpa.md
   - Data: data.md    
   - REST: rest.md
   - Concurrency: concurrency.md
