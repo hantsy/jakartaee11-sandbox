@@ -183,6 +183,49 @@ em.createQuery("""
     .forEach(book -> LOG.debug("new functions result: {}", java.util.Arrays.toString(book)));
 ```
 
+### Set Operationss: `union`, `intersect`, and `except`
+
+Several *set operators* in SQL, such as `union`, `intersect`, and `except`, have also been introduced in JPQL. These operators allow you to combine, compare, or subtract the results of two or more SELECT queries, treating the results as mathematical sets. Let’s look at some examples to demonstrate their usage.
+
+This query combines person full names and book author names, returning a distinct list of all names.
+
+```java
+// query union book name and person name
+em.createQuery("""
+                select c.firstName ||' '|| c.lastName from Person c
+                union
+                select b.author.name  from Book b
+                """, String.class)
+        .getResultStream()
+        .forEach(name -> LOG.debug("query union book name and person name: {}", name));
+```
+
+This query returns names that exist both as person full names and book author names.
+
+```java
+// intersect book name and person name
+em.createQuery("""
+                select c.firstName ||' '|| c.lastName from Person c
+                intersect
+                select b.author.name  from Book b
+                """, String.class)
+        .getResultStream()
+        .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
+```
+
+This query returns person full names that are not book author names.
+
+```java
+// except book name and person name
+em.createQuery("""
+                select c.firstName ||' '|| c.lastName from Person c
+                except
+                select b.author.name  from Book b
+                """, String.class)
+        .getResultStream()
+        .forEach(name -> LOG.debug("except book name and person name: {}", name));
+```
+
 ## API Enhancements
 
 ### Functional Transaction Operations
@@ -201,7 +244,9 @@ try {
 }
 ```
 
-Jakarta Persistence 3.2 introduces two new methods, `runInTransaction` and `callInTransaction`, on `EntityManagerFactory` to execute logic within a transactional context:
+Jakarta Persistence 3.2 introduces two new methods, `runInTransaction` and `callInTransaction`, on `EntityManagerFactory` to execute logic within a transactional context.
+
+The following is an example of persisting an `Entity` object and does not return a result. It is suitable for mutating operations such as insert, update, or delete.
 
 ```java
 emf.runInTransaction(em -> {
@@ -214,18 +259,19 @@ emf.runInTransaction(em -> {
     em.persist(entity);
     LOG.debug("persisted book: {}", entity);
 });
+```
 
+Alternatively,  the `callInTransaction` execution block that returns a result. It is ideal for selection queries.
+
+```java
 emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
                              .getResultList())
     .forEach(book -> LOG.debug("saved book: {}", book));
 ```
 
-- `runInTransaction` takes a functional interface and does not return a result, like a `Runnable`, making it suitable for mutating operations such as insert, update, or delete.
-- `callInTransaction` executes code that returns a result, similar to a `Callable`, and is ideal for queries.
-
 With these methods, you no longer need to explicitly handle transaction operations, such as begin, commit, and rollback. Every execution block is automatically wrapped in a transaction boundary. 
 
-The `EntityManager` also introduces a new method for binding Database operations to an immutable `Connection` object:
+Additionally, the `EntityManager` also introduces a new method for binding Database operations to an immutable `Connection` object.
 
 ```java
 em.runWithConnection((Connection conn) -> {
@@ -239,4 +285,4 @@ em.runWithConnection((Connection conn) -> {
 });
 ```
 
-There is no need to manage the `Connection` lifecycle yourself, but be careful not to close it inside the execution block.
+There is no need to manage the `Connection` lifecycle yourself, and be careful not to close it inside the execution block.
