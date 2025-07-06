@@ -141,17 +141,17 @@ em.createQuery("select id(this), version(this) from Book", Object[].class)
 JPQL now supports SQL-style string concatenation using `||`:
 
 ```java
-// Query books where the author's name matches the customer's first and last name
+// Query books where the author's name matches the person's first and last name
 em.createQuery("""
-    select b from Book b cross join Customer c
-    where b.author.name = c.firstName || ' ' || c.lastName
-      and c.firstName = :firstName
-      and c.lastName = :lastName
-    """, Book.class)
+        select b from Book b cross join Person c
+        where b.author.name = c.firstName || ' ' || c.lastName
+          and c.firstName = :firstName
+          and c.lastName = :lastName
+        """, Book.class)
     .setParameter("firstName", "Gavin")
     .setParameter("lastName", "King")
     .getResultStream()
-    .forEach(book -> LOG.debug("author name equals customer name: {}", book));
+    .forEach(book -> LOG.debug("author name equals person name: {}", book));
 ```
 
 ### Null Handling in the `ORDER BY` Clause
@@ -172,13 +172,13 @@ Standard SQL functions such as `left`, `right`, `cast`, and `replace` are now av
 
 ```java
 em.createQuery("""
-    select left(name, 5),
-           right(name, 2),
-           cast(price as Integer),
-           replace(name, ' ', '_'),
-           name
-    from Book
-    """, Object[].class)
+        select left(name, 5),
+               right(name, 2),
+               cast(price as Integer),
+               replace(name, ' ', '_'),
+               name
+        from Book
+        """, Object[].class)
     .getResultStream()
     .forEach(book -> LOG.debug("new functions result: {}", java.util.Arrays.toString(book)));
 ```
@@ -192,12 +192,12 @@ This query combines person full names and book author names, returning a distinc
 ```java
 // query union book name and person name
 em.createQuery("""
-                select c.firstName ||' '|| c.lastName from Person c
-                union
-                select b.author.name  from Book b
-                """, String.class)
-        .getResultStream()
-        .forEach(name -> LOG.debug("query union book name and person name: {}", name));
+            select c.firstName ||' '|| c.lastName from Person c
+            union
+            select b.author.name  from Book b
+            """, String.class)
+    .getResultStream()
+    .forEach(name -> LOG.debug("query union book name and person name: {}", name));
 ```
 
 This query returns names that exist both as person full names and book author names.
@@ -205,12 +205,12 @@ This query returns names that exist both as person full names and book author na
 ```java
 // intersect book name and person name
 em.createQuery("""
-                select c.firstName ||' '|| c.lastName from Person c
-                intersect
-                select b.author.name  from Book b
-                """, String.class)
-        .getResultStream()
-        .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
+            select c.firstName ||' '|| c.lastName from Person c
+            intersect
+            select b.author.name  from Book b
+            """, String.class)
+    .getResultStream()
+    .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
 ```
 
 This query returns person full names that are not book author names.
@@ -218,12 +218,12 @@ This query returns person full names that are not book author names.
 ```java
 // except book name and person name
 em.createQuery("""
-                select c.firstName ||' '|| c.lastName from Person c
-                except
-                select b.author.name  from Book b
-                """, String.class)
-        .getResultStream()
-        .forEach(name -> LOG.debug("except book name and person name: {}", name));
+            select c.firstName ||' '|| c.lastName from Person c
+            except
+            select b.author.name  from Book b
+            """, String.class)
+    .getResultStream()
+    .forEach(name -> LOG.debug("except book name and person name: {}", name));
 ```
 
 ## API Enhancements
