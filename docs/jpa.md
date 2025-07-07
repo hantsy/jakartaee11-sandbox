@@ -131,6 +131,8 @@ em.createQuery("""
 
 ## Entity Mapping Improvements
 
+Jakarta Persistence 3.2 introduces several enhancements to declare Entity classes.
+
 ### Package-Level Generator Definitions
 
 Before 3.2, when using `SequenceGenerator` or `TableGenerator`, you had to declare them with `@GeneratedValue` in the entity classes like this. 
