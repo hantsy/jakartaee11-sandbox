@@ -252,6 +252,50 @@ private Instant createdAt;
 
 This addresses previous issues where different JPA providers handled timestamp precision inconsistently. For example, I encountered this while contributing to [Eclipse Cargo Tracker](https://github.com/eclipse-ee4j/cargotracker/blob/master/src/main/java/org/eclipse/cargotracker/domain/model/voyage/CarrierMovement.java#L64).
 
+### `@EnumeratedValue`
+
+Before Jakarta Persistence 3.2, enums could only be mapped using their name or ordinal value with the `@Enumerated` annotation:
+
+```java
+@Entity
+class Post {
+    @Enumerated(EnumType.STRING)
+    private ModerationStatus status;
+    // ...
+}
+
+public enum ModerationStatus {
+    PENDING,
+    APPROVED,
+    REJECTED
+}
+```
+
+Jakarta Persistence 3.2 introduces the `@EnumeratedValue` annotation, allowing you to specify a custom field to be persisted for each enum constant:
+
+```java
+@Entity
+class Post {
+    private ModerationStatus status;
+    // ...
+}
+
+public enum ModerationStatus {
+    PENDING(0),
+    APPROVED(1),
+    REJECTED(-1);
+
+    @EnumeratedValue
+    private final int value;
+
+    ModerationStatus(int value) {
+        this.value = value;
+    }
+}
+```
+
+Now, the persistence provider stores the value marked with `@EnumeratedValue` instead of the enum name or ordinal.
+
 
 ### Record Types as Embeddables
 
