@@ -303,7 +303,7 @@ Now, it will store the field value marked with `@EnumeratedValue` instead of the
 
 ### Record Types as Embeddables
 
-Record support is a significant addition in Jakarta EE 11. With Jakarta Persistence 3.2, Java records are now fully supported and can be used as `@Embeddable` types. For more details, please refer to the dedicated [Record Support in Jakarta EE 11](./record.md) document.
+Record type support is a significant addition in Jakarta EE 11. With Jakarta Persistence 3.2, Java records are now fully supported and can be used as `@Embeddable` types. For more details, please refer to the dedicated [Java Record Support in Jakarta EE 11](./record.md) document.
 
 ## API Enhancements
 ### Programmatic Configuration
