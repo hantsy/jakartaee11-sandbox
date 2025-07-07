@@ -192,7 +192,7 @@ The persistence provider will automatically discover the generators defined in `
 
 ### Ongoing Java 8 Date and Time API Enhancements
 
-With version 3.2, the legacy `java.util.Date` and `java.sql.Date` types are now deprecated. It is recommended to use the modern Java 8 Date and Time API instead when starting a new project.
+With version 3.2, the support for legacy `Date`, `Calendar`, `Time`, and `java.sql.Date` types is now deprecated. It is recommended to use the modern Java 8 Date and Time API instead when starting a new project.
 
 Additionally, `Instant` and `Year` are now supported as basic types:
 
@@ -211,6 +211,8 @@ class Book {
     Instant version;
 }
 ```
+
+With the depreciation of the legacy date types, annotations such as `@Temporal` are also deprecated in 3.2.
 
 ### New Attributes in `@Column` Annotation
 
