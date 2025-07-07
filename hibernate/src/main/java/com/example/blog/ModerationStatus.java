@@ -5,8 +5,7 @@ import jakarta.persistence.EnumeratedValue;
 public enum ModerationStatus {
     PENDING(0),
     APPROVED(1),
-    REJECTED(-1),
-    NA(-2);
+    REJECTED(-1);
 
     @EnumeratedValue
     private final int value;

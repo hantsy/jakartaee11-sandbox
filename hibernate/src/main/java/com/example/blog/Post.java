@@ -3,7 +3,9 @@ package com.example.blog;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
@@ -26,10 +28,6 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_seq")
     private Long id;
 
-    @Embedded
-    @AttributeOverride(name = "slug", column = @Column(name = "slug", unique = true, nullable = false))
-    private Slug slug;
-
     @Basic(optional = false)
     @Column(name = "title",
             nullable = false,
@@ -42,18 +40,10 @@ public class Post {
 
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.DRAFT;
+    private ModerationStatus status;
 
-    @Embedded
-    @AttributeOverride(name = "name", column = @Column(name = "author"))
-    private UserInfo author;
-
-    @Column(name = "created_at", secondPrecision = 3) // secondPrecision to truncate the seconds
+    @Column(name = "created_at", secondPrecision = 3)
     private Instant createdAt;
-
-    @Column(name = "updated_at", secondPrecision = 3) // secondPrecision to truncate the seconds
-    private Instant updatedAt;
 
     @OneToMany(mappedBy = Comment_.POST,
             fetch = FetchType.LAZY,
@@ -62,36 +52,17 @@ public class Post {
     )
     private Set<Comment> comments = new HashSet<>();
 
-    private ModerationStatus moderationStatus = ModerationStatus.NA;
-
-    private String publicationUrl;
-
-    @ManyToOne
-    @JoinColumn(name = "published_by")
-    private Publication publishedBy;
-
-    private Instant publishedAt;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "tags",
-            joinColumns = {
-                    @JoinColumn(name = "post_id")
-            }
-    )
-    private Collection<String> tags = new HashSet<>();
-
     public Post() {
     }
 
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
+        this.status = ModerationStatus.PENDING;
     }
 
     @PrePersist
     public void prePersist() {
-        slug = Slug.deriveFromTitle(title);
         createdAt = Instant.now();
     }
 
@@ -119,12 +90,12 @@ public class Post {
         this.content = content;
     }
 
-    public ModerationStatus getModerationStatus() {
-        return moderationStatus;
+    public ModerationStatus getStatus() {
+        return status;
     }
 
-    public void setModerationStatus(ModerationStatus status) {
-        this.moderationStatus = status;
+    public void setStatus(ModerationStatus status) {
+        this.status = status;
     }
 
     public Instant getCreatedAt() {
@@ -143,122 +114,34 @@ public class Post {
         this.comments = comments;
     }
 
-    public Slug getSlug() {
-        return slug;
-    }
-
-    public void setSlug(Slug slug) {
-        this.slug = slug;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public UserInfo getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(UserInfo author) {
-        this.author = author;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Publication getPublishedBy() {
-        return publishedBy;
-    }
-
-    public void setPublishedBy(Publication publishedBy) {
-        this.publishedBy = publishedBy;
-    }
-
-    public Instant getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(Instant publishedAt) {
-        this.publishedAt = publishedAt;
-    }
-
-    public Collection<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(Collection<String> tags) {
-        this.tags = tags;
-    }
-
-    public String getPublicationUrl() {
-        return publicationUrl;
-    }
-
-    public void setPublicationUrl(String publicationUrl) {
-        this.publicationUrl = publicationUrl;
-    }
-
     // add comment
     public void addComment(Comment comment) {
         comment.setPost(this);
         comments.add(comment);
     }
 
-    public void markAsPublic(List<String> taglist) {
-        status = Status.PUBLIC;
-        updatedAt = Instant.now();
-        tags = taglist;
-    }
-
-    public void addToPublication(Publication publication) {
-        if(status != Status.PUBLIC) {
-            throw new IllegalArgumentException("Post is not available for public");
-        }
-        moderationStatus = ModerationStatus.PENDING;
-        publishedBy = publication;
-    }
-
-    public void approveBy(Publication publication) {
-        publication.approve(this);
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || !(o instanceof Post post)) return false;
-        return Objects.equals(slug, post.slug);
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id) && Objects.equals(title, post.title) && Objects.equals(content, post.content) && status == post.status && Objects.equals(createdAt, post.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug);
+        return Objects.hash(id, title, content, status, createdAt);
     }
 
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", slug=" + slug +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", status=" + status +
-                ", author=" + author +
                 ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", moderationStatus=" + moderationStatus +
-                ", publicationUrl='" + publicationUrl + '\'' +
-                ", publishedBy=" + publishedBy +
-                ", publishedAt=" + publishedAt +
-                ", tags=" + tags +
                 '}';
     }
 }

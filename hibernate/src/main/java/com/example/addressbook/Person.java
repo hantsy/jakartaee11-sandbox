@@ -27,6 +27,13 @@ public class Person {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+    
+    public void addNewAddress(Address address) {
+        if(this.addresses.contains(address)) {
+            throw new IllegalArgumentException("address already exists");
+        }
+        this.addresses.add(address);
+    }
 
     public void setId(Long id) {
         this.id = id;
