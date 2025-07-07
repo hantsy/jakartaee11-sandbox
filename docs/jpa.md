@@ -649,11 +649,11 @@ private EntityManager em;
 
 ## Example Projects
 
-All sample code referenced in this guide is available on GitHub, feel free to explore and try it out yourself.
+All [sample code](https://github.com/hantsy/jakartaee11-sandbox) referenced in this guide is available on GitHub, you can explore and try it out yourself.
 
 ### Hibernate Example Project
 
-You can find the Hibernate example here: https://github.com/hantsy/jakartaee11-sandbox/tree/master/hibernate
+You can find the Hibernate example here: https://github.com/hantsy/jakartaee11-sandbox/tree/master/hibernate.
 
 Import the project into your favorite IDE.
 
@@ -698,7 +698,7 @@ To generate static metamodel classes for your entities, add `hibernate-processor
 </plugins>
 ```
 
-Explore the test code in the project to see Jakarta Persistence 3.2 features in action.
+You can explore the test code in the project to see Jakarta Persistence 3.2 features in action.
 
 ### Jakarta EE Example Project
 
@@ -733,7 +733,7 @@ Here we configured EclipseLink to generate static metamodel classes:
 </plugins>
 ```
 
-This sample demonstrates Jakarta Persistence 3.2 and CDI integration in a Jakarta EE environment.
+This sample demonstrates the integration of Jakarta Persistence 3.2 and CDI in a Jakarta EE environment.
 
 To run the tests using the GlassFish Managed Adapter for Arquillian, execute:
 
@@ -741,4 +741,6 @@ To run the tests using the GlassFish Managed Adapter for Arquillian, execute:
 mvn clean verify -Parq-managed-glassfish
 ```
 
-In summary, Jakarta Persistence 3.2 introduces a range of enhancements, such as improved JPQL syntax, additional SQL functions, modernized support for Java Date and Time types, streamlined configuration options, and deeper integration with Jakarta EE and CDI. For comprehensive details, see the [Jakarta Persistence 3.2 specification](https://jakarta.ee/specifications/persistence/3.2/).
+## Summary
+
+In summary, Jakarta Persistence 3.2 introduces a range of enhancements, such as improved JPQL syntax, backported SQL functions, modernized support for Java Date and Time types, streamlined configuration options, and deeper integration with Jakarta EE and CDI. For comprehensive details, see the [Jakarta Persistence 3.2 specification](https://jakarta.ee/specifications/persistence/3.2/).
