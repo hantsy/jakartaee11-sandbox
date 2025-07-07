@@ -555,3 +555,31 @@ public class Post {
 ```
 
 This approach ensures type safety and helps avoid errors caused by hard-coded string references.
+
+### New Method `getSingleResultOrNull` in `Query`
+
+Before version 3.2, the `getSingleResult` method would return the single unique result if it existed; otherwise, it would throw a `NoResultException`. To return `null` instead, you had to write something like:
+
+```java
+try {
+   return query.getSingleResult();
+} catch (NoResultException e) {
+   return null;
+}
+```
+
+Jakarta Persistence 3.2 addresses this by introducing the new `getSingleResultOrNull` method to `Query` and its derived interfaces, including `TypedQuery<T>`, among others. This method returns `null` directly when no result is found.
+
+Here is an example using `getSingleResultOrNull`:
+
+```java
+var nullableResult = em.createQuery("from Book where id = :isbn", Book.class)
+        .setParameter("isbn", new Isbn("9781932394887"))
+        .getSingleResultOrNull();
+LOG.debug("book getSingleResultOrNull result: {}", nullableResult);
+```
+
+Now you never have to worry about catching a `NoResultException`.
+
+>[!Note]
+> When representing the presence or absence of a single result, I would prefer to use `Optional<T>` to align with modern Java best practices.
