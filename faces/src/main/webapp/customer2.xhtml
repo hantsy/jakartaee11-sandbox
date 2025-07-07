@@ -15,21 +15,21 @@
         <h1>Express Language 6.0</h1>
 
         <div>
-            <strong>#{customerBean2.person.firstName.concat(customerBean2.person.lastName)}</strong>
+            <strong>#{customerBean2.customer.firstName.concat(customerBean2.customer.lastName)}</strong>
             <hr/>
         </div>
-        <div>PhoneNumber: #{customerBean2.person.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')}</div>
-        <div>Emails: (#{customerBean2.person.emailAddresses.length})</div>
+        <div>PhoneNumber: #{customerBean2.customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')}</div>
+        <div>Emails: (#{customerBean2.customer.emailAddresses.length})</div>
         <ul>
-            <ui:repeat value="#{customerBean2.person.emailAddresses}" var="email">
+            <ui:repeat value="#{customerBean2.customer.emailAddresses}" var="email">
                 <li>#{email.email}(#{email.primary?'O':'X'})</li>
             </ui:repeat>
         </ul>
         <div>Address:</div>
         <div>
-            #{customerBean2.person.address.street}<br/>
-            #{customerBean2.person.address.city}<br/>
-            #{customerBean2.person.address.state} #{' '} #{customerBean2.person.address.zipCode}
+            #{customerBean2.customer.address.street}<br/>
+            #{customerBean2.customer.address.city}<br/>
+            #{customerBean2.customer.address.state} #{' '} #{customerBean2.customer.address.zipCode}
         </div>
     </h:body>
 </f:view>
