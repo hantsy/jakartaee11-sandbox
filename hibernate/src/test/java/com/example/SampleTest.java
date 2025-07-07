@@ -6,7 +6,7 @@ import com.example.blog.Post_;
 import com.example.bookstore.Author;
 import com.example.bookstore.Book;
 import com.example.bookstore.Isbn;
-import com.example.customers.Customer;
+import com.example.addressbook.Person;
 import com.example.record.RecordEmbeddedEntity;
 import com.example.record.RecordEmbeddedIdEntity;
 import com.example.record.RecordIdClassEntity;
@@ -116,16 +116,16 @@ public class SampleTest {
                         .forEach(book -> LOG.debug("improved sort nulls first:{}", book));
 
                 // persist new customers
-                var customer = new Customer("Gavin", "King");
-                em.persist(customer);
-                LOG.debug("persisted customer: {}", customer);
-                var customer2 = new Customer("Hantsy", "Bai");
-                em.persist(customer2);
-                LOG.debug("persisted customer2: {}", customer2);
+                var person = new Person("Gavin", "King");
+                em.persist(person);
+                LOG.debug("persisted person: {}", person);
+                var person2 = new Person("Hantsy", "Bai");
+                em.persist(person2);
+                LOG.debug("persisted person2: {}", person2);
 
-                // query book author name equals customer firstName and lastName
+                // query book author name equals person firstName and lastName
                 em.createQuery("""
-                                select b  from Book b cross join Customer c
+                                select b  from Book b cross join Person c
                                 where b.author.name = c.firstName ||' '|| c.lastName
                                 and c.firstName=:firstName
                                 and c.lastName=:lastName
@@ -133,34 +133,34 @@ public class SampleTest {
                         .setParameter("firstName", "Gavin")
                         .setParameter("lastName", "King")
                         .getResultStream()
-                        .forEach(book -> LOG.debug("query book author name equals customer firstName and lastName: {}", book));
+                        .forEach(book -> LOG.debug("query book author name equals person firstName and lastName: {}", book));
 
-                // query union book name and customer name
+                // query union book name and person name
                 em.createQuery("""
-                                select c.firstName ||' '|| c.lastName from Customer c
+                                select c.firstName ||' '|| c.lastName from Person c
                                 union
                                 select b.author.name  from Book b
                                 """, String.class)
                         .getResultStream()
-                        .forEach(name -> LOG.debug("query union book name and customer name: {}", name));
+                        .forEach(name -> LOG.debug("query union book name and person name: {}", name));
 
-                // intersect book name and customer name
+                // intersect book name and person name
                 em.createQuery("""
-                                select c.firstName ||' '|| c.lastName from Customer c
+                                select c.firstName ||' '|| c.lastName from Person c
                                 intersect
                                 select b.author.name  from Book b
                                 """, String.class)
                         .getResultStream()
-                        .forEach(name -> LOG.debug("intersect book name and customer name: {}", name));
+                        .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
 
-                // except book name and customer name
+                // except book name and person name
                 em.createQuery("""
-                                select c.firstName ||' '|| c.lastName from Customer c
+                                select c.firstName ||' '|| c.lastName from Person c
                                 except
                                 select b.author.name  from Book b
                                 """, String.class)
                         .getResultStream()
-                        .forEach(name -> LOG.debug("except book name and customer name: {}", name));
+                        .forEach(name -> LOG.debug("except book name and person name: {}", name));
 
             });
 

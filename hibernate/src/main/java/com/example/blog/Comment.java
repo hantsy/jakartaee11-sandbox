@@ -19,7 +19,7 @@ public class Comment {
 
     @Embedded
     @AttributeOverride(name = "name", column = @Column(name = "author"))
-    private Author author;
+    private UserInfo author;
 
     public Comment() {
     }

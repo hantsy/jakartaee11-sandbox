@@ -141,7 +141,7 @@ em.createQuery("select id(this), version(this) from Book", Object[].class)
 JPQL now supports SQL-style string concatenation using `||`:
 
 ```java
-// Query books where the author's name matches the customer's first and last name
+// Query books where the author's name matches the person's first and last name
 em.createQuery("""
     select b from Book b cross join Customer c
     where b.author.name = c.firstName || ' ' || c.lastName
@@ -151,7 +151,7 @@ em.createQuery("""
     .setParameter("firstName", "Gavin")
     .setParameter("lastName", "King")
     .getResultStream()
-    .forEach(book -> LOG.debug("author name equals customer name: {}", book));
+    .forEach(book -> LOG.debug("author name equals person name: {}", book));
 ```
 
 ### Null Handling in the `ORDER BY` Clause

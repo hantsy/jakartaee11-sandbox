@@ -47,7 +47,7 @@ public class Post {
 
     @Embedded
     @AttributeOverride(name = "name", column = @Column(name = "author"))
-    private Author author;
+    private UserInfo author;
 
     @Column(name = "created_at", secondPrecision = 3) // secondPrecision to truncate the seconds
     private Instant createdAt;
@@ -159,11 +159,11 @@ public class Post {
         this.status = status;
     }
 
-    public Author getAuthor() {
+    public UserInfo getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(UserInfo author) {
         this.author = author;
     }
 

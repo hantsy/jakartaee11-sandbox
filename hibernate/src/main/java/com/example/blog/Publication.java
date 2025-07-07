@@ -70,6 +70,7 @@ public class Publication {
     public void approve(Post post) {
         post.setPublicationUrl(generatePublicationUrl(post));
         post.setPublishedBy(this);
+        post.setModerationStatus(ModerationStatus.APPROVED);
         post.setPublishedAt(Instant.now());
     }
 
