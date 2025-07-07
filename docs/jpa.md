@@ -435,7 +435,7 @@ emf.runInTransaction(em -> {
 });
 ```
 
-Alternatively,  the `callInTransaction` execution block that returns a result. It is ideal for selection queries.
+Alternatively,  the `callInTransaction` execution block returns a result. It is ideal for selection queries.
 
 ```java
 emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
@@ -445,10 +445,12 @@ emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
 
 With these methods, you no longer need to explicitly handle transaction operations, such as begin, commit, and rollback. Every execution block is automatically wrapped in a transaction boundary. 
 
-Additionally, the `EntityManager` also introduces a new method for binding Database operations to an immutable `Connection` object.
+Additionally, the `EntityManager` adds two similar methods: `runWithConnection` and `callWithConnection`, which bind database operations to an immutable Connection object. For databases using JDBC, these methods let you work with a JDBC `Connection` object.
+
+Here’s how to use `runWithConnection`:
 
 ```java
-em.runWithConnection((Connection conn) -> {
+em.runWithConnection(conn -> {
     var rs = conn.prepareStatement("select * from posts").executeQuery();
     while (rs.next()) {
         LOG.debug("query result:");
@@ -459,5 +461,4 @@ em.runWithConnection((Connection conn) -> {
 });
 ```
 
-There is no need to manage the `Connection` lifecycle yourself, and be careful not to close it inside the execution block.
-
+This method is transaction-aware and joins any existing transaction. You don’t need to manage or close the `Connection` yourself inside the block.
