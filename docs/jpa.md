@@ -370,7 +370,7 @@ class Book {
 }
 ```
 
-### New Attributes in `@Column` Annotation
+#### New Attributes in `@Column` Annotation
 
 Jakarta Persistence 3.2 introduces two new attributes to the `@Column` annotation: `comment` and `check`, offering richer schema generation capabilities.
 
