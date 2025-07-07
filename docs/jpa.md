@@ -254,7 +254,7 @@ This addresses previous issues where different JPA providers handled timestamp p
 
 ### Customizing Enum Mapping with `@EnumeratedValue`
 
-Before Jakarta Persistence 3.2, enums could only be mapped using their name or ordinal value with the `@Enumerated` annotation:
+Before 3.2, Java enum types could only be mapped using their name or ordinal value with the `@Enumerated` annotation:
 
 ```java
 @Entity
@@ -271,7 +271,7 @@ public enum ModerationStatus {
 }
 ```
 
-Jakarta Persistence 3.2 introduces the `@EnumeratedValue` annotation, allowing you to specify a custom field to be persisted for each enum constant:
+In 3.2, it introduces a new annotation - `@EnumeratedValue`, which allows you to specify a custom field of the Enum type to be persisted:
 
 ```java
 @Entity
@@ -294,7 +294,7 @@ public enum ModerationStatus {
 }
 ```
 
-Now, the persistence provider stores the value marked with `@EnumeratedValue` instead of the enum name or ordinal.
+Now, it will store the field value marked with `@EnumeratedValue` instead of the enum name or ordinal.
 
 
 ### Record Types as Embeddables
