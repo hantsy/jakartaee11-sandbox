@@ -286,3 +286,73 @@ em.runWithConnection((Connection conn) -> {
 ```
 
 There is no need to manage the `Connection` lifecycle yourself, and be careful not to close it inside the execution block.
+
+### Entity Mapping Improvements
+
+#### Package-Level Generator Definitions
+
+Starting with version 3.2, Jakarta Persistence allows you to define identity generators at the package level. When a generator is declared in a `package-info.java` file, it will be automatically applied to all entity classes within that package.
+
+For example, you can declare generators as follows in your `package-info.java`:
+
+```java
+@SequenceGenerator(name = "blog_seq", initialValue = 1, allocationSize = 10)
+@TableGenerator(
+    name = "tbl_id_gen",
+    table = "id_gen",
+    pkColumnName = "gen_key",
+    pkColumnValue = "id",
+    valueColumnName = "gen_val",
+    allocationSize = 10
+)
+package com.example.blog;
+
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.TableGenerator;
+```
+
+Once defined, your entity classes can simply reference these generators:
+
+```java
+@Entity
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+    // ...
+}
+
+@Entity
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "tbl_id_gen")
+    private Long id;
+    // ...
+}
+```
+
+The persistence provider will automatically discover the generators defined in `package-info.java` and apply them to the corresponding entities.
+
+#### Ongoing Java 8 Date and Time API Enhancements
+
+With version 3.2, the legacy `java.util.Date` and `java.sql.Date` types are now deprecated. It is recommended to use the modern Java 8 Date and Time API instead when starting a new project.
+
+Additionally, `Instant` and `Year` are now supported as basic types:
+
+```java
+class Book {
+    Instant createdAt;
+    Year publicationYear;
+}
+```
+
+Version 3.2 also introduces support for using `Instant` as the entity version type:
+
+```java
+class Book {
+    @Version
+    Instant version;
+}
+```
+
+#### 
