@@ -252,7 +252,7 @@ private Instant createdAt;
 
 This addresses previous issues where different JPA providers handled timestamp precision inconsistently. For example, I encountered this while contributing to [Eclipse Cargo Tracker](https://github.com/eclipse-ee4j/cargotracker/blob/master/src/main/java/org/eclipse/cargotracker/domain/model/voyage/CarrierMovement.java#L64).
 
-### `@EnumeratedValue`
+### Customizing Enum Mapping with `@EnumeratedValue`
 
 Before Jakarta Persistence 3.2, enums could only be mapped using their name or ordinal value with the `@Enumerated` annotation:
 
