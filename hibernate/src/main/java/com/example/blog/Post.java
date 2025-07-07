@@ -38,6 +38,9 @@ public class Post {
     )
     private String title;
 
+    @Embedded
+    private Slug slug;
+
     private String content;
 
     private ModerationStatus status;
@@ -64,6 +67,7 @@ public class Post {
     @PrePersist
     public void prePersist() {
         createdAt = Instant.now();
+        slug = Slug.deriveFromTitle(this.title);
     }
 
     public void setId(Long id) {
@@ -114,24 +118,27 @@ public class Post {
         this.comments = comments;
     }
 
+    public Slug getSlug() {
+        return slug;
+    }
+
     // add comment
     public void addComment(Comment comment) {
         comment.setPost(this);
         comments.add(comment);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return Objects.equals(id, post.id) && Objects.equals(title, post.title) && Objects.equals(content, post.content) && status == post.status && Objects.equals(createdAt, post.createdAt);
+        return Objects.equals(slug, post.slug) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, content, status, createdAt);
+        return Objects.hash(slug);
     }
 
     @Override
