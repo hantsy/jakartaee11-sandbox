@@ -253,9 +253,9 @@ private Instant createdAt;
 This addresses previous issues where different JPA providers handled timestamp precision inconsistently. For example, I encountered this while contributing to [Eclipse Cargo Tracker](https://github.com/eclipse-ee4j/cargotracker/blob/master/src/main/java/org/eclipse/cargotracker/domain/model/voyage/CarrierMovement.java#L64).
 
 
-### Record type as Embeddable
+### Record Types as Embeddables
 
-Record support is a key feature in Jakarta EE 11. With Jakarta Persistence 3.2, records are now first-class citizens and can be used to define `@Embeddable` classes. For more details, please take a look at the standalone [Record Support in Jakarta EE 11](./record.md) document.
+Record support is a significant addition in Jakarta EE 11. With Jakarta Persistence 3.2, Java records are now fully supported and can be used as `@Embeddable` types. For more details, please refer to the dedicated [Record Support in Jakarta EE 11](./record.md) document.
 
 ## API Enhancements
 ### Programmatic Configuration
