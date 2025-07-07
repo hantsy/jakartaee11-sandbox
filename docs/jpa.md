@@ -131,7 +131,7 @@ em.createQuery("""
 
 ## Entity Mapping Improvements
 
-Jakarta Persistence 3.2 introduces several enhancements to declare Entity classes.
+Jakarta Persistence 3.2 introduces several enhancements to the definition of Entity classes.
 
 ### Package-Level Generator Definitions
 
@@ -583,3 +583,162 @@ Now you never have to worry about catching a `NoResultException`.
 
 >[!Note]
 > When representing the presence or absence of a single result, I would prefer to use `Optional<T>` to align with modern Java best practices.
+
+### New Method `getReference(T)` in `EntityManager`
+
+As an alternative to the existing `getReference(Class, id)`, the new method provides a way to obtain a reference to an entity instance using an object with the same type and primary key. The supplied object may be in a managed or detached state, but it must not be new or removed.
+
+This method is beneficial when you need to set an association using detached entity instances, for example:
+
+```java
+var post = ...
+// The session is closed, so the `post` instance is now detached
+
+// In a new session
+comment.setPost(em.getReference(post));
+// Persist the comment and close the session
+```
+
+This approach avoids the need to fetch the post entity from the database again.
+
+Here, we highlight the API improvements in Jakarta Persistence 3.2 that offer tangible benefits to application developers. While there are many other minor enhancements not covered here, you can find the full list of changes in the [Jakarta Persistence 3.2 specification](https://jakarta.ee/specifications/persistence/3.2/).
+
+## Jakarta EE Integration
+
+In Jakarta EE environments, you can use standard CDI annotations to inject `EntityManagerFactory` or `EntityManager` directly into your CDI beans, following modern CDI practices. This means you no longer need to use `@PersistenceUnit` or `@PersistenceContext`, just use `@Inject` as you would for any other CDI bean.
+
+For example, to inject the default `EntityManager`:
+
+```java
+@Inject
+private EntityManager em;
+```
+
+Jakarta Persistence 3.2 also allows you to specify `scope` and `qualifier` elements in your *persistence.xml* file, making it easier to control the lifecycle and selection of persistence units in CDI.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.2" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd">
+    <persistence-unit name="defaultPU" transaction-type="JTA">
+        <qualifier>com.example.employee.MyCustom</qualifier>
+        <scope>jakarta.enterprise.context.ApplicationScoped</scope>
+        <jta-data-source>java:comp/DefaultDataSource</jta-data-source>
+        ...
+    </persistence-unit>
+</persistence>
+```
+
+Here, `MyCustom` is a custom CDI `@Qualifier` annotation:
+
+```java
+@Documented
+@Retention(RUNTIME)
+@Qualifier
+public @interface MyCustom {
+}
+```
+
+Then you can inject the qualified `EntityManager` or `EntityManagerFactory` as follows:
+
+```java
+@Inject @MyCustom
+private EntityManager em;
+```
+
+## Example Projects
+
+All sample code referenced in this guide is available on GitHub, feel free to explore and try it out yourself.
+
+### Hibernate Example Project
+
+You can find the Hibernate example here: https://github.com/hantsy/jakartaee11-sandbox/tree/master/hibernate
+
+Import the project into your favorite IDE.
+
+The project includes dependencies for Hibernate ORM and the Jakarta Persistence API:
+
+```xml
+<dependency>
+    <groupId>org.hibernate.orm</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>${hibernate.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.hibernate.orm</groupId>
+    <artifactId>hibernate-scan-jandex</artifactId>
+    <version>${hibernate.version}</version>
+</dependency>
+<dependency>
+    <groupId>jakarta.persistence</groupId>
+    <artifactId>jakarta.persistence-api</artifactId>
+    <version>3.2.0</version>
+</dependency>
+```
+
+To generate static metamodel classes for your entities, add `hibernate-processor` to the `annotationProcessorPaths` section of the `maven-compiler-plugin` configuration:
+
+```xml
+<plugins>
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+            <annotationProcessorPaths>
+                <annotationProcessorPath>
+                    <groupId>org.hibernate.orm</groupId>
+                    <artifactId>hibernate-processor</artifactId>
+                    <version>${hibernate.version}</version>
+                </annotationProcessorPath>
+            </annotationProcessorPaths>
+        </configuration>
+    </plugin>
+</plugins>
+```
+
+Explore the test code in the project to see Jakarta Persistence 3.2 features in action.
+
+### Jakarta EE Example Project
+
+The Jakarta EE example is available at: https://github.com/hantsy/jakartaee11-sandbox/tree/master/persistence. This project is designed to run on Jakarta EE application servers such as GlassFish 8.x or WildFly 37+.
+
+Tests are written using the Arquillian framework.
+
+> [!NOTE]
+> For more information about Arquillian, visit https://www.arquillian.org.
+
+In this project, you do not need to add an extra persistence provider dependency. Jakarta EE containers provide it automatically at runtime.
+
+Here we configured EclipseLink to generate static metamodel classes:
+
+```xml
+<plugins>
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+            <parameters>true</parameters>
+            <annotationProcessorPaths>
+                <annotationProcessorPath>
+                    <groupId>org.eclipse.persistence</groupId>
+                    <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
+                    <version>${eclipselink.version}</version>
+                </annotationProcessorPath>
+            </annotationProcessorPaths>
+        </configuration>
+    </plugin>
+</plugins>
+```
+
+This sample demonstrates Jakarta Persistence 3.2 and CDI integration in a Jakarta EE environment.
+
+To run the tests using the GlassFish Managed Adapter for Arquillian, execute:
+
+```shell
+mvn clean verify -Parq-managed-glassfish
+```
+
+In summary, Jakarta Persistence 3.2 introduces a range of enhancements, such as improved JPQL syntax, additional SQL functions, modernized support for Java Date and Time types, streamlined configuration options, and deeper integration with Jakarta EE and CDI. For comprehensive details, see the [Jakarta Persistence 3.2 specification](https://jakarta.ee/specifications/persistence/3.2/).

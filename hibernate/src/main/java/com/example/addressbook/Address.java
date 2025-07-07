@@ -1,11 +1,14 @@
 package com.example.addressbook;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 import java.util.Objects;
 
 @Embeddable
 public record Address(
+        @Enumerated(value = EnumType.STRING)
         AddressType type,
         String line1,
         String line2,

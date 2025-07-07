@@ -1,12 +1,12 @@
 package com.example;
 
+import com.example.addressbook.Person;
 import com.example.blog.Comment;
 import com.example.blog.Post;
 import com.example.blog.Post_;
 import com.example.bookstore.Author;
 import com.example.bookstore.Book;
 import com.example.bookstore.Isbn;
-import com.example.addressbook.Person;
 import com.example.record.RecordEmbeddedEntity;
 import com.example.record.RecordEmbeddedIdEntity;
 import com.example.record.RecordIdClassEntity;
@@ -58,6 +58,12 @@ public class SampleTest {
                 // get persistent or detached instance
                 var ref = em.getReference(result);
                 LOG.debug("book ref: {}", ref);
+
+
+                var nullableReult = em.createQuery("from Book where id=:isbn", Book.class)
+                        .setParameter("isbn", new Isbn("9781932394887"))
+                        .getSingleResultOrNull();
+                LOG.debug("book getSingleResultOrNull result: {}", nullableReult);
             });
 
             emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
