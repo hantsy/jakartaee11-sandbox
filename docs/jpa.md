@@ -370,4 +370,50 @@ class Book {
 }
 ```
 
-#### 
+### New Attributes in `@Column` Annotation
+
+Jakarta Persistence 3.2 introduces two new attributes to the `@Column` annotation: `comment` and `check`, offering richer schema generation capabilities.
+
+```java
+@Entity
+class Post {
+
+    @Column(
+        name = "title",
+        nullable = false,
+        length = 100,
+        unique = true,
+        comment = "Post title",
+        check = @CheckConstraint(
+            name = "title_min_length",
+            constraint = "length(title) > 10"
+        )
+    )
+    private String title;
+
+    // ...
+}
+```
+
+The new `check` attribute allows you to define check constraints at the column level, which will be reflected in the generated database schema:
+
+```sql
+title VARCHAR(100) NOT NULL UNIQUE /* Post title */ CHECK (length(title) > 10)
+```
+
+Another improvement in 3.2 is the `secondPrecision` attribute, which can be set on temporal columns to control the precision of persisted timestamp values. This is particularly useful for ensuring consistency across different persistence providers.
+
+```java
+@Column(name = "created_at", secondPrecision = 3)
+private Instant createdAt;
+```
+
+This addresses previous issues where different JPA providers handled timestamp precision inconsistently. For example, I encountered this while contributing to [Eclipse Cargo Tracker](https://github.com/eclipse-ee4j/cargotracker/blob/master/src/main/java/org/eclipse/cargotracker/domain/model/voyage/CarrierMovement.java#L64).
+
+
+
+
+
+
+
+
