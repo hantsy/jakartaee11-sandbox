@@ -464,3 +464,94 @@ em.runWithConnection(conn -> {
 ```
 
 This method is transaction-aware and joins any existing transaction. You don’t need to manage or close the `Connection` yourself inside the block.
+
+### Type-Safe Options
+
+In Jakarta Persistence 3.2, the' EntityManager' methods `find`, `refresh`, and `lock` now accept type-safe `FindOption`, `RefreshOption`, and `LockOption` respectively, replacing the previous use of a generic `Map<String, Object>` for properties.
+
+Before 3.2, you could tune the `find` method with a general `Map` parameter.
+
+```java
+// Using a Map for query hints and options
+var book = em.find(Book.class, new Isbn("9781932394887"),
+        Map.of("jakarta.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS,
+               "jakarta.persistence.query.timeout", 500,
+               "org.hibernate.readOnly", true)
+);
+LOG.debug("Found book using Map-based options: {}", book);
+```
+
+In 3.2, you can use the type-safe options instead. 
+
+```java
+// Using type-safe options
+var result = em.find(Book.class, new Isbn("9781932394887"),
+        CacheRetrieveMode.BYPASS,
+        Timeout.seconds(500),
+        LockModeType.READ);
+LOG.debug("Found book using type-safe options: {}", result);
+```
+
+Besides these, the generated static metamodel includes strongly typed constants for named queries, entity graphs, result set mappings, and managed types, thereby minimizing typos and making refactoring safer.
+
+Suppose you have the following entity:
+
+```java
+@NamedQuery(name = "byTitle", query = "SELECT p FROM Post p WHERE p.title = :title")
+@NamedEntityGraph(
+        name = "withComments",
+        attributeNodes = {
+                @NamedAttributeNode("title"),
+                @NamedAttributeNode("content"),
+                @NamedAttributeNode(value = "comments", subgraph = "commentsGraph"),
+                @NamedAttributeNode("createdAt")
+        },
+        subgraphs = @NamedSubgraph(
+                name = "commentsGraph",
+                attributeNodes = @NamedAttributeNode("content")
+        )
+)
+public class Post { ... }
+```
+
+After compilation, the generated `Post_` metamodel class will contain constants for the named query and entity graph:
+
+```java
+public abstract class Post_ {
+    // ...
+    public static final String QUERY_BY_TITLE = "byTitle";
+    public static final String GRAPH_WITH_COMMENTS = "withComments";
+}
+```
+
+Using the constants for queries and entity graphs in your code:
+
+```java
+// Referencing the named query using the metamodel constant
+var result = em.createNamedQuery(Post_.QUERY_BY_TITLE, Post.class)
+        .setParameter("title", "What's new in Persistence 3.2?")
+        .getSingleResult();
+LOG.debug("Query byTitle result: {}", result);
+
+// Referencing the named entity graph using the metamodel constant
+Post result2 = em.find(Post.class, entity.getId(),
+        em.getEntityGraph(Post_.GRAPH_WITH_COMMENTS));
+LOG.debug("Query withComments result: {}", result2.getComments());
+```
+
+You can also refer to attribute names via the static metamodel in relationship mappings:
+
+```java
+@Entity
+public class Post {
+    // ...
+    @OneToMany(mappedBy = Comment_.POST,
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Comment> comments = new HashSet<>();
+}
+```
+
+This approach ensures type safety and helps avoid errors caused by hard-coded string references.
