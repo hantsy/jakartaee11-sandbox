@@ -291,6 +291,21 @@ There is no need to manage the `Connection` lifecycle yourself, and be careful n
 
 #### Package-Level Generator Definitions
 
+Before 3.2, when using `SequenceGenerator` or `TableGenerator`, you had to declare them with `@GeneratedValue` in the entity classes like this. 
+
+```java
+@Entity
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="blog_seq")
+    @SequenceGenerator(name = "blog_seq", initialValue = 1, allocationSize = 10)
+    private Long id;
+    // ...
+}
+```
+
+It is a little tedious to set it up in every class.
+
 Starting with version 3.2, Jakarta Persistence allows you to define identity generators at the package level. When a generator is declared in a `package-info.java` file, it will be automatically applied to all entity classes within that package.
 
 For example, you can declare generators as follows in your `package-info.java`:
