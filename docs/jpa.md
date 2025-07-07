@@ -205,7 +205,7 @@ class Book {
 }
 ```
 
-Version 3.2 also introduces support for using `Instant` as the entity version type:
+Version 3.2 also introduces support for using `LocalDateTime` and `Instant` as the entity version type:
 
 ```java
 class Book {
@@ -336,7 +336,7 @@ Here is an example of a *persistence.xml*:
 </persistence>
 ```
 
-Then you could create a `EntityManagerFactory` instance like this:
+Then you could create an `EntityManagerFactory` instance like this:
 
 ```java
 var emf = Persistence.createEntityManagerFactory("bookstorePU");
@@ -404,7 +404,7 @@ emf.getSchemaManager().create(true);  // if true, applies changes to the databas
 > In 3.2, the `Persistence.generate` does not involve a variant and accepts a `PersistenceConfiguration` as a parameter (i.e., `Persistence.generate(PersistenceConfiguration)` does not exist).
 
 
-### Functional Transaction Operations
+### Functional Transactions
 
 Before 3.2, transaction boundaries were managed as follows:
 
@@ -447,7 +447,7 @@ emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
 
 With these methods, you no longer need to explicitly handle transaction operations, such as begin, commit, and rollback. Every execution block is automatically wrapped in a transaction boundary. 
 
-Additionally, the `EntityManager` adds two similar methods: `runWithConnection` and `callWithConnection`, which bind database operations to an immutable Connection object. For databases using JDBC, these methods let you work with a JDBC `Connection` object.
+Additionally, the `EntityManager` adds two similar methods: `runWithConnection` and `callWithConnection`, which bind database operations to an immutable `Connection` abstraction. For databases using JDBC, these methods let you work with a JDBC `Connection` object.
 
 Here’s how to use `runWithConnection`:
 
@@ -467,7 +467,7 @@ This method is transaction-aware and joins any existing transaction. You don’t
 
 ### Type-Safe Options
 
-In Jakarta Persistence 3.2, the' EntityManager' methods `find`, `refresh`, and `lock` now accept type-safe `FindOption`, `RefreshOption`, and `LockOption` respectively, replacing the previous use of a generic `Map<String, Object>` for properties.
+In Jakarta Persistence 3.2, the 'EntityManager' methods `find`, `refresh`, and `lock` now accept type-safe `FindOption`, `RefreshOption`, and `LockOption` respectively, replacing the previous use of a generic `Map<String, Object>` for properties.
 
 Before 3.2, you could tune the `find` method with a general `Map` parameter.
 
