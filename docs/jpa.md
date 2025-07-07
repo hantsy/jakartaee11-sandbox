@@ -4,7 +4,257 @@ The Jakarta Persistence API (JPA) is the standard for persistence and object-rel
 
 Jakarta Persistence 3.2 introduces numerous enhancements and new features. For a comprehensive list, see the [Jakarta Persistence 3.2 specification page](https://jakarta.ee/specifications/persistence/3.2/).
 
-## Programmatic Configuration
+## JPQL Improvements
+
+Jakarta Persistence 3.2 refines the Jakarta Persistence Query Language (JPQL), introducing new syntax and porting several SQL functions.
+
+### Queries Without a Select Clause
+
+This feature, long available in Hibernate, is now standardized in Jakarta Persistence 3.2:
+
+```java
+em.createQuery("from Book where name like '%Hibernate'", Book.class)
+    .getResultStream()
+    .forEach(book -> LOG.debug("query result without select:{}", book));
+```
+
+Here, the `select` keyword is omitted. The query is equivalent to the classic form:
+
+```java
+select b from Book b ...
+```
+
+### New Functions: `id(this)`, `count(this)`, `version(this)`
+
+Jakarta Persistence 3.2 introduces the functions `id(this)`, `count(this)`, and `version(this)`, allowing you to query an entity's ID, count, and version, respectively:
+
+```java
+var count = em.createQuery("select count(this) from Book")
+    .getSingleResult();
+LOG.debug("count(this) result: {}", count);
+
+// id and version
+em.createQuery("select id(this), version(this) from Book", Object[].class)
+    .getResultList()
+    .forEach(book -> LOG.debug("id and version result: {}", book));
+```
+
+### String Concatenation
+
+JPQL now supports SQL-style string concatenation using `||`:
+
+```java
+// Query books where the author's name matches the person's first and last name
+em.createQuery("""
+        select b from Book b cross join Person c
+        where b.author.name = c.firstName || ' ' || c.lastName
+          and c.firstName = :firstName
+          and c.lastName = :lastName
+        """, Book.class)
+    .setParameter("firstName", "Gavin")
+    .setParameter("lastName", "King")
+    .getResultStream()
+    .forEach(book -> LOG.debug("author name equals person name: {}", book));
+```
+
+### Null Handling in the `ORDER BY` Clause
+
+The `nulls first` and `nulls last` features, previously available only in SQL, are now supported in JPQL:
+
+```java
+em.createQuery("from Book order by name nulls first", Book.class)
+    .getResultStream()
+    .forEach(book -> LOG.debug("sorted with nulls first: {}", book));
+```
+
+This query ensures that results with `null` in the `name` field appear first.
+
+### Additional SQL Functions: `left`, `right`, `cast`, `replace`
+
+Standard SQL functions such as `left`, `right`, `cast`, and `replace` are now available in JPQL, reducing the need to fall back to native queries:
+
+```java
+em.createQuery("""
+        select left(name, 5),
+               right(name, 2),
+               cast(price as Integer),
+               replace(name, ' ', '_'),
+               name
+        from Book
+        """, Object[].class)
+    .getResultStream()
+    .forEach(book -> LOG.debug("new functions result: {}", java.util.Arrays.toString(book)));
+```
+
+### Set Operations: `union`, `intersect`, and `except`
+
+Several *set operators* in SQL, such as `union`, `intersect`, and `except`, have also been introduced in JPQL. These operators allow you to combine, compare, or subtract the results of two or more SELECT queries, treating the results as mathematical sets. Let’s examine some examples to illustrate their usage.
+
+This query combines person full names and book author names, returning a distinct list of all names.
+
+```java
+// query union book name and person name
+em.createQuery("""
+            select c.firstName ||' '|| c.lastName from Person c
+            union
+            select b.author.name  from Book b
+            """, String.class)
+    .getResultStream()
+    .forEach(name -> LOG.debug("query union book name and person name: {}", name));
+```
+
+This query returns names that exist both as person full names and book author names.
+
+```java
+// intersect book name and person name
+em.createQuery("""
+            select c.firstName ||' '|| c.lastName from Person c
+            intersect
+            select b.author.name  from Book b
+            """, String.class)
+    .getResultStream()
+    .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
+```
+
+This query returns person full names that are not book author names.
+
+```java
+// except book name and person name
+em.createQuery("""
+            select c.firstName ||' '|| c.lastName from Person c
+            except
+            select b.author.name  from Book b
+            """, String.class)
+    .getResultStream()
+    .forEach(name -> LOG.debug("except book name and person name: {}", name));
+```
+
+## Entity Mapping Improvements
+
+### Package-Level Generator Definitions
+
+Before 3.2, when using `SequenceGenerator` or `TableGenerator`, you had to declare them with `@GeneratedValue` in the entity classes like this. 
+
+```java
+@Entity
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="blog_seq")
+    @SequenceGenerator(name = "blog_seq", initialValue = 1, allocationSize = 10)
+    private Long id;
+    // ...
+}
+```
+
+It is a little tedious to set it up in every class.
+
+Starting with version 3.2, Jakarta Persistence allows you to define identity generators at the package level. When a generator is declared in a `package-info.java` file, it will be automatically applied to all entity classes within that package.
+
+For example, you can declare generators as follows in your `package-info.java`:
+
+```java
+@SequenceGenerator(name = "blog_seq", initialValue = 1, allocationSize = 10)
+@TableGenerator(
+    name = "tbl_id_gen",
+    table = "id_gen",
+    pkColumnName = "gen_key",
+    pkColumnValue = "id",
+    valueColumnName = "gen_val",
+    allocationSize = 10
+)
+package com.example.blog;
+
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.TableGenerator;
+```
+
+Once defined, your entity classes can simply reference these generators:
+
+```java
+@Entity
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+    // ...
+}
+
+@Entity
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "tbl_id_gen")
+    private Long id;
+    // ...
+}
+```
+
+The persistence provider will automatically discover the generators defined in `package-info.java` and apply them to the corresponding entities.
+
+### Ongoing Java 8 Date and Time API Enhancements
+
+With version 3.2, the legacy `java.util.Date` and `java.sql.Date` types are now deprecated. It is recommended to use the modern Java 8 Date and Time API instead when starting a new project.
+
+Additionally, `Instant` and `Year` are now supported as basic types:
+
+```java
+class Book {
+    Instant createdAt;
+    Year publicationYear;
+}
+```
+
+Version 3.2 also introduces support for using `Instant` as the entity version type:
+
+```java
+class Book {
+    @Version
+    Instant version;
+}
+```
+
+### New Attributes in `@Column` Annotation
+
+Jakarta Persistence 3.2 introduces two new attributes to the `@Column` annotation: `comment` and `check`, offering richer schema generation capabilities.
+
+```java
+@Entity
+class Post {
+
+    @Column(
+        name = "title",
+        nullable = false,
+        length = 100,
+        unique = true,
+        comment = "Post title",
+        check = @CheckConstraint(
+            name = "title_min_length",
+            constraint = "length(title) > 10"
+        )
+    )
+    private String title;
+
+    // ...
+}
+```
+
+The new `check` attribute allows you to define check constraints at the column level, which will be reflected in the generated database schema:
+
+```sql
+title VARCHAR(100) NOT NULL UNIQUE /* Post title */ CHECK (length(title) > 10)
+```
+
+Another improvement in 3.2 is the `secondPrecision` attribute, which can be set on temporal columns to control the precision of persisted timestamp values. This is particularly useful for ensuring consistency across different persistence providers.
+
+```java
+@Column(name = "created_at", secondPrecision = 3)
+private Instant createdAt;
+```
+
+This addresses previous issues where different JPA providers handled timestamp precision inconsistently. For example, I encountered this while contributing to [Eclipse Cargo Tracker](https://github.com/eclipse-ee4j/cargotracker/blob/master/src/main/java/org/eclipse/cargotracker/domain/model/voyage/CarrierMovement.java#L64).
+
+
+## API Enhancements
+### Programmatic Configuration
 
 Before version 3.2, in a Java SE environment, creating an `EntityManagerFactory` required a *persistence.xml* file placed in the `src/main/resources/META-INF` directory of your project.
 
@@ -101,132 +351,6 @@ emf.getSchemaManager().create(true);  // if true, applies changes to the databas
 > The `SchemaManager` does not support exporting the schema to DDL script files.
 > In 3.2, the `Persistence.generate` does not involve a variant and accepts a `PersistenceConfiguration` as a parameter (i.e., `Persistence.generate(PersistenceConfiguration)` does not exist).
 
-## JPQL Improvements
-
-Jakarta Persistence 3.2 refines the Jakarta Persistence Query Language (JPQL), introducing new syntax and porting several SQL functions.
-
-### Queries Without a Select Clause
-
-This feature, long available in Hibernate, is now standardized in Jakarta Persistence 3.2:
-
-```java
-em.createQuery("from Book where name like '%Hibernate'", Book.class)
-    .getResultStream()
-    .forEach(book -> LOG.debug("query result without select:{}", book));
-```
-
-Here, the `select` keyword is omitted. The query is equivalent to the classic form:
-
-```java
-select b from Book b ...
-```
-
-### New Functions: `id(this)`, `count(this)`, `version(this)`
-
-Jakarta Persistence 3.2 introduces the functions `id(this)`, `count(this)`, and `version(this)`, allowing you to query an entity's ID, count, and version, respectively:
-
-```java
-var count = em.createQuery("select count(this) from Book")
-    .getSingleResult();
-LOG.debug("count(this) result: {}", count);
-
-// id and version
-em.createQuery("select id(this), version(this) from Book", Object[].class)
-    .getResultList()
-    .forEach(book -> LOG.debug("id and version result: {}", book));
-```
-
-### String Concatenation
-
-JPQL now supports SQL-style string concatenation using `||`:
-
-```java
-// Query books where the author's name matches the person's first and last name
-em.createQuery("""
-        select b from Book b cross join Person c
-        where b.author.name = c.firstName || ' ' || c.lastName
-          and c.firstName = :firstName
-          and c.lastName = :lastName
-        """, Book.class)
-    .setParameter("firstName", "Gavin")
-    .setParameter("lastName", "King")
-    .getResultStream()
-    .forEach(book -> LOG.debug("author name equals person name: {}", book));
-```
-
-### Null Handling in the `ORDER BY` Clause
-
-The `nulls first` and `nulls last` features, previously available only in SQL, are now supported in JPQL:
-
-```java
-em.createQuery("from Book order by name nulls first", Book.class)
-    .getResultStream()
-    .forEach(book -> LOG.debug("sorted with nulls first: {}", book));
-```
-
-This query ensures that results with `null` in the `name` field appear first.
-
-### Additional SQL Functions: `left`, `right`, `cast`, `replace`
-
-Standard SQL functions such as `left`, `right`, `cast`, and `replace` are now available in JPQL, reducing the need to fall back to native queries:
-
-```java
-em.createQuery("""
-        select left(name, 5),
-               right(name, 2),
-               cast(price as Integer),
-               replace(name, ' ', '_'),
-               name
-        from Book
-        """, Object[].class)
-    .getResultStream()
-    .forEach(book -> LOG.debug("new functions result: {}", java.util.Arrays.toString(book)));
-```
-
-### Set Operationss: `union`, `intersect`, and `except`
-
-Several *set operators* in SQL, such as `union`, `intersect`, and `except`, have also been introduced in JPQL. These operators allow you to combine, compare, or subtract the results of two or more SELECT queries, treating the results as mathematical sets. Let’s look at some examples to demonstrate their usage.
-
-This query combines person full names and book author names, returning a distinct list of all names.
-
-```java
-// query union book name and person name
-em.createQuery("""
-            select c.firstName ||' '|| c.lastName from Person c
-            union
-            select b.author.name  from Book b
-            """, String.class)
-    .getResultStream()
-    .forEach(name -> LOG.debug("query union book name and person name: {}", name));
-```
-
-This query returns names that exist both as person full names and book author names.
-
-```java
-// intersect book name and person name
-em.createQuery("""
-            select c.firstName ||' '|| c.lastName from Person c
-            intersect
-            select b.author.name  from Book b
-            """, String.class)
-    .getResultStream()
-    .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
-```
-
-This query returns person full names that are not book author names.
-
-```java
-// except book name and person name
-em.createQuery("""
-            select c.firstName ||' '|| c.lastName from Person c
-            except
-            select b.author.name  from Book b
-            """, String.class)
-    .getResultStream()
-    .forEach(name -> LOG.debug("except book name and person name: {}", name));
-```
-
-## API Enhancements
 
 ### Functional Transaction Operations
 
@@ -286,134 +410,4 @@ em.runWithConnection((Connection conn) -> {
 ```
 
 There is no need to manage the `Connection` lifecycle yourself, and be careful not to close it inside the execution block.
-
-### Entity Mapping Improvements
-
-#### Package-Level Generator Definitions
-
-Before 3.2, when using `SequenceGenerator` or `TableGenerator`, you had to declare them with `@GeneratedValue` in the entity classes like this. 
-
-```java
-@Entity
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="blog_seq")
-    @SequenceGenerator(name = "blog_seq", initialValue = 1, allocationSize = 10)
-    private Long id;
-    // ...
-}
-```
-
-It is a little tedious to set it up in every class.
-
-Starting with version 3.2, Jakarta Persistence allows you to define identity generators at the package level. When a generator is declared in a `package-info.java` file, it will be automatically applied to all entity classes within that package.
-
-For example, you can declare generators as follows in your `package-info.java`:
-
-```java
-@SequenceGenerator(name = "blog_seq", initialValue = 1, allocationSize = 10)
-@TableGenerator(
-    name = "tbl_id_gen",
-    table = "id_gen",
-    pkColumnName = "gen_key",
-    pkColumnValue = "id",
-    valueColumnName = "gen_val",
-    allocationSize = 10
-)
-package com.example.blog;
-
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.TableGenerator;
-```
-
-Once defined, your entity classes can simply reference these generators:
-
-```java
-@Entity
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    // ...
-}
-
-@Entity
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "tbl_id_gen")
-    private Long id;
-    // ...
-}
-```
-
-The persistence provider will automatically discover the generators defined in `package-info.java` and apply them to the corresponding entities.
-
-#### Ongoing Java 8 Date and Time API Enhancements
-
-With version 3.2, the legacy `java.util.Date` and `java.sql.Date` types are now deprecated. It is recommended to use the modern Java 8 Date and Time API instead when starting a new project.
-
-Additionally, `Instant` and `Year` are now supported as basic types:
-
-```java
-class Book {
-    Instant createdAt;
-    Year publicationYear;
-}
-```
-
-Version 3.2 also introduces support for using `Instant` as the entity version type:
-
-```java
-class Book {
-    @Version
-    Instant version;
-}
-```
-
-#### New Attributes in `@Column` Annotation
-
-Jakarta Persistence 3.2 introduces two new attributes to the `@Column` annotation: `comment` and `check`, offering richer schema generation capabilities.
-
-```java
-@Entity
-class Post {
-
-    @Column(
-        name = "title",
-        nullable = false,
-        length = 100,
-        unique = true,
-        comment = "Post title",
-        check = @CheckConstraint(
-            name = "title_min_length",
-            constraint = "length(title) > 10"
-        )
-    )
-    private String title;
-
-    // ...
-}
-```
-
-The new `check` attribute allows you to define check constraints at the column level, which will be reflected in the generated database schema:
-
-```sql
-title VARCHAR(100) NOT NULL UNIQUE /* Post title */ CHECK (length(title) > 10)
-```
-
-Another improvement in 3.2 is the `secondPrecision` attribute, which can be set on temporal columns to control the precision of persisted timestamp values. This is particularly useful for ensuring consistency across different persistence providers.
-
-```java
-@Column(name = "created_at", secondPrecision = 3)
-private Instant createdAt;
-```
-
-This addresses previous issues where different JPA providers handled timestamp precision inconsistently. For example, I encountered this while contributing to [Eclipse Cargo Tracker](https://github.com/eclipse-ee4j/cargotracker/blob/master/src/main/java/org/eclipse/cargotracker/domain/model/voyage/CarrierMovement.java#L64).
-
-
-
-
-
-
-
 
