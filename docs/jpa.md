@@ -129,7 +129,37 @@ em.createQuery("""
     .forEach(name -> LOG.debug("except book name and person name: {}", name));
 ```
 
-The Criteria API also added these changes in the *type-safe* Java form.  
+While we've covered the exciting changes to JPQL syntax, it's worth noting that all these enhancements are also fully supported by the Criteria API. This means you can harness the power of these new features using type-safe Java code, adding another layer of robustness to your queries. The Criteria API also introduces subtle improvements, such as the introduction of the new `CriteriaSelect` interface, further streamlining query construction.
+
+### New `CriteriaSelect` Interface
+
+Jakarta Persistence 3.2 brings an exciting enhancement to the type-safe Java form of the Criteria API: the new `CriteriaSelect` interface. This top-level query interface is designed to handle `union` and `intersect` operations elegantly.
+
+Let's look at how the `CriteriaSelect` simplifies converting a traditional JPQL union query into a type-safe Criteria API equivalent:  
+
+```java
+CriteriaBuilder cb = em.getCriteriaBuilder();
+
+// First part of the union: select c.firstName || ' ' || c.lastName from Person c
+CriteriaQuery<String> personQuery = cb.createQuery(String.class);
+Root<Person> personRoot = personQuery.from(Person.class);
+personQuery.select(cb.concat(List.of(personRoot.get(Person_.FIRST_NAME), cb.literal(" "), personRoot.get(Person_.LAST_NAME))));
+
+// Second part of the union: select b.author.name from Book b
+CriteriaQuery<String> bookQuery = cb.createQuery(String.class);
+Root<Book> bookRoot = bookQuery.from(Book.class);
+bookQuery.select(bookRoot.get("author").get("name"));
+
+// Combine the two queries with UNION
+// Jakarta Persistence 3.2 adds union() to CriteriaBuilder
+CriteriaSelect<String> unionQuery = cb.union(personQuery, bookQuery);
+
+em.createQuery(unionQuery)
+        .getResultStream()
+        .forEach(name -> LOG.info("query union book name and person name: " + name));
+```
+
+As you can see, when you combine two queries using `CriteriaBuilder.union(...)`, the method now returns a `CriteriaSelect` object. This is a significant change, as `CriteriaSelect` acts as the parent interface for the existing `CriteriaQuery`, providing a unified way to manage these set operations.
 
 ## Entity Mapping Improvements
 
