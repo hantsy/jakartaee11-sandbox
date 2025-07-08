@@ -607,9 +607,9 @@ Here, we highlight the API improvements in Jakarta Persistence 3.2 that offer ta
 
 ## Jakarta EE Integration
 
-In Jakarta EE environments, you can use standard CDI `@Inject` to inject `EntityManagerFactory` or `EntityManager` instances directly into your CDI beans. This means you no longer need to use `@PersistenceUnit` or `@PersistenceContext` to inject `EntityManagerFactory` or `EntityManager`.
+In Jakarta EE environments, you no longer need to use `@PersistenceUnit` or `@PersistenceContext` to inject `EntityManagerFactory` or `EntityManager` in the Jakarta EE components. Instead, you can use standard CDI `@Inject` to inject them like injecting regular CDI beans.
 
-For example, to inject the default `EntityManager`, before 3.2, you can use `@PersistenceContext` to inject an `EntityManager` bean that matches the default persistence unit definition in the *persistence.xml* file:
+For example, before 3.2, you can use `@PersistenceContext` to inject an `EntityManager` bean that matches the default persistence unit definition in the *persistence.xml* file:
 
 ```java
 @PersistenceContext
