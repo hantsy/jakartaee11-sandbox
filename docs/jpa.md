@@ -734,7 +734,7 @@ To run the tests on a *managed* Glassfish, execute:
 mvn clean verify -Parq-managed-glassfish
 ```
 
-It utilizes the GlassFish Managed Adapter for Arquillian and runs tests on real Jakarta application servers.
+It utilizes the GlassFish Managed Adapter for Arquillian and runs tests on the real GlassFish servers.
 
 > [!NOTE]
 > For more information about Arquillian, visit https://www.arquillian.org.
