@@ -582,7 +582,7 @@ LOG.debug("book getSingleResultOrNull result: {}", nullableResult);
 Now you never have to worry about catching a `NoResultException`.
 
 > [!Note]
-> When representing the presence or absence of a single result, I would prefer to use `Optional<T>` to align with modern Java best practices. Check the issue on GitHub that talks about this topic: [jakartaee/persistence#479](https://github.com/jakartaee/persistence/issues/479).
+> When representing the presence or absence of a single result, I would prefer to use `Optional<T>` to align with modern Java best practices. Check the issue: [jakartaee/persistence#479](https://github.com/jakartaee/persistence/issues/479).
 
 ### New Method `getReference(T)` in `EntityManager`
 
