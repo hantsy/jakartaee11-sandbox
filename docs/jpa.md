@@ -90,7 +90,7 @@ em.createQuery("""
 
 Several *set operators* in SQL, such as `union`, `intersect`, and `except`, have also been introduced in JPQL. These operators allow you to combine, compare, or subtract the results of two or more SELECT queries, treating the results as mathematical sets. Let’s examine some examples to illustrate their usage.
 
-This query combines person full names and book author names, returning a distinct list of all names.
+The following query combines person full names and book author names, returning a distinct list of all names.
 
 ```java
 // query union book name and person name
@@ -116,7 +116,7 @@ em.createQuery("""
     .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
 ```
 
-This query returns person full names that are not book author names.
+This query returns the person's full names that are not the book author's names.
 
 ```java
 // except book name and person name
@@ -128,6 +128,8 @@ em.createQuery("""
     .getResultStream()
     .forEach(name -> LOG.debug("except book name and person name: {}", name));
 ```
+
+The Criteria API also added these changes in the *type-safe* Java form.  
 
 ## Entity Mapping Improvements
 
