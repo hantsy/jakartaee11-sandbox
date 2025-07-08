@@ -653,11 +653,11 @@ All [sample code](https://github.com/hantsy/jakartaee11-sandbox) referenced in t
 
 ### Hibernate Example Project
 
-You can find the Hibernate example here: https://github.com/hantsy/jakartaee11-sandbox/tree/master/hibernate.
+You can find the Hibernate example here: https://github.com/hantsy/jakartaee11-sandbox/tree/master/hibernate, which demonstrates running Jakarta Persistence code in Java SE environments.
 
-Import the project into your favorite IDE.
+Check out the source code, and import the project into your favorite IDE.
 
-The project includes dependencies for Hibernate ORM and the Jakarta Persistence API:
+As you see, the project includes dependencies for Hibernate ORM and the Jakarta Persistence API:
 
 ```xml
 <dependency>
@@ -677,7 +677,7 @@ The project includes dependencies for Hibernate ORM and the Jakarta Persistence 
 </dependency>
 ```
 
-To generate static metamodel classes for your entities, add `hibernate-processor` to the `annotationProcessorPaths` section of the `maven-compiler-plugin` configuration:
+To generate static metamodel classes for your entities, you should add `hibernate-processor` to the `annotationProcessorPaths` section of the `maven-compiler-plugin` configuration:
 
 ```xml
 <plugins>
@@ -702,14 +702,9 @@ You can explore the test code in the project to see Jakarta Persistence 3.2 feat
 
 ### Jakarta EE Example Project
 
-The Jakarta EE example is available at: https://github.com/hantsy/jakartaee11-sandbox/tree/master/persistence. This project is designed to run on Jakarta EE application servers such as GlassFish 8.x or WildFly 37+.
+The Jakarta EE example is available at: https://github.com/hantsy/jakartaee11-sandbox/tree/master/persistence. This sample project demonstrates the integration of Jakarta Persistence 3.2 and CDI in a Jakarta EE environment, and it is designed to run on Jakarta EE application servers such as GlassFish 8.x or WildFly 37+.
 
-Tests are written using the Arquillian framework.
-
-> [!NOTE]
-> For more information about Arquillian, visit https://www.arquillian.org.
-
-In this project, you do not need to add an extra persistence provider dependency. Jakarta EE containers provide it automatically at runtime.
+In this project, you do not need to add an extra persistence provider dependency. Jakarta EE application servers provide it automatically at runtime.
 
 Here we configured EclipseLink to generate static metamodel classes:
 
@@ -733,13 +728,16 @@ Here we configured EclipseLink to generate static metamodel classes:
 </plugins>
 ```
 
-This sample demonstrates the integration of Jakarta Persistence 3.2 and CDI in a Jakarta EE environment.
-
-To run the tests using the GlassFish Managed Adapter for Arquillian, execute:
+To run the tests on a *managed* Glassfish, execute:
 
 ```shell
 mvn clean verify -Parq-managed-glassfish
 ```
+
+It utilizes the GlassFish Managed Adapter for Arquillian and runs tests on real Jakarta application servers.
+
+> [!NOTE]
+> For more information about Arquillian, visit https://www.arquillian.org.
 
 ## Summary
 
