@@ -133,9 +133,9 @@ While we've covered the exciting changes to JPQL syntax, it's worth noting that 
 
 ### New `CriteriaSelect` Interface
 
-Jakarta Persistence 3.2 brings an exciting enhancement to the type-safe Java form of the Criteria API: the new `CriteriaSelect` interface. This top-level query interface is designed to handle `union` and `intersect` operations elegantly.
+The new `CriteriaSelect` interface is a top-level interface designed to handle `union` and `intersect` operations elegantly.
 
-Let's look at how the `CriteriaSelect` simplifies converting a traditional JPQL union query into a type-safe Criteria API equivalent:  
+Let's convert the former JPQL `union` query example into a type-safe Criteria API equivalent:  
 
 ```java
 CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -159,7 +159,7 @@ em.createQuery(unionQuery)
         .forEach(name -> LOG.info("query union book name and person name: " + name));
 ```
 
-As you can see, when you combine two queries using `CriteriaBuilder.union(...)`, the method now returns a `CriteriaSelect` object. This is a significant change, as `CriteriaSelect` acts as the parent interface for the existing `CriteriaQuery`, providing a unified way to manage these set operations.
+As you can see, when you combine two queries using `CriteriaBuilder.union(...)`, the method now returns a `CriteriaSelect` object, not a `CriteriaQuery`. This is a significant change, as `CriteriaSelect` acts as the parent interface for the existing `CriteriaQuery`, providing a unified way to manage these set operations.
 
 ## Entity Mapping Improvements
 
