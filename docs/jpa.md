@@ -148,7 +148,7 @@ public class Post {
 }
 ```
 
-It is a little tedious to set it up in every class.
+It can be a bit tedious to set up in every class.
 
 Starting with version 3.2, Jakarta Persistence allows you to define identity generators at the package level. When a generator is declared in a `package-info.java` file, it will be automatically applied to all entity classes within that package.
 
@@ -247,7 +247,7 @@ The new `check` attribute allows you to define check constraints at the column l
 title VARCHAR(100) NOT NULL UNIQUE /* Post title */ CHECK (length(title) > 10)
 ```
 
-Another improvement in 3.2 is the `secondPrecision` attribute, which can be set on temporal columns to control the precision of persisted timestamp values. This is particularly useful for ensuring consistency across different persistence providers.
+Another improvement in 3.2 is the `secondPrecision` attribute, which can be set on temporal columns to control the precision of persisted timestamp values. This is particularly useful for ensuring consistency across different persistence providers and various databases.
 
 ```java
 @Column(name = "created_at", secondPrecision = 3)
