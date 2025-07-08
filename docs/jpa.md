@@ -406,7 +406,7 @@ emf.getSchemaManager().create(true);  // if true, applies changes to the databas
 
 ### Functional Transactions
 
-Before 3.2, transaction boundaries were managed as follows:
+Before 3.2, you could control the transaction boundaries manually in code as follows:
 
 ```java
 EntityTransaction tx = em.getTransaction();
@@ -420,7 +420,7 @@ try {
 }
 ```
 
-Jakarta Persistence 3.2 introduces two new methods, `runInTransaction` and `callInTransaction`, on `EntityManagerFactory` to execute logic within a transactional context.
+Jakarta Persistence 3.2 introduces two new methods, `runInTransaction` and `callInTransaction`, on `EntityManagerFactory`, which allow you to execute logic within a transactional context.
 
 The following is an example of persisting an `Entity` object and does not return a result. It is suitable for mutating operations such as insert, update, or delete.
 
@@ -437,7 +437,7 @@ emf.runInTransaction(em -> {
 });
 ```
 
-Alternatively,  the `callInTransaction` execution block returns a result. It is ideal for selection queries.
+Alternatively, the `callInTransaction` method is designed to return a result after the logic is executed. It is ideal for selection queries.
 
 ```java
 emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
@@ -463,11 +463,11 @@ em.runWithConnection(conn -> {
 });
 ```
 
-This method is transaction-aware and joins any existing transaction. You don’t need to manage or close the `Connection` yourself inside the block.
+This method is transaction-aware and joins any existing transaction. You don’t need to manage transactions and care about the lifecycle of the input Connection object. Do not try to close the `Connection` yourself inside the block.
 
 ### Type-Safe Options
 
-In Jakarta Persistence 3.2, the 'EntityManager' methods `find`, `refresh`, and `lock` now accept type-safe `FindOption`, `RefreshOption`, and `LockOption` respectively, replacing the previous use of a generic `Map<String, Object>` for properties.
+In Jakarta Persistence 3.2, the 'EntityManager' overloads methods such as `find`, `refresh`, and `lock` to accept type-safe `FindOption`, `RefreshOption`, and `LockOption` respectively, replacing the previous use of a generic `Map<String, Object>` for properties.
 
 Before 3.2, you could tune the `find` method with a general `Map` parameter.
 
@@ -514,7 +514,7 @@ Suppose you have the following entity:
 public class Post { ... }
 ```
 
-After compilation, the generated `Post_` metamodel class will contain constants for the named query and entity graph:
+After compilation, the generated `Post_` metamodel class will contain constants for the named query `byTitle` and named entity graph `withComments`:
 
 ```java
 public abstract class Post_ {
@@ -524,7 +524,7 @@ public abstract class Post_ {
 }
 ```
 
-Using the constants for queries and entity graphs in your code:
+Then you can use the constants for queries and entity graphs to replace the literal text.
 
 ```java
 // Referencing the named query using the metamodel constant
@@ -568,7 +568,7 @@ try {
 }
 ```
 
-Jakarta Persistence 3.2 addresses this by introducing the new `getSingleResultOrNull` method to `Query` and its derived interfaces, including `TypedQuery<T>`, among others. This method returns `null` directly when no result is found.
+Jakarta Persistence 3.2 solves this by introducing the new `getSingleResultOrNull` method to `Query` and its derived interfaces, including `TypedQuery<T>`, among others. This method returns `null` directly when no result is found.
 
 Here is an example using `getSingleResultOrNull`:
 
@@ -581,18 +581,18 @@ LOG.debug("book getSingleResultOrNull result: {}", nullableResult);
 
 Now you never have to worry about catching a `NoResultException`.
 
->[!Note]
+> [!Note]
 > When representing the presence or absence of a single result, I would prefer to use `Optional<T>` to align with modern Java best practices.
 
 ### New Method `getReference(T)` in `EntityManager`
 
-As an alternative to the existing `getReference(Class, id)`, the new method provides a way to obtain a reference to an entity instance using an object with the same type and primary key. The supplied object may be in a managed or detached state, but it must not be new or removed.
+As an alternative to the existing `getReference(Class, id)`, the new method provides a way to obtain a reference to an entity using a given object with the same primary key. The supplied object may be in a *managed* or *detached* state, but it must not be *new* or *removed*.
 
 This method is beneficial when you need to set an association using detached entity instances, for example:
 
 ```java
 var post = ...
-// The session is closed, so the `post` instance is now detached
+// The session is closed here, so the `post` instance is now detached
 
 // In a new session
 comment.setPost(em.getReference(post));
@@ -601,13 +601,20 @@ comment.setPost(em.getReference(post));
 
 This approach avoids the need to fetch the post entity from the database again.
 
-Here, we highlight the API improvements in Jakarta Persistence 3.2 that offer tangible benefits to application developers. While there are many other minor enhancements not covered here, you can find the full list of changes in the [Jakarta Persistence 3.2 specification](https://jakarta.ee/specifications/persistence/3.2/).
+Here, we highlight the API improvements in Jakarta Persistence 3.2 that offer tangible benefits to application developers. While there are many other minor enhancements not covered here, you can find the complete list of changes in the [Jakarta Persistence 3.2 specification](https://jakarta.ee/specifications/persistence/3.2/).
 
 ## Jakarta EE Integration
 
-In Jakarta EE environments, you can use standard CDI annotations to inject `EntityManagerFactory` or `EntityManager` directly into your CDI beans, following modern CDI practices. This means you no longer need to use `@PersistenceUnit` or `@PersistenceContext`, just use `@Inject` as you would for any other CDI bean.
+In Jakarta EE environments, you can use standard CDI `@Inject` to inject `EntityManagerFactory` or `EntityManager` instances directly into your CDI beans. This means you no longer need to use `@PersistenceUnit` or `@PersistenceContext` to inject `EntityManagerFactory` or `EntityManager`.
 
-For example, to inject the default `EntityManager`:
+For example, to inject the default `EntityManager`, before 3.2, you can use `@PersistenceContext` to inject an `EntityManager` bean that matches the default persistence unit definition in the *persistence.xml* file:
+
+```java
+@PersistenceContext
+private EntityManager em;
+```
+
+In 3.2, you can use the CDI `@Inject` instead.
 
 ```java
 @Inject
