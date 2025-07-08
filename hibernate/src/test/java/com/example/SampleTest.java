@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.addressbook.Person;
+import com.example.addressbook.Person_;
 import com.example.blog.Comment;
 import com.example.blog.Post;
 import com.example.blog.Post_;
@@ -11,6 +12,10 @@ import com.example.record.RecordEmbeddedEntity;
 import com.example.record.RecordEmbeddedIdEntity;
 import com.example.record.RecordIdClassEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaSelect;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -18,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -167,6 +173,31 @@ public class SampleTest {
                                 """, String.class)
                         .getResultStream()
                         .forEach(name -> LOG.debug("except book name and person name: {}", name));
+
+
+                /////////////////////////////////////////
+                // an example of using CriteriaSelect,
+                /////////////////////////////////////////
+
+                CriteriaBuilder cb = em.getCriteriaBuilder();
+
+                // First part of the union: select c.firstName || ' ' || c.lastName from Person c
+                CriteriaQuery<String> personQuery = cb.createQuery(String.class);
+                Root<Person> personRoot = personQuery.from(Person.class);
+                personQuery.select(cb.concat(List.of(personRoot.get(Person_.FIRST_NAME), cb.literal(" "), personRoot.get(Person_.LAST_NAME))));
+
+                // Second part of the union: select b.author.name from Book b
+                CriteriaQuery<String> bookQuery = cb.createQuery(String.class);
+                Root<Book> bookRoot = bookQuery.from(Book.class);
+                bookQuery.select(bookRoot.get("author").get("name"));
+
+                // Combine the two queries with UNION
+                // Jakarta Persistence 3.2 adds union() to CriteriaBuilder
+                CriteriaSelect<String> unionQuery = cb.union(personQuery, bookQuery);
+
+                em.createQuery(unionQuery)
+                        .getResultStream()
+                        .forEach(name -> LOG.info("query union book name and person name: " + name));
 
             });
 
