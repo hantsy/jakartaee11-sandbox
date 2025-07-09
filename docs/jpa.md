@@ -2,7 +2,7 @@
 
 The Jakarta Persistence API (JPA) is the standard for persistence and object-relational mapping in Java environments. It provides a straightforward API for executing queries using the Jakarta Persistence Query Language (JPQL), as well as an alternative Criteria API for constructing type-safe queries in Java code.
 
-Jakarta Persistence 3.2 introduces numerous enhancements and new features. For a comprehensive list, see the [Jakarta Persistence 3.2 specification page](https://jakarta.ee/specifications/persistence/3.2/).
+As a minor upgrade, Jakarta Persistence 3.2 adds numerous enhancements and new features. For a comprehensive list, see the [Jakarta Persistence 3.2 specification page](https://jakarta.ee/specifications/persistence/3.2/).
 
 ## JPQL Improvements
 
@@ -18,7 +18,7 @@ em.createQuery("from Book where name like '%Hibernate'", Book.class)
     .forEach(book -> LOG.debug("query result without select:{}", book));
 ```
 
-Here, the `select` keyword is omitted. The query is equivalent to the classic form:
+Here, the `select` keyword is omitted. The query in above codes is equivalent to the following classic form:
 
 ```java
 select b from Book b ...
@@ -29,6 +29,7 @@ select b from Book b ...
 Jakarta Persistence 3.2 introduces the functions `id(this)`, `count(this)`, and `version(this)`, allowing you to query an entity's ID, count, and version, respectively:
 
 ```java
+// count book entity
 var count = em.createQuery("select count(this) from Book")
     .getSingleResult();
 LOG.debug("count(this) result: {}", count);
@@ -41,7 +42,7 @@ em.createQuery("select id(this), version(this) from Book", Object[].class)
 
 ### String Concatenation
 
-JPQL now supports SQL-style string concatenation using `||`:
+In 3.2, JPQL now supports SQL-style string concatenation using `||`:
 
 ```java
 // Query books where the author's name matches the person's first and last name
@@ -133,7 +134,7 @@ While we've covered the exciting changes to JPQL syntax, it's worth noting that 
 
 ### New `CriteriaSelect` Interface
 
-The new `CriteriaSelect` interface is a top-level interface designed to handle `union` and `intersect` operations elegantly.
+The new `CriteriaSelect` interface is a top-level interface designed to represent a general query, including `union` and `intersect` operations elegantly.
 
 Let's convert the former JPQL `union` query example into a type-safe Criteria API equivalent:  
 
@@ -163,7 +164,7 @@ As you can see, when you combine two queries using `CriteriaBuilder.union(...)`,
 
 ## Entity Mapping Improvements
 
-Jakarta Persistence 3.2 introduces several enhancements to the definition of Entity classes.
+Jakarta Persistence 3.2 introduces several enhancements to the definitions and mappings of the Entity classes.
 
 ### Package-Level Generator Definitions
 
@@ -180,9 +181,9 @@ public class Post {
 }
 ```
 
-It can be a bit tedious to set up in every class.
+It could be a bit tedious to set up in every class.
 
-Starting with version 3.2, Jakarta Persistence allows you to define identity generators at the package level. When a generator is declared in a `package-info.java` file, it will be automatically applied to all entity classes within that package.
+Starting with version 3.2, Jakarta Persistence allows you to define identity generators at the package level. When a generator is declared in a `package-info.java` file, it will be automatically applied to all entity classes within that package according to generator types.
 
 For example, you can declare generators as follows in your `package-info.java`:
 
@@ -224,9 +225,11 @@ public class Comment {
 
 The persistence provider will automatically discover the generators defined in `package-info.java` and apply them to the corresponding entities.
 
-### Ongoing Java 8 Date and Time API Enhancements
+### Ongoing Java 8 DateTime API Enhancements
 
-With version 3.2, the support for legacy `Date`, `Calendar`, `Time`, and `java.sql.Date` types is now deprecated. It is recommended to use the modern Java 8 Date and Time API instead when starting a new project.
+Before 3.2, Java 8 DateTime APIs are already supported in Jakarta Peristence, as the alternatives of the legacy Date types from `java.util` and `java.sql` packages. 
+
+With version 3.2, the support for legacy `Date`, `Calendar`, `Time`, and `java.sql.Date` types is now deprecated. It is recommended to use the modern Java 8 DateTime API instead when starting a new project.
 
 Additionally, `Instant` and `Year` are now supported as basic types:
 
@@ -246,7 +249,7 @@ class Book {
 }
 ```
 
-With the depreciation of the legacy date types, annotations such as `@Temporal` are also deprecated in 3.2.
+With the deprecation of the legacy date types, annotations such as `@Temporal` are also deprecated in 3.2.
 
 ### New Attributes in `@Column` Annotation
 
@@ -335,9 +338,12 @@ Now, it will store the field value marked with `@EnumeratedValue` instead of the
 
 ### Record Types as Embeddables
 
-Record type support is a significant addition in Jakarta EE 11. With Jakarta Persistence 3.2, Java records are now fully supported and can be used as `@Embeddable` types. For more details, please refer to the dedicated [Java Record Support in Jakarta EE 11](./record.md) document.
+Java record type support is a significant addition in Jakarta EE 11. With Jakarta Persistence 3.2, Java records are now fully supported and can be used as `@Embeddable` types. For more details, please refer to the dedicated [Java Record Support in Jakarta EE 11](./record.md) document.
 
 ## API Enhancements
+
+There are several small developer-oreinted improvements added in the `EntityManager` and `Query`, which will promote the development productivity.
+
 ### Programmatic Configuration
 
 Before version 3.2, in a Java SE environment, creating an `EntityManagerFactory` required a *persistence.xml* file placed in the `src/main/resources/META-INF` directory of your project.
@@ -398,7 +404,7 @@ Then you can create an `EntityManagerFactory` instance using the following metho
 var emf = configuration.createEntityManagerFactory();
 ```
 
-Or using the new `Persistence.createEntityManagerFactory` variant method, which accepts a `PersistenceConfiguration` as the input parameter:
+Or using the new `Persistence.createEntityManagerFactory` variant method, which accepts a `PersistenceConfiguration` as the value parameter:
 
 ```java
 var emf = Persistence.createEntityManagerFactory(configuration);
@@ -406,7 +412,9 @@ var emf = Persistence.createEntityManagerFactory(configuration);
 
 ### Schema Management
 
-Before 3.2, you could configure and export the database schema using properties in *persistence.xml*:
+Before 3.2, you could configure using *script files* or *entities* or both to manage the database schema generation at runtime. 
+
+In the following example we configure and export the database schema using properties in *persistence.xml*:
 
 ```xml
 <persistence ...>
@@ -433,12 +441,13 @@ emf.getSchemaManager().create(true);  // if true, applies changes to the databas
 
 > [!Note]
 > The `SchemaManager` does not support exporting the schema to DDL script files.
-> In 3.2, the `Persistence.generate` does not involve a variant and accepts a `PersistenceConfiguration` as a parameter (i.e., `Persistence.generate(PersistenceConfiguration)` does not exist).
+>
+> And in 3.2, the `Persistence.generate` does not involve a variant and accepts a `PersistenceConfiguration` parameter (i.e., `Persistence.generate(PersistenceConfiguration)` does not exist).
 
 
 ### Functional Transactions
 
-Before 3.2, you could control the transaction boundaries manually in code as follows:
+Before 3.2, you could control the transaction boundaries manually as follows:
 
 ```java
 EntityTransaction tx = em.getTransaction();
@@ -469,7 +478,7 @@ emf.runInTransaction(em -> {
 });
 ```
 
-Alternatively, the `callInTransaction` method is designed to return a result after the logic is executed. It is ideal for selection queries.
+Alternatively, the `callInTransaction` method is designed for the case that needs to return a result after the logic is executed. It is ideal for selection queries.
 
 ```java
 emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
@@ -477,9 +486,9 @@ emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
     .forEach(book -> LOG.debug("saved book: {}", book));
 ```
 
-With these methods, you no longer need to explicitly handle transaction operations, such as begin, commit, and rollback. Every execution block is automatically wrapped in a transaction boundary. 
+With these methods, you no longer need to explicitly treat with transaction operations, such as begin, commit, and rollback. Every execution block is automatically wrapped in an active transaction context. 
 
-Additionally, the `EntityManager` adds two similar methods: `runWithConnection` and `callWithConnection`, which bind database operations to an immutable `Connection` abstraction. For databases using JDBC, these methods let you work with a JDBC `Connection` object.
+Additionally, the `EntityManager` adds two similar methods: `runWithConnection` and `callWithConnection`, which bind database operations to an immutable `Connection` abstraction. Typicially, for the databases using JDBC, these methods let you work with a JDBC `Connection` object.
 
 Here’s how to use `runWithConnection`:
 
@@ -495,11 +504,11 @@ em.runWithConnection(conn -> {
 });
 ```
 
-This method is transaction-aware and joins any existing transaction. You don’t need to manage transactions and care about the lifecycle of the input Connection object. Do not try to close the `Connection` yourself inside the block.
+This method is transaction-aware and joins any existing transaction. You don’t need to manage transactions and care about the lifecycle of the incoming Connection object. Do not try to close the `Connection` yourself inside the block.
 
 ### Type-Safe Options
 
-In Jakarta Persistence 3.2, the 'EntityManager' overloads methods such as `find`, `refresh`, and `lock` to accept type-safe `FindOption`, `RefreshOption`, and `LockOption` respectively, replacing the previous use of a generic `Map<String, Object>` for properties.
+In Jakarta Persistence 3.2, the 'EntityManager' overloads methods such as `find`, `refresh`, and `lock` to accept type-safe `FindOption`, `RefreshOption`, and `LockOption` respectively, replacing the previous use of a generic `Map<String, Object>` properties.
 
 Before 3.2, you could tune the `find` method with a general `Map` parameter.
 
@@ -556,7 +565,7 @@ public abstract class Post_ {
 }
 ```
 
-Then you can use the constants for queries and entity graphs to replace the literal text.
+Then you can use the constants for queries and entity graphs to replace the former literal text.
 
 ```java
 // Referencing the named query using the metamodel constant
@@ -571,7 +580,7 @@ Post result2 = em.find(Post.class, entity.getId(),
 LOG.debug("Query withComments result: {}", result2.getComments());
 ```
 
-You can also refer to attribute names via the static metamodel in relationship mappings:
+You can also refer to attribute names via constants in the static metamodel in relationship mappings:
 
 ```java
 @Entity
@@ -590,7 +599,9 @@ This approach ensures type safety and helps avoid errors caused by hard-coded st
 
 ### New Method `getSingleResultOrNull` in `Query`
 
-Before version 3.2, the `getSingleResult` method would return the single unique result if it existed; otherwise, it would throw a `NoResultException`. To return `null` instead, you had to write something like:
+Before version 3.2, the `getSingleResult` method would return the single unique result if it existed. Otherwise, it would throw a `NoResultException`. 
+
+To return `null` instead of throwing excpetions, you had to write something like:
 
 ```java
 try {
@@ -614,7 +625,7 @@ LOG.debug("book getSingleResultOrNull result: {}", nullableResult);
 Now you never have to worry about catching a `NoResultException`.
 
 > [!Note]
-> When representing the presence or absence of a single result, I would prefer to use `Optional<T>` to align with modern Java best practices. Check the issue: [jakartaee/persistence#479](https://github.com/jakartaee/persistence/issues/479).
+> When representing the presence or absence of a single result, I would prefer to use `Optional<T>` to align with modern Java best practices. See the issue: [jakartaee/persistence#479](https://github.com/jakartaee/persistence/issues/479).
 
 ### New Method `getReference(T)` in `EntityManager`
 
@@ -637,16 +648,14 @@ Here, we highlight the API improvements in Jakarta Persistence 3.2 that offer ta
 
 ## Jakarta EE Integration
 
-In Jakarta EE environments, you no longer need to use `@PersistenceUnit` or `@PersistenceContext` to inject `EntityManagerFactory` or `EntityManager` in the Jakarta EE components. Instead, you can use standard CDI `@Inject` to inject them like injecting regular CDI beans.
-
-For example, before 3.2, you can use `@PersistenceContext` to inject an `EntityManager` bean that matches the default persistence unit definition in the *persistence.xml* file:
+In Jakarta EE environments, before 3.2, you can use `@PersistenceContext` to inject an `EntityManager` bean that matches the default persistence unit definition in the *persistence.xml* file:
 
 ```java
 @PersistenceContext
 private EntityManager em;
 ```
 
-In 3.2, you can use the CDI `@Inject` instead.
+When come to 3.2, you no longer need to use `@PersistenceUnit` or `@PersistenceContext` to inject `EntityManagerFactory` or `EntityManager` in the Jakarta EE components. Instead, you can use standard CDI `@Inject` to inject them like injecting regular CDI beans.
 
 ```java
 @Inject
@@ -692,11 +701,11 @@ All [sample code](https://github.com/hantsy/jakartaee11-sandbox) referenced in t
 
 ### Hibernate Example Project
 
-You can find the Hibernate example here: https://github.com/hantsy/jakartaee11-sandbox/tree/master/hibernate, which demonstrates running Jakarta Persistence code in Java SE environments.
+You can find the Hibernate example here: https://github.com/hantsy/jakartaee11-sandbox/tree/master/hibernate, which demonstrates running Jakarta Persistence code in the Java SE environment.
 
 Check out the source code, and import the project into your favorite IDE.
 
-As you see, the project includes dependencies for Hibernate ORM and the Jakarta Persistence API:
+As you see, the project includes Hibernate ORM and the Jakarta Persistence API dependencies:
 
 ```xml
 <dependency>
@@ -716,7 +725,7 @@ As you see, the project includes dependencies for Hibernate ORM and the Jakarta 
 </dependency>
 ```
 
-To generate static metamodel classes for your entities, you should add `hibernate-processor` to the `annotationProcessorPaths` section of the `maven-compiler-plugin` configuration:
+To generate static metamodel classes for your entities at compile time, you should add `hibernate-processor` to the `annotationProcessorPaths` section of the `maven-compiler-plugin` configuration:
 
 ```xml
 <plugins>
@@ -741,9 +750,9 @@ You can explore the test code in the project to see Jakarta Persistence 3.2 feat
 
 ### Jakarta EE Example Project
 
-The Jakarta EE example is available at: https://github.com/hantsy/jakartaee11-sandbox/tree/master/persistence. This sample project demonstrates the integration of Jakarta Persistence 3.2 and CDI in a Jakarta EE environment, and it is designed to run on Jakarta EE application servers such as GlassFish 8.x or WildFly 37+.
+The Jakarta EE example is available at: https://github.com/hantsy/jakartaee11-sandbox/tree/master/persistence. This sample project demonstrates the integration of Jakarta Persistence 3.2 and CDI in the Jakarta EE environment, and it is designed to run on Jakarta EE application servers such as GlassFish 8.x or WildFly Preview 37+.
 
-In this project, you do not need to add an extra persistence provider dependency. Jakarta EE application servers provide it automatically at runtime.
+In this project, you do not need to add an extra persistence provider dependency. Jakarta EE application servers provide a Persistence provider implicitly at runtime.
 
 Here we configured EclipseLink to generate static metamodel classes:
 
