@@ -134,7 +134,7 @@ While we've covered the exciting changes to JPQL syntax, it's worth noting that 
 
 ### New `CriteriaSelect` Interface
 
-The new `CriteriaSelect` interface is a top-level interface designed to represent a general query, including `union` and `intersect` operations, in an elegant manner.
+The new `CriteriaSelect` interface is a top-level interface designed to represent a united general-purpose query, including `union` and `intersect` operations.
 
 Let's convert the former JPQL `union` query example into a type-safe Criteria API equivalent:  
 
@@ -160,7 +160,7 @@ em.createQuery(unionQuery)
         .forEach(name -> LOG.info("query union book name and person name: " + name));
 ```
 
-As you can see, when you combine two queries using `CriteriaBuilder.union(...)`, the method now returns a `CriteriaSelect` object, not a `CriteriaQuery`. This is a significant change, as `CriteriaSelect` acts as the parent interface for the existing `CriteriaQuery`, providing a unified way to manage these set operations.
+As you can see, when you combine two queries using `CriteriaBuilder.union(...)`, the method now returns a `CriteriaSelect` object, not a `CriteriaQuery`. This `CriteriaSelect` acts as the parent interface for the existing `CriteriaQuery`, providing a unified way to manage these set operations.
 
 ## Entity Mapping Improvements
 
