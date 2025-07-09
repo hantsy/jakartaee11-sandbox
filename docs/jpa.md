@@ -414,7 +414,7 @@ var emf = Persistence.createEntityManagerFactory(configuration);
 
 Before version 3.2, you could configure using *script files*, *entities*, or both to manage database schema generation at runtime. 
 
-In the following example, we configure and export the database schema using properties in *persistence.xml*:
+In the following example, we configure the schema-generation action and export the database schema using properties in *persistence.xml*:
 
 ```xml
 <persistence ...>
@@ -439,7 +439,7 @@ emf.getSchemaManager().drop(true);    // if true, applies changes to the databas
 emf.getSchemaManager().create(true);  // if true, applies changes to the database
 ```
 
-The `truncate` method could help reset the database when writing test codes.
+The `truncate` method could help reset the database when writing test code.
 
 > [!Note]
 > The `SchemaManager` does not support exporting the schema to DDL script files.
