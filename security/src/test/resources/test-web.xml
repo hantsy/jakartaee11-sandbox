@@ -31,4 +31,31 @@
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
 
+<!--    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>api</web-resource-name>
+            <url-pattern>/api/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>rest</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Profile Page</web-resource-name>
+            <url-pattern>/profile</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>web</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Test Servlet</web-resource-name>
+            <url-pattern>/test-servlet</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>web</role-name>
+        </auth-constraint>
+    </security-constraint>-->
 </web-app>

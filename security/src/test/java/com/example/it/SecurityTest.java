@@ -18,22 +18,23 @@ under the License.
  */
 package com.example.it;
 
-import com.example.*;
+import com.example.MultipleHttpAuthenticationMechanismHandler;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.HttpHeaders;
+import org.glassfish.jersey.client.ClientProperties;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -48,11 +49,15 @@ public class SecurityTest {
 
     @Deployment
     public static WebArchive createDeployment() {
+        final String WEBAPP_SRC = "src/main/webapp";
         WebArchive webArchive = ShrinkWrap.create(WebArchive.class)
                 .addPackage(MultipleHttpAuthenticationMechanismHandler.class.getPackage())
-                .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+                .addAsManifestResource("test-persistence.xml", "persistence.xml")
+                .addAsWebInfResource("test-beans.xml", "beans.xml")
                 .addAsWebInfResource("test-web.xml", "web.xml")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsWebInfResource("test-faces-config.xml", "faces-config.xml")
+                .addAsWebResource(new File(WEBAPP_SRC, "login.xhtml"))
+                .addAsWebResource(new File(WEBAPP_SRC, "profile.xhtml"));
 
         LOGGER.log(Level.INFO, "deployment archive: {0}", webArchive.toString(true));
         return webArchive;
@@ -66,40 +71,49 @@ public class SecurityTest {
     @BeforeEach
     public void setup() {
         LOGGER.log(Level.INFO, "deployment baseURL: {0}", baseUrl);
-        this.client = ClientBuilder.newClient();
+        this.client = ClientBuilder.newBuilder()
+                .property(ClientProperties.FOLLOW_REDIRECTS, false)
+                .build();
     }
 
     @Test
     @RunAsClient
-    public void testServletPath() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "servlet"));
+    public void testServletPathWithoutAuthInfo() throws Exception {
+        URI uri = URI.create(baseUrl.toExternalForm() + "test-servlet");
+        LOGGER.log(Level.INFO, "testServletPathWithoutAuthInfo url: {0}", uri);
+        var target = client.target(uri);
         try (var response = target.request().get()) {
-            LOGGER.info("response status: " + response.getStatus());
-            Assertions.assertEquals(401, response.getStatus());
+            LOGGER.info("testServletPathWithoutAuthInfo status: " + response.getStatus());
+            // when enabling Redirect.
+            Assertions.assertEquals(302, response.getStatus());
         }
     }
 
     @Test
     @RunAsClient
-    public void testServletPathWithAuth() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/hello"));
+    public void testRestApiWithAuth() throws Exception {
+        URI uri = URI.create(baseUrl.toExternalForm() + "api/hello");
+        LOGGER.log(Level.INFO, "testRestApiWithAuth url: {0}", uri);
+        var target = client.target(uri);
         try (var response = target.request()
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + new String(Base64.getEncoder().encode("restuser:password".getBytes(StandardCharsets.UTF_8))))
                 .get()) {
-            LOGGER.info("response status: " + response.getStatus());
+            LOGGER.info("testRestApiWithAuth status: " + response.getStatus());
             Assertions.assertEquals(200, response.getStatus());
         }
     }
 
     @Test
     @RunAsClient
-    public void testServletPathWithWrongRoles() throws Exception {
-        var target = client.target(URI.create(baseUrl.toExternalForm() + "api/hello"));
+    public void testRestApiWithWrongRoles() throws Exception {
+        URI uri = URI.create(baseUrl.toExternalForm() + "api/hello");
+        LOGGER.log(Level.INFO, "testRestApiWithWrongRoles url: {0}", uri);
+        var target = client.target(uri);
         try (var response = target.request()
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + new String(Base64.getEncoder().encode("webuser:password".getBytes(StandardCharsets.UTF_8))))
                 .get()) {
-            LOGGER.info("response status: " + response.getStatus());
-            Assertions.assertEquals(401, response.getStatus());
+            LOGGER.info("testRestApiWithWrongRoles status: " + response.getStatus());
+            Assertions.assertEquals(403, response.getStatus());
         }
     }
 }

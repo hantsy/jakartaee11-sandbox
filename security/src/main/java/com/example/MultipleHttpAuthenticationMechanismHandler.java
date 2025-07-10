@@ -37,9 +37,11 @@ public class MultipleHttpAuthenticationMechanismHandler implements HttpAuthentic
         String path = request.getRequestURI().substring(request.getContextPath().length());
         LOGGER.log(Level.INFO, "The request path(without context path): {0}", path);
         if (path.startsWith("/api")) {
+            LOGGER.log(Level.INFO, "Handling authentication using RestAuthenticationQualifier HttpAuthenticationMechanism...");
             return restAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
         }
 
+        LOGGER.log(Level.INFO, "Handling authentication using WebAuthenticationQualifier HttpAuthenticationMechanism...");
         return webAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
     }
 }

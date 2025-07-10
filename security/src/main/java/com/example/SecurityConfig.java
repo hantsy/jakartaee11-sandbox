@@ -1,5 +1,6 @@
 package com.example;
 
+import jakarta.annotation.security.DeclareRoles;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
@@ -15,7 +16,8 @@ import jakarta.security.enterprise.identitystore.InMemoryIdentityStoreDefinition
 @CustomFormAuthenticationMechanismDefinition(
         loginToContinue = @LoginToContinue(
                 loginPage = "/login.faces",
-                errorPage = "/login.faces?error"
+                errorPage = "/login.faces?error",
+                useForwardToLogin = false // use redirect
         ),
         qualifiers = {WebAuthenticationQualifier.class}
 )
@@ -26,6 +28,7 @@ import jakarta.security.enterprise.identitystore.InMemoryIdentityStoreDefinition
                 @Credentials(callerName = "restuser", password = "password", groups = {"rest"})
         }
 )
+@DeclareRoles({"web", "rest"})
 @ApplicationScoped
 public class SecurityConfig {
 }

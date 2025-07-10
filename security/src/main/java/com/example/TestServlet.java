@@ -1,6 +1,5 @@
 package com.example;
 
-import jakarta.annotation.security.DeclareRoles;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
@@ -13,8 +12,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
 
-@WebServlet("/servlet")
-@DeclareRoles({"web", "rest"})
+
+@WebServlet("/test-servlet")
+//@Authenticated
 @ServletSecurity(@HttpConstraint(rolesAllowed = "web"))
 public class TestServlet extends HttpServlet {
 
