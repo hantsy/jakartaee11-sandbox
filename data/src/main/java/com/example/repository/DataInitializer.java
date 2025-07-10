@@ -1,5 +1,7 @@
-package com.example;
+package com.example.repository;
 
+import com.example.domain.Comment;
+import com.example.domain.Post;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
@@ -16,9 +18,10 @@ public class DataInitializer {
     @Inject
     CommentRepository commentRepository;
 
-    // `@Observes Startup event` raised exception `No active contexts for scope type jakarta.enterprise.context.RequestScoped`
+    // `@Observes Startup event` or  `@Observes @Initialized(ApplicationScoped.class) Object any
+    // ` raised exception `jakarta.data.exceptions.DataException: No active transaction for update or delete query`
+    // public void init(@Observes Startup event) {
     // public void init(@Observes @Initialized(ApplicationScoped.class) Object any) {
-
     @PostConstruct
     public void init() {
         commentRepository.deleteAll();

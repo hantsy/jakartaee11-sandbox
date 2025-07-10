@@ -18,9 +18,10 @@ under the License.
  */
 package com.example.it;
 
-import com.example.Blogger;
-import com.example.Comment;
-import com.example.Post;
+import com.example.repository.Blogger;
+import com.example.domain.Post;
+import com.example.repository.DataInitializer;
+import com.example.repository.PostRepository;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -39,9 +40,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.example.domain.Status.DRAFT;
+import static com.example.domain.Status.PUBLISHED;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(ArquillianExtension.class)
@@ -53,6 +57,7 @@ public class BloggerTest {
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class)
                 .addPackage(Post.class.getPackage())
+                .addPackage(Blogger.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
@@ -85,6 +90,7 @@ public class BloggerTest {
                 ux.commit();
             }
         } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Transaction error: {0}", e.getMessage());
             ux.rollback();
         }
     }
@@ -97,42 +103,44 @@ public class BloggerTest {
         startTx();
         blogger.insert(post);
         endTx();
-        assertNotNull(post.getId());
+        UUID postId = post.getId();
+        LOGGER.log(Level.INFO, "insert post: {0}", new Object[]{postId});
+        assertNotNull(postId);
 
-        var foundPost = blogger.byId(post.getId());
+        var foundPost = blogger.byId(postId);
         assertTrue(foundPost.isPresent());
         Post savedPost = foundPost.get();
         assertEquals(post.getTitle(), savedPost.getTitle());
         assertEquals(post.getContent(), savedPost.getContent());
 
         var foundByStatus = blogger.byStatus(
-                com.example.Status.PUBLISHED,
+                DRAFT,
                 Order.by(Sort.desc("createdAt")),
                 Limit.of(10)
         );
-        assertEquals(1, foundByStatus.size());
-        assertEquals(post.getId(), foundByStatus.getFirst().getId());
+        assertEquals(3, foundByStatus.size());
 
+        // jakarta data page number starts with 1, NOTTTTTTT 0, I am crazy...
         var allPosts = blogger.allPosts("%My%", PageRequest.ofPage(1, 10, true));
         assertEquals(1, allPosts.totalElements());
-        assertEquals(post.getId(), allPosts.content().getFirst().id());
+        assertEquals(postId, allPosts.content().getFirst().id());
 
         savedPost.setTitle("New Title");
+        savedPost.setStatus(PUBLISHED);
         startTx();
         blogger.update(savedPost);
         endTx();
 
-        var updatedPost = blogger.byId(post.getId()).get();
-        assertEquals("New Title", updatedPost.getTitle());
+        var foundByStatusAfterUpdated = blogger.byStatus(
+                DRAFT,
+                Order.by(Sort.desc("createdAt")),
+                Limit.of(10)
+        );
+        assertEquals(2, foundByStatusAfterUpdated.size());
 
-//        var comment = new Comment();
-//        comment.setContent("My Comment");
-//        comment.setPost(post);
-//        startTx();
-//        blogger.insert(comment);
-//        endTx();
-//        assertNotNull(comment.getId());
+        var updatedPost = blogger.byId(postId);
+        assertTrue(updatedPost.isPresent());
+        assertEquals("New Title", updatedPost.get().getTitle());
     }
-
 
 }

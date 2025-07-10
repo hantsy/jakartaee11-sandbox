@@ -1,5 +1,9 @@
-package com.example;
+package com.example.repository;
 
+import com.example.domain.Comment;
+import com.example.domain.Post;
+import com.example.domain.PostSummary;
+import com.example.domain.Status;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.page.Page;
@@ -14,15 +18,11 @@ import java.util.UUID;
 
 @Repository
 public interface Blogger {
-//
-//    StatelessSession session();
+
 
     @Query("""
-            SELECT p.id, p.title, size(c) FROM Post AS p LEFT JOIN p.comments AS c
+            SELECT p.id, p.title FROM Post AS p
             WHERE p.title LIKE :title
-                OR p.content LIKE :title
-                OR c.content LIKE :title
-            GROUP BY p
             ORDER BY p.createdAt DESC
             """)
     Page<PostSummary> allPosts(@Param("title") String title, PageRequest page);
@@ -37,9 +37,6 @@ public interface Blogger {
     @Insert
     Post insert(Post post);
 
-    @Insert
-    Comment insert(Comment comment);
-
     @Update
     Post update(Post post);
 
@@ -51,9 +48,15 @@ public interface Blogger {
     @Transactional
     long deleteAllPosts();
 
+//
+//    StatelessSession session();
+//
 //    default List<Comment> getCommentsOfPost(UUID postId) {
 //        var post = this.byId(postId).orElseThrow(() -> new PostNotFoundException(postId));
 //        session().fetch(post.getComments());
 //        return post.getComments();
 //    }
+
+    @Insert
+    Comment insert(Comment comment);
 }

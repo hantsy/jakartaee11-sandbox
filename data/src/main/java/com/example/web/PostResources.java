@@ -1,5 +1,7 @@
-package com.example;
+package com.example.web;
 
+import com.example.domain.PostSummary;
+import com.example.repository.Blogger;
 import jakarta.data.page.PageRequest;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -27,7 +29,7 @@ public class PostResources {
                         PageRequest.ofPage(page, size, true)
                 );
 
-        return Response.ok(data).build();
+        return Response.ok(new PaginatedResult<>(data.content(), data.totalElements())).build();
     }
 
     @GET
