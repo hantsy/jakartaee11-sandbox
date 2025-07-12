@@ -82,7 +82,6 @@ public class BookResourcesTest {
     public void before() {
         LOGGER.log(Level.INFO, "baseURL: {0}", new Object[]{baseUrl.toExternalForm()});
         client = ClientBuilder.newClient();
-        //client.register(JsonbContextResolver.class);
     }
 
     @AfterEach
@@ -98,7 +97,9 @@ public class BookResourcesTest {
         try (Response r = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get()) {
             LOGGER.log(Level.INFO, "Get books resources status: {0}", r.getStatus());
             assertEquals(200, r.getStatus());
-            books = r.readEntity(new GenericType<List<Book>>(){});
+            //@formatter:off
+            books = r.readEntity(new GenericType<>() {});
+            //@formatter:on
         }
         LOGGER.log(Level.INFO, "Get books resources info result: {0}", books);
         assertThat(books).isNotNull();

@@ -19,8 +19,8 @@ public class DataInitializer {
     @Inject
     CommentRepository commentRepository;
 
-    // `@Observes Startup event` or  `@Observes @Initialized(ApplicationScoped.class) Object any
-    // ` raised exception `jakarta.data.exceptions.DataException: No active transaction for update or delete query`
+    // `@Observes Startup event` or  `@Observes @Initialized(ApplicationScoped.class) Object any`
+    // raised exception `jakarta.data.exceptions.DataException: No active transaction for update or delete query`
     // public void init(@Observes Startup event) {
     // public void init(@Observes @Initialized(ApplicationScoped.class) Object any) {
     // when adding @Transactional on class, still failed the tests, the observer method does not work.
