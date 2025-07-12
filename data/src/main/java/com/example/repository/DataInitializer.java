@@ -5,15 +5,12 @@ import com.example.domain.Post;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
-@Transactional
-@ApplicationScoped
-//@Singleton
-//@Startup
+//@Transactional
+//@ApplicationScoped
+@Singleton
+@Startup
 public class DataInitializer {
 
     @Inject
@@ -24,10 +21,11 @@ public class DataInitializer {
 
     // `@Observes Startup event` or  `@Observes @Initialized(ApplicationScoped.class) Object any
     // ` raised exception `jakarta.data.exceptions.DataException: No active transaction for update or delete query`
-     public void init(@Observes Startup event) {
+    // public void init(@Observes Startup event) {
     // public void init(@Observes @Initialized(ApplicationScoped.class) Object any) {
-    //@PostConstruct
-    //public void init() {
+    // when adding @Transactional on class, still failed the tests, the observer method does not work.
+    @PostConstruct
+    public void init() {
         commentRepository.deleteAll();
         postRepository.deleteAll();
 
