@@ -20,11 +20,11 @@ public class LogInterceptor {
         LOG.info("entering " + declaringClass.getSimpleName() + "." + method.getName() + " with parameters: " + Arrays.toString(ctx.getParameters()));
         LOG.log(Level.INFO, "intercept bindings: {0}",
                 new Object[]{
-                        ctx.getInterceptorBindings().stream().map(annotation -> annotation.getClass().getSimpleName()).toList()
+                        ctx.getInterceptorBindings().stream().map(annotation ->annotation.annotationType().getSimpleName()).toList()
                 });
         LOG.log(Level.INFO, "intercept bindings for Timed: {0}",
                 new Object[]{
-                        ctx.getInterceptorBindings(Timed.class).stream().map(annotation -> annotation.getClass().getSimpleName()).toList()
+                        ctx.getInterceptorBindings(Timed.class).stream().map(annotation -> annotation.annotationType().getSimpleName()).toList()
                 });
         try {
             var result = ctx.proceed();
