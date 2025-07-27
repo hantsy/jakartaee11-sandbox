@@ -81,8 +81,8 @@ public class ArticleResource {
 
     @PATCH
     @Path("{id}")
-    //@Consumes(MediaType.APPLICATION_MERGE_PATCH_JSON) // added in 4.0
-    @Consumes("application/merge-patch+json")
+    @Consumes(MediaType.APPLICATION_MERGE_PATCH_JSON) // added in 4.0
+    //@Consumes("application/merge-patch+json")
     public Response mergeArticle(@PathParam("id") Integer id, JsonObject patch) {
         var targetArticle = repository.findById(id);
         var mergedResult = Json.createMergePatch(patch)
