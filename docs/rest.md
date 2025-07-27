@@ -420,20 +420,18 @@ Get the [complete example project](https://github.com/hantsy/jakartaee11-sandbox
 
 ## Summary 
 
-Over the past ten years, I have developed numerous backend RESTful API applications. However, as time has passed, an increasing number of customers are now opting for Spring WebMvc/WebFlux as their preferred framework, rather than Jakarta REST. Although libraries/frameworks RESTeasy and Quarkus can fill some blanks in Jakarta REST, Jakarta REST itself evolves too slowly. JSON Patch and the new JSON Merge Patch in this version are rarely used in the real RESTful API development. Spring also incubated a project, **Spring Sync**, many years ago to address this issue, but it is now abandoned.   
+Over the past decade, I have developed many backend RESTful API applications. However, I have noticed a growing trend: more customers are choosing Spring WebMvc or WebFlux as their preferred frameworks over Jakarta REST. While libraries and frameworks like RESTEasy and Quarkus help fill some gaps, Jakarta REST itself has evolved slowly. Features like JSON Patch and the new JSON Merge Patch introduced in this version are rarely used in real-world RESTful API development. Even Spring once incubated a project called **Spring Sync** to address similar needs, but it has since been abandoned.
 
-In my opinion, since version 2.1, Jakarta REST has not introduced significant features to improve development productivity. Many long-awaited features that were not included in the past few years are now included in competitors. For example:
+In my view, since version 2.1, Jakarta REST has not delivered significant features that boost developer productivity. Many long-awaited improvements have already been adopted by competing frameworks. For example:
 
-* Deprecate the `Resource/Context` injection, and use CDI `@Inject` instead, [jakartaee/rest#951](https://github.com/jakartaee/rest/issues/951), [jakartaee/rest#9569](https://github.com/jakartaee/rest/issues/569), and erase the `@Provider` to configure REST, make it possible using CDI `@Produces` or some programmatic API in the `Application` entry class.
-* Handling Async/Reactive return type( or wrapped in the Response) as normal, which has worked in Quakrus for years. Move the `@Suspended AsyncResponse` handling to concurrency and context propagation in the background. Make the developer experience smooth as using Spring, see: [jakartaee/rest#1281](https://github.com/jakartaee/rest/issues/1281)
-* Default value of query/form/path parameter names see: [jakartaee/rest#579](https://github.com/jakartaee/rest/issues/579)
-* Problem Details support, see: [jakartaee/rest#1150](https://github.com/jakartaee/rest/issues/1150)
-* Record support in FormBean etc, see [jakartaee/rest#955](https://github.com/jakartaee/rest/issues/955/), [jakartaee/rest#913](https://github.com/jakartaee/rest/issues/913), record is a big feature of EE 11, but REST has not reflected this.
-* Functional Programming code style for Client/Server, see: [jakartaee/rest#1301](https://github.com/jakartaee/rest/issues/1301)
-* Http Service interface as contract between Client and Server, see: [jakartaee/rest#1294](https://github.com/jakartaee/rest/issues/1294)
-* Modernize the Client, and make the HttpClient engine switchable, see: [jakartaee/rest#1282](https://github.com/jakartaee/rest/issues/1282)
+* Deprecating `Resource/Context` injection in favor of CDI `@Inject` ([jakartaee/rest#951](https://github.com/jakartaee/rest/issues/951), [jakartaee/rest#569](https://github.com/jakartaee/rest/issues/569)), and replacing `@Provider` with CDI `@Produces` or programmatic configuration in the `Application` class.
+* Supporting async/reactive return types natively, as has been available in Quarkus for years, and moving `@Suspended AsyncResponse` handling to background concurrency and context propagation ([jakartaee/rest#1281](https://github.com/jakartaee/rest/issues/1281)).
+* Providing default values for query, form, and path parameter names ([jakartaee/rest#579](https://github.com/jakartaee/rest/issues/579)).
+* Adding support for Problem Details ([jakartaee/rest#1150](https://github.com/jakartaee/rest/issues/1150)).
+* Supporting Java records in FormBeans and related areas ([jakartaee/rest#955](https://github.com/jakartaee/rest/issues/955), [jakartaee/rest#913](https://github.com/jakartaee/rest/issues/913)), especially since records are a major feature in EE 11.
+* Enabling functional programming styles for both client and server code ([jakartaee/rest#1301](https://github.com/jakartaee/rest/issues/1301)).
+* Defining HTTP service interfaces as contracts between client and server ([jakartaee/rest#1294](https://github.com/jakartaee/rest/issues/1294)).
+* Modernizing the client API and making the HTTP client engine easily switchable ([jakartaee/rest#1282](https://github.com/jakartaee/rest/issues/1282)).
+* ....
 
-I hope the Jakarta REST expert group can devote more effort to improving developer productivity in the real world.  
-  
-  
-
+I hope the Jakarta REST expert group will focus more on features that improve developer productivity and address real-world needs.
