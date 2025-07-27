@@ -48,6 +48,9 @@ plugins:
 
 nav:
   - Preface: index.md
+  - Highlights: 
+     - "Java SE Record Support": record.md
+     - "Embrace Virtual Thread": vt.md
   - Persistence: jpa.md
   - Data: data.md    
   - REST: rest.md
