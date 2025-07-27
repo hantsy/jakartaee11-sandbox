@@ -3,11 +3,14 @@
 Jakarta REST 4.0 is a major update in Jakarta EE 11, with much of the work focused on housekeeping. For example, there has been significant effort to modernize the Jakarta REST TCK. Additionally, support for the `ManagedBean` and `JAXB` specifications has been removed.
 
 For developers, there are a few notable API changes:
-* New convenient methods for checking whether a header value contains a token-separated list, including [`HttpHeaders#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/core/httpheaders#containsHeaderString(java.lang.String,java.util.function.Predicate)), [`ClientRequestContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/client/clientrequestcontext#containsHeaderString(java.lang.String,java.util.function.Predicate)), [`ClientResponseContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/client/clientresponsecontext#containsHeaderString(java.lang.String,java.util.function.Predicate)), [`ContainerRequestContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/container/containerrequestcontext#containsHeaderString(java.lang.String,java.util.function.Predicate)), and [`ContainerResponseContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/container/containerresponsecontext#containsHeaderString(java.lang.String,java.util.function.Predicate)).
+
+* New convenient methods for checking a header value, especially which contains a token-separated list, including [`HttpHeaders#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/core/httpheaders#containsHeaderString(java.lang.String,java.util.function.Predicate)), [`ClientRequestContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/client/clientrequestcontext#containsHeaderString(java.lang.String,java.util.function.Predicate)), [`ClientResponseContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/client/clientresponsecontext#containsHeaderString(java.lang.String,java.util.function.Predicate)), [`ContainerRequestContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/container/containerrequestcontext#containsHeaderString(java.lang.String,java.util.function.Predicate)), and [`ContainerResponseContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/container/containerresponsecontext#containsHeaderString(java.lang.String,java.util.function.Predicate)).
 * A new method, [`UriInfo#getMatchedResourceTemplate`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/core/uriinfo#getMatchedResourceTemplate()), to retrieve the URI template for all paths of the current request.
 * Added support for JSON Merge Patch.
 
 The first two are minor improvements. Let's take a closer look at JSON Merge Patch.
+
+## An Introduction to JSON Merge Patch
 
 JSON Merge Patch is defined in [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386) as follows:
 
@@ -58,6 +61,8 @@ The resulting JSON document would be:
 ```
 
 Let's walk through a simple REST resource example to demonstrate this process in code.
+
+## Example Project
 
 Assume we need to manage a collection of articles, represented by an `Article` class:
 
@@ -217,7 +222,7 @@ public class ArticleResource {
 }
 ```
 
-For comparison, we also include a JSON Patch example (defined by [RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902) and implemented in Java EE 8/JAX-RS 2.1).
+For comparison, we also include two JSON Patch (defined by [RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902) and implemented in Java EE 8/JAX-RS 2.1) example endpoints: one for processing an array of operations, and another for handling a single resource entity.
 
 Let's create an Arquillian test to verify the functionality:
 
@@ -395,12 +400,14 @@ public class ArticleResourceTest {
 }
 ```
 
-In this test:
+In the above test:
+
 * The deployment is marked as *testable*, meaning the test runs as a client and interacts with the service deployed in the test archive.
 * After deployment, the `@ArquillianResource`-annotated `URL` provides the application's base URL, including the `ApplicationPath` defined in the `Application` class, ending with a `/`.
 * We set `.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true)` to ensure the custom `PATCH` method works correctly with the current Jakarta REST Client API.
 
-Let's focus on the `testGetArticleByIdAndMergePatch` test, which demonstrates the JSON Merge Patch functionality:
+Let's focus on the `testGetArticleByIdAndMergePatch` test method, which demonstrates the JSON Merge Patch functionality:
+
 * First, retrieve the resource.
 * Modify it and use `Json.createMergeDiff` to create a patch `JsonObject`.
 * Apply the patch to the remote resource.
@@ -409,4 +416,24 @@ Let's focus on the `testGetArticleByIdAndMergePatch` test, which demonstrates th
 > [!WARNING]
 > The Jakarta REST Client API does not provide a `patch()` method, similar to the existing `get()` or `post()`. See the related discussion: [jakartaee/rest#1276](https://github.com/jakartaee/rest/issues/1276).
 
+Get the [complete example project](https://github.com/hantsy/jakartaee11-sandbox/tree/master/rest) from my GitHub repository. 
+
+## Summary 
+
+Over the past ten years, I have developed numerous backend RESTful API applications. However, as time has passed, an increasing number of customers are now opting for Spring WebMvc/WebFlux as their preferred framework, rather than Jakarta REST. Although libraries/frameworks RESTeasy and Quarkus can fill some blanks in Jakarta REST, Jakarta REST itself evolves too slowly. JSON Patch and the new JSON Merge Patch in this version are rarely used in the real RESTful API development. Spring also incubated a project, **Spring Sync**, many years ago to address this issue, but it is now abandoned.   
+
+In my opinion, since version 2.1, Jakarta REST has not introduced significant features to improve development productivity. Many long-awaited features that were not included in the past few years are now included in competitors. For example:
+
+* Deprecate the `Resource/Context` injection, and use CDI `@Inject` instead, [jakartaee/rest#951](https://github.com/jakartaee/rest/issues/951), [jakartaee/rest#9569](https://github.com/jakartaee/rest/issues/569), and erase the `@Provider` to configure REST, make it possible using CDI `@Produces` or some programmatic API in the `Application` entry class.
+* Handling Async/Reactive return type( or wrapped in the Response) as normal, which has worked in Quakrus for years. Move the `@Suspended AsyncResponse` handling to concurrency and context propagation in the background. Make the developer experience smooth as using Spring, see: [jakartaee/rest#1281](https://github.com/jakartaee/rest/issues/1281)
+* Default value of query/form/path parameter names see: [jakartaee/rest#579](https://github.com/jakartaee/rest/issues/579)
+* Problem Details support, see: [jakartaee/rest#1150](https://github.com/jakartaee/rest/issues/1150)
+* Record support in FormBean etc, see [jakartaee/rest#955](https://github.com/jakartaee/rest/issues/955/), [jakartaee/rest#913](https://github.com/jakartaee/rest/issues/913), record is a big feature of EE 11, but REST has not reflected this.
+* Functional Programming code style for Client/Server, see: [jakartaee/rest#1301](https://github.com/jakartaee/rest/issues/1301)
+* Http Service interface as contract between Client and Server, see: [jakartaee/rest#1294](https://github.com/jakartaee/rest/issues/1294)
+* Modernize the Client, and make the HttpClient engine switchable, see: [jakartaee/rest#1282](https://github.com/jakartaee/rest/issues/1282)
+
+I hope the Jakarta REST expert group can devote more effort to improving developer productivity in the real world.  
+  
+  
 
