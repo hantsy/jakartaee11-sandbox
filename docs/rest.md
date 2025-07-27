@@ -1,13 +1,13 @@
 # What is New in Jakarta REST 4.0
 
-Jakarta REST 4.0 is a major update in Jakarta EE 11, but main work is houseclean. For example, there are a lot of effort is to modernize Jakarta Rest TCK, besides this, it also removes the support of the `ManagedBean` and `JAXB` specifications. 
+Jakarta REST 4.0 is a major version update in Jakarta EE 11, but the main work is housecleaning. For example, there is a significant effort to modernize Jakarta Rest TCK. Besides this, it also removes support for the `ManagedBean` and `JAXB` specifications. 
 
-For developers, there are a few API changes still notable. 
+For developers, there are a few notable API changes. 
 * New convenient methods to check a header which value contains token-seperated list, including [`HttpHeaders#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/core/httpheaders#containsHeaderString(java.lang.String,java.util.function.Predicate)),[`ClientRequestContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/client/clientrequestcontext#containsHeaderString(java.lang.String,java.util.function.Predicate)),[`ClientResponseContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/client/clientresponsecontext#containsHeaderString(java.lang.String,java.util.function.Predicate)),[`ContainerRequestContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/container/containerrequestcontext#containsHeaderString(java.lang.String,java.util.function.Predicate)),[`ContainerResponseContext#containsHeaderString`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/container/containerresponsecontext#containsHeaderString(java.lang.String,java.util.function.Predicate))
 * New method [`UriInfo#getMatchedResourceTemplate`](https://jakarta.ee/specifications/restful-ws/4.0/apidocs/jakarta.ws.rs/jakarta/ws/rs/core/uriinfo#getMatchedResourceTemplate()) to get the Uri template of all paths for the current request.
 * New JSON Merge Patch support. 
 
-The first two are small improvements, let's have a look at the JSON Merge Patch. 
+The first two are minor improvements. Let's have a look at the JSON Merge Patch. 
 
 JSON Merge Patch is defined in [RFC 7386](https://datatracker.ietf.org/doc/html/rfc7386) as follows:
 
@@ -20,22 +20,50 @@ Given the following example JSON document:
 
 ```json
 {
-     "title": "Goodbye!",
+     "title": "My second article",
      "author" : {
-        "givenName" : "John", 
-        "familyName" : "Doe"
+        "givenName" : "Hantsy", 
+        "familyName" : "Bai"
      }, 
-    "tags":[ "example", "sample" ],
-    "content": "This will be unchanged"
+    "tags": [ "second", "article" ],
+    "content": "The content of my second article"
 }
 ```      
 
+I want to change the tags with `"JAX-RS", "RESTEasy", "Jersey"` and update the author to `"Jack", "Ma"`. 
+I will send a request like this:
 
+```json
+PATCH /articles/2 HTTP/1.1
+Host: localhost
+Content-Type: application/merge-patch+json
 
+{
+     "author" : {
+        "givenName" : "Jack", 
+        "familyName" : "Ma"
+     }, 
+    "tags": [ "JAX-RS", "RESTEasy", "Jersey" ]
+}
+```
 
-Let's start with a simple example REST resource example.
+The following is the resulting JSON document. 
 
-Assume we need to maintain a collectin of articles, and the resource entity can be described with an `Article` class.
+```json
+{
+     "title": "My second article",
+     "author" : {
+        "givenName" : "Jack", 
+        "familyName" : "Ma"
+     }, 
+    "tags": [ "JAX-RS", "RESTEasy", "Jersey" ],
+    "content": "The content of my second article"
+}
+```
+
+Let's start with a simple example REST resource to repeat this process in code.
+
+Assume we need to maintain a collection of articles, and the resource entity can be described with an `Article` class.
 
 ```java
 // Article.java
@@ -67,7 +95,7 @@ public record Author (String givenName, String familyName) {
 
 As mentioned in the [Java SE Record support in Jakarta EE 11](./record.md), although the JSON-B did not align with Record support in Jakarta EE 11, but Eclipse Yasson has already implemented Record serialization and deserialization.
 
-The `AritcleRepository` is a dummy repository for articles.
+The `ArticleRepository` is a dummy repository for articles.
 
 ```java
 @ApplicationScoped
@@ -194,9 +222,9 @@ public class ArticleResource {
 }
 ```
 
-Here, we also add JSON Patch (which defined by [RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902), and implemented in the Java EE 8/Jaxrs 2.1) example as a comparsions. 
+Here, we also include a JSON Patch example (defined by [RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902) and implemented in Java EE 8/JAX-RS 2.1) for comparison. 
 
-Let's create a Arquillian tests to verify the functionality. 
+Let's create an Arquillian test to verify the functionality. 
 
 ```java
 @ExtendWith(ArquillianExtension.class)
@@ -391,17 +419,17 @@ public class ArticleResourceTest {
 ```
 
 In the test, 
-* The deployment is marked as *testable*, means the test run as a client to interact with the service served by test archive.
-* After the test archive is deployed successfully, the `@ArquillianResource` annotated `URL` the based URL is the application, includes the part defined in the `ApplicationPath`
-on the `Application` class, and it is ended with `/`. 
-* Let's move to `testGetArticleByIdAndMergePatch` test which used to test the JSON Merge Patch functionality. 
-    *  Firstly retrive a new resource. 
-    *  Then modify it and use `Json.createMergeDiff` to create a path JsonObject.
-    *  Then apply it to the remote target resource. 
-    *  Finally retrieve the resource again to make sure the patch is applied successfully. 
-* We have to set `.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true)` to make the custom method `PATCH` is working well with current Jakarta REST Client API.
+* The deployment is marked as *testable*, which means the test runs as a client to interact with the service served by the test archive.
+* After the test archive is deployed successfully, the `@ArquillianResource` annotated `URL` is the base URL of the application, which includes the part defined in the `ApplicationPath` on the `Application` class, and it ends with `/`.  
+* We have to set `.property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true)` to make the custom method `PATCH` work well with the current Jakarta REST Client API.
+
+Let's move on to the `testGetArticleByIdAndMergePatch` test, which is used to test the JSON Merge Patch functionality. 
+*  Firstly, retrieve a new resource. 
+*  Then modify it and use `Json.createMergeDiff` to create a path JsonObject.
+*  Then apply it to the remote target resource. 
+*  Finally, retrieve the resource again to make sure the patch is applied successfully.
 
 > [!WARNING]
-> The Jakarta REST Client API does not contains a `patch()` as the existing `get()/post()`, see the related discussion: [jakartaee/rest#1276](https://github.com/jakartaee/rest/issues/1276).
+The Jakarta REST Client API does not contain a `patch()` method, similar to the existing `get()/post()`. See the related discussion: [jakartaee/rest#1276](https://github.com/jakartaee/rest/issues/1276).
 
 
