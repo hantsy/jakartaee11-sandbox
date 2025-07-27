@@ -1,76 +1,44 @@
 # Welcome to Jakarta EE 11
 
-After releasing Jakarta EE 11 [Core Profile](https://www.infoq.com/news/2025/01/jakarta-ee-11-core-profile/),
-and [Web Profile](https://foojay.io/today/jakarta-ee-11-web-profile-released-enabled-by-eclipse-glassfish/) respectively
-in the past months, Eclipse Foundation recently
-released  [the final version of Jakarta EE 11 platform](https://newsroom.eclipse.org/news/announcements/eclipse-foundation%E2%80%99s-jakarta-ee-working-group-announces-jakarta-ee-11-release).
+Followed the releases of the Jakarta EE 11 [Core Profile](https://www.infoq.com/news/2025/01/jakarta-ee-11-core-profile/) and [Web Profile](https://foojay.io/today/jakarta-ee-11-web-profile-released-enabled-by-eclipse-glassfish/) in the past months, the Eclipse Foundation has now officially launched the [final version of the Jakarta EE 11 platform](https://newsroom.eclipse.org/news/announcements/eclipse-foundation%E2%80%99s-jakarta-ee-working-group-announces-jakarta-ee-11-release).
 
 ## History
 
-Since the Eclipse Foundation took over Java EE development, Jakarta EE has evolved steadily.
+Since the Eclipse Foundation took over Java EE, Jakarta EE has continued to evolve at a steady pace.
 
-* Jakarta EE 8/9 did not introduce new features. Jakarta EE 8 mainly renamed the Maven coordinates from `javax` to
-  `jakarta`, and Jakarta EE 9/9.1 cleaned up the new `jakarta` namespace at the API source code level.
-* Jakarta EE 10 introduced new features such as a new Core Profile, a new Jakarta Contexts and Dependency Injection Lite
-  specification, and enhancements to existing specifications. Jakarta EE 10 requires Java 11 as the minimum and supports
-  Java 17 at runtime.
-* For developers, Jakarta EE 11 continuously improves the developer experience and deprecates more APIs. Jakarta EE 11
-  updates Java 17 as the baseline and supports Java 21 at runtime. For the specification providers, Jakarta EE 11 put a
-  lot of effort to modernize the Jakarta EE TCK to the latest Arquillian and JUnit 5, which will interest more providers
-  to align with the new Jakarta EE specifications.
+* **Jakarta EE 8/9**: These versions focused on foundational changes, with Jakarta EE 8 primarily renaming Maven coordinates from `javax` to `jakarta`, and Jakarta EE 9/9.1 cleaning up the new `jakarta` namespace at the API source code level.
+* **Jakarta EE 10**: This release introduced significant new features, including the Core Profile, the Jakarta Contexts and Dependency Injection Lite specification, and enhancements to existing specifications. Jakarta EE 10 set Java 11 as the minimum requirement and added support for Java 17 at runtime.
+* **Jakarta EE 11**: The latest release continues to improve the developer experience and further deprecates outdated APIs. Jakarta EE 11 now uses Java 17 as its baseline and supports Java 21 at runtime. For specification providers, this release modernizes the Jakarta EE TCK by updating it to the latest Arquillian and JUnit 5, making it easier for more providers to align with the new specifications.
 
-Let's have a look at what's new in Jakarta EE 11.
+Let’s take a closer look at what’s new in Jakarta EE 11.
 
 ## What's New In Jakarta EE 11
 
 ### New Specifications
 
-Jakarta EE 11 added a new specification: *Jakarta Data*.
+Jakarta EE 11 introduces a major new specification: *Jakarta Data*.
 
-*Jakarta Data* was incubated two years ago and has always been under active development. Eventually, it joined the
-Jakarta EE 11 release train. Go to
-the [Jakarta Data specification](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0) to learn it from scratch.
-The Hibernate reference document also includes a
-chapter: [Hibernate Data Repositories](https://docs.jboss.org/hibernate/orm/7.0/repositories/html_single/Hibernate_Data_Repositories.html)
-to demonstrate Jakarta Data usage by examples.
+*Jakarta Data* has been in incubation for two years and has seen active development throughout. Now, it officially joins the Jakarta EE 11 release train. To get started, check out the [Jakarta Data specification](https://jakarta.ee/specifications/data/1.0/jakarta-data-1.0). The Hibernate documentation also features a dedicated chapter, [Hibernate Data Repositories](https://docs.jboss.org/hibernate/orm/7.0/repositories/html_single/Hibernate_Data_Repositories.html), with practical examples of Jakarta Data in action.
 
 ### Updates
 
-The `record` type is now a first-class citizen in Jakarta EE. Specifications like Persistence, Faces, Expression
-Language, and Validation have embraced `record` types. Unfortunately, JSON-B has not been updated to support `record`
-types (although the implementation in GlassFish does support it). Additionally, using `record` types in Messaging
-payloads can be problematic if they do not implement `Serialization`,
-see [jakartaee/messaging#343](https://github.com/jakartaee/messaging/issues/343).
+The Java `record` type is now a first-class citizen in Jakarta EE. Specifications such as Persistence, Faces, Expression Language, and Validation have all embraced `record` types. However, JSON-B has not yet been updated to support records (though GlassFish’s implementation does), and using records as Messaging payloads can be problematic if they do not implement `Serialization`—see [jakartaee/messaging#343](https://github.com/jakartaee/messaging/issues/343) for details.
 
-Several specifications were updated in Jakarta EE 11.
+Several specifications have received notable updates in Jakarta EE 11:
 
-*CDI* - the core of the Jakarta EE ecosystem, includes a few minor enhancements in the new 4.1 version. For developers,
-the ability to use `@Priority` on producers is a significant highlight. For implementations, the major change is that
-the CDI EE integration part has been moved to the Jakarta platform specification. Check
-out [What's new in CDI 4.1](https://jakartaee.github.io/cdi/2024/02/27/whats-new-in-cdi41.html) for more details.
+- **CDI 4.1**: The core of the Jakarta EE ecosystem now includes several enhancements. For developers, the ability to use `@Priority` on producers is a key highlight. For implementers, the CDI EE integration has been moved to the Jakarta platform specification. See [What's new in CDI 4.1](https://jakartaee.github.io/cdi/2024/02/27/whats-new-in-cdi41.html) for more information.
+- **Persistence 3.2**: This release brings many small improvements, such as supporting `record` types as embeddable classes, adding more SQL-specific functions to JPQL, and enabling programmatic configuration as an alternative to `persistence.xml`.
+- **Concurrency 3.1**: Now supports Java 21 virtual threads in managed execution services and Java 9 `Flow` (ReactiveStreams) in context propagation. It also introduces a new `@Schedule` annotation (nested in `@Asynchronous`) to replace the legacy EJB version.
+- **REST 4.0**: Adds support for JSON Merge Patch, enhancing RESTful API capabilities.
+- **Security 4.0**: Introduces a new in-memory `IdentityStore`—very useful for development—and adds support for multiple authentication mechanisms.
 
-*Persistence* 3.2 added many small improvements, including adding the `record` type as embeddable classes, porting more
-SQL-specific functions to JPQL, and providing programmatic configuration instead of the `persistence.xml`.
+The `ManagedBean` specification has been removed from Jakarta EE 11. Additionally, starting with this release, the SOAP-based *Web Service* specification is marked as *deprecated* and is not recommended for new projects. References to `SecurityManager` are being phased out due to its deprecation in future Java SE runtimes. While some specifications have already removed `SecurityManager` APIs, the remainder will be addressed in Jakarta EE 12.
 
-*Concurrency* 3.1 adopted Java 21 virtual threads in managed execution service and Java 9 `Flow` (aka ReactiveStreams
-support) in context propagation, and also added a new `@Schedule` (nested in `@Asynchronous`) to replace the existing
-one in the legacy EJB specification.
-
-*REST* 4.0 added JSON Merge Patch support.
-
-*Security* 4.0 introduced a new in-memory `IdentityStore`, which is very useful in development. It also added the
-ability to handle multiple authentication mechanisms.
-
-The `ManagedBean` specification has been removed from Jakarta EE 11. Additionally, starting with Jakarta EE 11, the
-SOAP-based *Web Service* specification is marked as *deprecated* and is not recommended for new projects. References to
-`SecurityManager` are planned for removal due to its deprecation in a future Java SE runtime. Currently, only some
-specifications have accomplished the `SecurityManager` API cleanup, with the remainder delayed to Jakarta EE 12.
-
-We will explore the new features with example code in future posts.
+We will explore these new features with example code in future posts.
 
 ### Under Maintenance
 
-The following specifications have no updates in Jakarta EE 11:
+The following specifications remain unchanged in Jakarta EE 11:
 
 * Jakarta JSON-B
 * Jakarta JSON-P
@@ -81,20 +49,13 @@ The following specifications have no updates in Jakarta EE 11:
 
 ## The Future of Jakarta EE
 
-Now that Jakarta EE is community-driven and community-led, everyone can participate in the progress of the specification
-definitions.
+With Jakarta EE now fully community-driven, everyone can participate in shaping the future of the platform.
 
-A few features have been proposed in discussions and may become specifications in the future, for example:
+Several new features are under discussion and may become specifications in the future, including:
 
-* Jakarta RPC - standardizes gRPC in the Jakarta EE ecosystem.
-* Jakarta NoSQL - introduces a general-purpose `Repository` pattern and `Template` programmatic APIs for NoSQL
-  databases.
-* Jakarta MVC - based on the existing Jakarta REST specification, provides an action-based web framework similar to the
-  popular Apache Struts/Spring MVC. NOTE: It is not a replacement for Faces.
-* Common HTTP
-  APIs - [The topic has been discussed in Jakarta Platform issues](https://github.com/jakartaee/platform/issues/673),
-  but there is no specification proposal submitted yet. Currently, the Faces specification reuses the Servlet API, and
-  the MVC specification reuses the REST API. It would be better to introduce a collection of common HTTP APIs to unify
-  HTTP handling.
+* **Jakarta RPC** – Standardizing gRPC support in the Jakarta EE ecosystem.
+* **Jakarta NoSQL** – Introducing a general-purpose `Repository` pattern and `Template` APIs for NoSQL databases.
+* **Jakarta MVC** – Providing an action-based web framework, similar to Apache Struts or Spring MVC, based on the existing Jakarta REST specification. (Note: This is not a replacement for Jakarta Faces.)
+* **Common HTTP APIs** – [Discussions are ongoing](https://github.com/jakartaee/platform/issues/673) about introducing a unified set of HTTP APIs to streamline HTTP handling across specifications. Currently, Faces reuses the Servlet API, and MVC reuses the REST API.
 
 For more information about Jakarta EE, please visit the [official Jakarta EE homepage](https://jakarta.ee).
