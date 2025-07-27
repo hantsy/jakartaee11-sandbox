@@ -53,7 +53,7 @@ public class BlogTest {
         return war;
     }
 
-    @PersistenceContext
+    @Inject
     private EntityManager em;
 
     @Inject

@@ -97,8 +97,7 @@ public class BroadcasterResourceTest {
         var latch = new CountDownLatch(1);
         try (SseEventSource eventSource = SseEventSource.target(target).build()) {
 
-            // EventSource#register(Consumer<InboundSseEvent>)
-            // Registered event handler will print the received message.
+            // register event handler
             eventSource.register(inboundSseEvent -> {
                         var data = inboundSseEvent.readData();
                         LOGGER.log(Level.INFO, "received event data: {0}", new Object[]{data});
@@ -110,15 +109,15 @@ public class BroadcasterResourceTest {
             // Subscribe to the event stream.
             eventSource.open();
 
-            // send messages
+            // send a simple message
             try (Response r = target.request().post(Entity.text("hello"))) {
                 LOGGER.log(Level.INFO, "Get messages response status: {0}", r.getStatus());
-                assertEquals(200, r.getStatus());
+                assertEquals(202, r.getStatus());
             }
 
             latch.await(1000, TimeUnit.MILLISECONDS);
 
-            LOGGER.log(Level.INFO, "message from broadcaster: {0}", eventData.get());
+            LOGGER.log(Level.INFO, "message received from SSE broadcaster endpoint: {0}", eventData.get());
             assertThat(eventData.get()).isNotNull();
         } catch (Exception e) {
             e.printStackTrace();
