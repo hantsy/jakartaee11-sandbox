@@ -8,7 +8,7 @@ Since the Eclipse Foundation took over Java EE, Jakarta EE has continued to evol
 
 * **Jakarta EE 8/9**: These versions focused on foundational changes, with Jakarta EE 8 primarily renaming Maven coordinates from `javax` to `jakarta`, and Jakarta EE 9/9.1 cleaning up the new `jakarta` namespace at the API source code level.
 * **Jakarta EE 10**: This release introduced significant new features, including the Core Profile, the Jakarta Contexts and Dependency Injection Lite specification, and enhancements to existing specifications. Jakarta EE 10 set Java 11 as the minimum requirement and added support for Java 17 at runtime.
-* **Jakarta EE 11**: The latest release continues to improve the developer experience and further deprecates outdated APIs. Jakarta EE 11 now uses Java 17 as its baseline and supports Java 21 at runtime. For specification providers, this release modernizes the Jakarta EE TCK by updating it to the latest Arquillian and JUnit 5, making it easier for more providers to align with the new specifications.
+* **Jakarta EE 11**: The latest release continues to improve the developer experience and further deprecates outdated APIs. Jakarta EE 11 now uses Java 17 as its baseline and supports Java 21 at runtime. For specification implementors, this release modernizes the Jakarta EE TCK by updating it to the latest Arquillian and JUnit 5, making it easier for more implementors to align with the new specifications.
 
 Let’s take a closer look at what’s new in Jakarta EE 11.
 
