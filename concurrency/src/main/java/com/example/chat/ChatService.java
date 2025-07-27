@@ -46,23 +46,23 @@ public class ChatService {
     Logger LOG;
 
     @Inject
-    LogSubscriber logSubscriber;
+    RequestCountSubscriber requestCountSubscriber;
 
     @Inject
     Event<ChatMessage> chatMessageEvent;
 
     private Sse sse;
 
-    private final Map<UUID, SseEventSink> requests = new ConcurrentHashMap<>();
+    private final Map<UUID, SseEventSink> sinks = new ConcurrentHashMap<>();
 
     public void register(UUID id, SseEventSink request) {
         LOG.log(Level.FINEST, "register request:{0}", id);
-        requests.put(id, request);
+        sinks.put(id, request);
     }
 
     public void deregister(UUID uuid) {
         LOG.log(Level.FINEST, "deregister request:{0}", uuid);
-        SseEventSink eventSink = requests.remove(uuid);
+        SseEventSink eventSink = sinks.remove(uuid);
         try {
             eventSink.close();
             LOG.log(Level.FINEST, "closing sink: {0}", eventSink);
@@ -84,13 +84,13 @@ public class ChatService {
                 )
                 .subscribe(
                         FlowAdapters.toSubscriber(
-                                contextService.contextualSubscriber(logSubscriber)
+                                contextService.contextualSubscriber(requestCountSubscriber)
                         )
                 );
     }
 
     public void onMessage(@Observes ChatMessage msg) {
-        requests.values()
+        sinks.values()
                 .forEach(sink -> {
                             OutboundSseEvent outboundSseEvent = this.sse.newEventBuilder()
                                     .mediaType(MediaType.APPLICATION_JSON_TYPE)

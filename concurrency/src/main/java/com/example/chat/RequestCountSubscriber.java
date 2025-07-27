@@ -3,11 +3,12 @@ package com.example.chat;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.concurrent.Flow;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationScoped
-public class LogSubscriber implements Flow.Subscriber<Long> {
-    private Logger LOGGER = Logger.getLogger(LogSubscriber.class.getName());
+public class RequestCountSubscriber implements Flow.Subscriber<Long> {
+    private Logger LOGGER = Logger.getLogger(RequestCountSubscriber.class.getName());
     final public static int MAX_REQUESTS = 2;
 
     Flow.Subscription subscription;
@@ -18,6 +19,7 @@ public class LogSubscriber implements Flow.Subscriber<Long> {
         LOGGER.info("onSubscribe:" + subscription);
         this.subscription = subscription;
         this.subscription.request(1);
+        this.requestCount++;
     }
 
     @Override
@@ -37,6 +39,6 @@ public class LogSubscriber implements Flow.Subscriber<Long> {
 
     @Override
     public void onComplete() {
-        LOGGER.info("onComplete...");
+        LOGGER.log(Level.INFO, "onComplete: request count:{0}", new Object[]{this.requestCount});
     }
 }
