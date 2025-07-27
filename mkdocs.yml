@@ -1,4 +1,4 @@
-site_name: Migrating to Jakarta EE 11
+site_name: Upgrade to Jakarta EE 11
 
 repo_url: https://github.com/hantsy/jakartaee11-sandbox
 repo_name: hantsy/jakartaee11-sandbox
@@ -7,14 +7,14 @@ theme:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: pink
       accent: pink
       toggle:
-        icon: material/toggle-switch
+        icon: material/brightness-4
         name: Switch to light mode
   name: material
   features:
