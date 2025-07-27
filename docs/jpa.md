@@ -1,4 +1,4 @@
-# Jakarta Persistence
+# What's New in Jakarta Persistence 3.2
 
 The Jakarta Persistence API (JPA) is the standard for persistence and object-relational mapping in Java environments. It provides a straightforward API for executing queries using the Jakarta Persistence Query Language (JPQL), as well as an alternative Criteria API for constructing type-safe queries in Java code.
 
