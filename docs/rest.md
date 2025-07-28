@@ -422,16 +422,18 @@ Get the [complete example project](https://github.com/hantsy/jakartaee11-sandbox
 
 Over the past decade, I have developed many backend RESTful API applications. However, I have noticed a growing trend: more customers are choosing Spring WebMvc or WebFlux as their preferred frameworks over Jakarta REST. While libraries and frameworks like RESTEasy and Quarkus help fill some gaps, Jakarta REST itself has evolved slowly. Features like JSON Patch and the new JSON Merge Patch introduced in this version are rarely used in real-world RESTful API development. Even Spring once incubated a project called **Spring Sync** to address similar needs, but it has since been abandoned.
 
-In my view, since version 2.1, Jakarta REST has not delivered significant features that boost developer productivity. Many long-awaited improvements have already been adopted by competing frameworks. For example:
+In my view, since version 2.1, Jakarta REST has not delivered significant features that boost developer productivity. The following is my wishlist for the next generation of Jakarta REST.
 
 * Deprecating `Resource/Context` injection in favor of CDI `@Inject` ([jakartaee/rest#951](https://github.com/jakartaee/rest/issues/951), [jakartaee/rest#569](https://github.com/jakartaee/rest/issues/569)), and replacing `@Provider` with CDI `@Produces` or programmatic configuration in the `Application` class.
 * Supporting async/reactive return types natively, as has been available in Quarkus for years, and moving `@Suspended AsyncResponse` handling to background concurrency and context propagation ([jakartaee/rest#1281](https://github.com/jakartaee/rest/issues/1281)).
 * Providing default values for query, form, and path parameter names ([jakartaee/rest#579](https://github.com/jakartaee/rest/issues/579)).
 * Adding support for Problem Details ([jakartaee/rest#1150](https://github.com/jakartaee/rest/issues/1150)).
+* Adding support for API Versioning ([jakartaee/rest#1317](https://github.com/jakartaee/rest/issues/1317)).
+* Adding support for Hypermedia, eg, HAL, HAL Form, etc. ([jakartaee/rest#1323](https://github.com/jakartaee/rest/issues/1323)).
 * Supporting Java records in FormBeans and related areas ([jakartaee/rest#955](https://github.com/jakartaee/rest/issues/955), [jakartaee/rest#913](https://github.com/jakartaee/rest/issues/913)), especially since records are a major feature in EE 11.
 * Enabling functional programming styles for both client and server code ([jakartaee/rest#1301](https://github.com/jakartaee/rest/issues/1301)).
 * Defining HTTP service interfaces as contracts between client and server ([jakartaee/rest#1294](https://github.com/jakartaee/rest/issues/1294)).
 * Modernizing the client API and making the HTTP client engine easily switchable ([jakartaee/rest#1282](https://github.com/jakartaee/rest/issues/1282)).
-* ....
+* ...
 
 I hope the Jakarta REST expert group will focus more on features that improve developer productivity and address real-world needs.
