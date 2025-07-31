@@ -433,7 +433,7 @@ In my view, since version 2.1, Jakarta REST has not delivered significant featur
 * Supporting Java records in FormBeans and related areas ([jakartaee/rest#955](https://github.com/jakartaee/rest/issues/955), [jakartaee/rest#913](https://github.com/jakartaee/rest/issues/913)), especially since records are a major feature in EE 11.
 * Enabling functional programming styles for both client and server code ([jakartaee/rest#1301](https://github.com/jakartaee/rest/issues/1301)).
 * Defining HTTP service interfaces as contracts between client and server ([jakartaee/rest#1294](https://github.com/jakartaee/rest/issues/1294)).
-* Modernizing the client API and making the HTTP client engine easily switchable ([jakartaee/rest#1282](https://github.com/jakartaee/rest/issues/1282)).
+* Modernizing the client API to use Java 8+ syntax and making the HTTP client engine easily switchable ([jakartaee/rest#1282](https://github.com/jakartaee/rest/issues/1282)).
 * ...
 
 I hope the Jakarta REST expert group will focus more on features that improve developer productivity and address real-world needs.
