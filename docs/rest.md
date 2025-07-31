@@ -418,7 +418,7 @@ Let's focus on the `testGetArticleByIdAndMergePatch` test method, which demonstr
 
 Get the [complete example project](https://github.com/hantsy/jakartaee11-sandbox/tree/master/rest) from my GitHub repository. 
 
-## Summary 
+## Final Thoughts 
 
 Over the past decade, I have developed many backend RESTful API applications. However, I have noticed a growing trend: more customers are choosing Spring WebMvc or WebFlux as their preferred frameworks over Jakarta REST. While libraries and frameworks like RESTEasy and Quarkus help fill some gaps, Jakarta REST itself has evolved slowly. Features like JSON Patch and the new JSON Merge Patch introduced in this version are rarely used in real-world RESTful API development. Even Spring once incubated a project called **Spring Sync** to address similar needs, but it has since been abandoned.
 
