@@ -72,9 +72,9 @@ You can [get the example project](https://github.com/hantsy/jakartaee11-sandbox/
 
 ## WildFly
 
-WildFly has provided Jakarta Data as a preview feature since version 34. In the latest WildFly 37 preview, it has been updated to support Hibernate 7 and Jakarta Persistence 3.2.
+WildFly has provided Jakarta Data as a preview feature since version 34. In the latest WildFly 37 preview, Jakarta Data support has been updated to align with Hibernate 7 and Jakarta Persistence 3.2.
 
-To use Jakarta Data in WildFly, you need to configure the `hibernate-processor` in the Maven compiler plugin. This processes your `Repository` interfaces and generates implementation classes at compile time.
+To use Jakarta Data in WildFly, configure the `hibernate-processor` in your Maven compiler plugin. This processes your `Repository` interfaces and generates implementation classes at compile time.
 
 ```xml
 <plugin>
@@ -98,17 +98,95 @@ To use Jakarta Data in WildFly, you need to configure the `hibernate-processor` 
 </plugin>
 ```
 
-The generated repository implementation classes use Hibernate’s `StatelessSession` to implement all methods.
+Open a terminal window, navigate to the project root folder, run the following command to compile the project. This will generate repository source code using the configured *Hibernate Processor*:
 
-To run the project on a WildFly server:
+```bash
+mvn clean compile -Pwildfly
+```
+
+The generated repository implementation classes use Hibernate’s `StatelessSession` to implement all methods. For example, the generated `target/generated-sources/annotations/com/example/repository/PostRepository_.java` file looks like this:
+
+```java
+/**
+ * Implements Jakarta Data repository {@link com.example.repository.PostRepository}
+ **/
+@Dependent
+@Generated("org.hibernate.processor.HibernateProcessor")
+public class PostRepository_ implements PostRepository {
+    protected @Nonnull StatelessSession session;
+
+    public PostRepository_(@Nonnull StatelessSession session) {
+        this.session = session;
+    }
+
+    public @Nonnull StatelessSession session() {
+        return session;
+    }
+
+    @PersistenceUnit
+    private EntityManagerFactory sessionFactory;
+
+    @PostConstruct
+    private void openSession() {
+        session = sessionFactory.unwrap(SessionFactory.class).openStatelessSession();
+    }
+
+    @PreDestroy
+    private void closeSession() {
+        session.close();
+    }
+
+    @Inject
+    PostRepository_() {
+    }
+
+    //... other methods
+    /**
+     * Find {@link Post}.
+     *
+     * @see com.example.repository.PostRepository#findAll(PageRequest,Order)
+     **/
+    @Override
+    public Page<Post> findAll(PageRequest pageRequest, Order<Post> sortBy) {
+        var _builder = session.getCriteriaBuilder();
+        var _query = _builder.createQuery(Post.class);
+        var _entity = _query.from(Post.class);
+        _query.where(
+        );
+        var _spec = SelectionSpecification.create(_query);
+        for (var _sort : sortBy.sorts()) {
+            _spec.sort(asc(Post.class, _sort.property())
+                        .reversedIf(_sort.isDescending())
+                        .ignoringCaseIf(_sort.ignoreCase()));
+        }
+        try {
+            long _totalResults =
+                    pageRequest.requestTotal()
+                            ? _spec.createQuery(session)
+                                    .getResultCount()
+                            : -1;
+            var _results = _spec.createQuery(session)
+                .setFirstResult((int) (pageRequest.page()-1) * pageRequest.size())
+                .setMaxResults(pageRequest.size())
+                .getResultList();
+            return new PageRecord<>(pageRequest, _results, _totalResults);
+        }
+        catch (PersistenceException _ex) {
+            throw new DataException(_ex.getMessage(), _ex);
+        }
+    }
+}
+```
+
+To run the project on a WildFly server, use:
 
 ```bash
 mvn clean package wildfly:run -Pwildfly
 ```
 
-You can explore Jakarta Data usage examples in the [testing code](https://github.com/hantsy/jakartaee11-sandbox/tree/master/data/src/test).
+You can find Jakarta Data usage examples in the [test code](https://github.com/hantsy/jakartaee11-sandbox/tree/master/data/src/test).
 
-To run the tests, which use Arquillian and JUnit 5:
+The tests are written with Arquillian and JUnit 5, to run the tests against the WildFly Managed Adapter:
 
 ```bash
 mvn clean verify -Parq-wildfly-managed
