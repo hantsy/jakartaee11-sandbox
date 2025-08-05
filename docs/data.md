@@ -64,7 +64,7 @@ Currently, Quarkus and Micronaut have already integrated Jakarta Data as an alte
 
 Unlike Jakarta Persistence, Spring Data, and Micronaut Data, Jakarta Data 1.0 does not provide specific annotations to define entity types. As a result, it relies heavily on the implementation details of each provider. For example, Micronaut Data reuses Jakarta Persistence annotations as well as its own data annotations, both of which work seamlessly with Jakarta Data. Quarkus and WildFly integrate Jakarta Data through Hibernate Data repositories, so in these environments, Jakarta Persistence entities are used to represent entities for Jakarta Data.
 
-Currently, open-source Jakarta EE implementors such as GlassFish, WildFly, and Open Liberty are working on their own Jakarta Data implementations, typically leveraging entities defined with Jakarta Persistence. However, their approaches vary. WildFly (with Hibernate) translates Jakarta Data queries into Java code and generates repository implementations at compile time. In contrast, GlassFish is exploring dynamic query processing at runtime, reusing work from Eclipse JNoSQL.
+Currently, open-source Jakarta EE implementors such as GlassFish, WildFly, and Open Liberty are working on their own Jakarta Data implementations, typically leveraging entities defined with Jakarta Persistence. However, their approaches vary. WildFly (with Hibernate) translates Jakarta Data queries into Java code and generates repository implementations at compile time. In contrast, GlassFish reuses the effort from Eclipse JNoSQL and processes the queries dynamicially at runtime.
 
 In this post, we’ll focus on demonstrating Jakarta Data features on standard Jakarta EE-compatible application servers, such as GlassFish, WildFly, and others.
 
