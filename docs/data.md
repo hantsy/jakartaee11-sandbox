@@ -15,7 +15,7 @@ public interface PostRepository extends CrudRepository<Post, UUID> {
 }
 ```
 
-In addition, Jakarta Data supports derived queries by method name conventions, pagination, and custom queries using `@Query` annotations. If you have experience with Spring Data or Micronaut, these features will feel familiar.
+In addition, Jakarta Data supports derived queries by method name conventions, pagination, and custom queries using `@Query` annotations. If you have experience with Spring Data or Micronaut, you will be familiar with these features.
 
 ```java
 @Repository
@@ -30,7 +30,7 @@ public interface PostRepository extends CrudRepository<Post, UUID> {
 }
 ```
 
-Additionally, Jakarta Data provides a collection of lifecycle annotations ([`Find`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/find), [`Insert`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/insert), [`Update`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/update), [`Delete`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/delete)) that allow you to write operation methods more freely in your own interfaces. The entity type will be detected by the method parameters or return type.
+Additionally, Jakarta Data provides a collection of lifecycle annotations ([`Find`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/find), [`Insert`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/insert), [`Update`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/update), [`Delete`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/delete)) that allow you to write operation methods more freely in your own interfaces. The entity type can be detected by the method parameters or return type.
 
 ```java
 @Repository
@@ -64,7 +64,7 @@ Currently, Quarkus and Micronaut have already integrated Jakarta Data as an alte
 
 Unlike Jakarta Persistence, Spring Data, and Micronaut Data, Jakarta Data 1.0 does not provide specific annotations to define entity types. As a result, it relies heavily on the implementation details of each provider. For example, Micronaut Data reuses Jakarta Persistence annotations as well as its own data annotations, both of which work seamlessly with Jakarta Data. Quarkus and WildFly integrate Jakarta Data through Hibernate Data repositories, so in these environments, Jakarta Persistence entities are used to represent entities for Jakarta Data.
 
-Currently, open-source Jakarta EE implementors such as GlassFish, WildFly, and Open Liberty are working on their own Jakarta Data implementations, typically leveraging entities defined with Jakarta Persistence. However, their approaches vary. WildFly (with Hibernate) translates Jakarta Data queries into Java code and generates repository implementations at compile time. In contrast, GlassFish reuses the effort from Eclipse JNoSQL and processes the queries dynamicially at runtime.
+Currently, open-source Jakarta EE implementors such as GlassFish, WildFly, and Open Liberty are working on their own Jakarta Data implementations, typically leveraging entities defined with Jakarta Persistence. However, their approaches vary. WildFly (with Hibernate) translates Jakarta Data queries into Java code and generates repository implementations at compile time. In contrast, GlassFish reuses the effort from Eclipse JNoSQL and processes the queries dynamically at runtime.
 
 In this post, we’ll focus on demonstrating Jakarta Data features on standard Jakarta EE-compatible application servers, such as GlassFish, WildFly, and others.
 
@@ -195,3 +195,4 @@ mvn clean verify -Parq-wildfly-managed
 ## GlassFish
 
 TBD
+
