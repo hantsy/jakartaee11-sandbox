@@ -4,7 +4,7 @@
 
 ## Exploring Jakarta Data
 
-Similar to [Spring Data Commons](https://github.com/spring-projects/spring-data-commons), [Micronaut Data](https://github.com/micronaut-projects/micronaut-data), and [Quarkus Panache](https://quarkus.io/guides/hibernate-orm-panache), Jakarta Data introduces a `Repository` abstraction. This includes a basic [`DataRepository`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/datarepository) interface to indicate a repository, as well as two interfaces, [`BasicRepository`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/basicrepository) and [`CrudRepository`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/crudrepository), which provide common CRUD operations for underlying data storage. It also introduces a new annotation, `@Repository`, to mark an interface as a repository, whether it is derived from the common interfaces or is a pure interface that does not extend any existing interface.
+Similar to [Spring Data Commons](https://github.com/spring-projects/spring-data-commons), [Micronaut Data](https://github.com/micronaut-projects/micronaut-data), and [Quarkus Panache](https://quarkus.io/guides/hibernate-orm-panache), Jakarta Data introduces a `Repository` abstraction. This includes a basic [`DataRepository`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/datarepository) interface to indicate a repository, as well as two interfaces, [`BasicRepository`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/basicrepository) and [`CrudRepository`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/crudrepository), which provide common CRUD operations for underlying data storage. It also introduces a new annotation, [`@Repository`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/repository), to mark an interface as a repository, whether it is derived from the common interfaces or is a pure interface that does not extend any existing interface.
 
 For example, the following `PostRepository` interface is for the entity `Post`.
 
@@ -178,15 +178,15 @@ public class PostRepository_ implements PostRepository {
 }
 ```
 
-To run the project on a WildFly server, use:
+To run the project on a managed WildFly server, execute the following command:
 
 ```bash
 mvn clean package wildfly:run -Pwildfly
 ```
 
-You can find Jakarta Data usage examples in the [test code](https://github.com/hantsy/jakartaee11-sandbox/tree/master/data/src/test).
+You can find Jakarta Data usage examples in the [testing codes](https://github.com/hantsy/jakartaee11-sandbox/tree/master/data/src/test).
 
-The tests are written with Arquillian and JUnit 5, to run the tests against the WildFly Managed Adapter:
+The tests are written with [Arquillian](https://www.arquillian.org) and JUnit 5, to run the tests on the managed WildFly with the Arquillian WildFly adapter:
 
 ```bash
 mvn clean verify -Parq-wildfly-managed
