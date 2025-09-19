@@ -33,7 +33,7 @@ under the License.
     <name>cdi-examples</name>
     <description>Jakarta EE 11 Sandbox: Jakarta CDI 4.0 Examples</description>
     <properties>
-        <lombok.version>1.18.40</lombok.version>
+        <lombok.version>1.18.42</lombok.version>
         <microprofile-config-api.version>3.1</microprofile-config-api.version>
     </properties>
 
