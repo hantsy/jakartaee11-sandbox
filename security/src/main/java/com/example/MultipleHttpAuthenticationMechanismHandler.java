@@ -36,6 +36,7 @@ public class MultipleHttpAuthenticationMechanismHandler implements HttpAuthentic
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
         String path = request.getRequestURI().substring(request.getContextPath().length());
         LOGGER.log(Level.INFO, "The request path(without context path): {0}", path);
+
         if (path.startsWith("/api")) {
             LOGGER.log(Level.INFO, "Handling authentication using RestAuthenticationQualifier HttpAuthenticationMechanism...");
             return restAuthenticationMechanism.validateRequest(request, response, httpMessageContext);

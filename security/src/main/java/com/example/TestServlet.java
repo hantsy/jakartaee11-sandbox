@@ -58,6 +58,8 @@ public class TestServlet extends HttpServlet {
         if ("true".equals(request.getParameter("logout"))) {
             request.logout();
             request.getSession().invalidate();
+            response.sendRedirect("login.xhtml");
+            return;
         }
 
         doGet(request, response);
