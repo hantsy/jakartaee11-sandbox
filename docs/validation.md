@@ -1,6 +1,6 @@
 # Jakarta Validation
 
-Jakarta Validation (formerly known as Jakarta Bean Validation) 3.1 mainly adds support for record types, which were introduced in Java SE 11.
+[Jakarta Validation (formerly known as Jakarta Bean Validation) 3.1](https://jakarta.ee/specifications/bean-validation/3.1/) mainly adds support for record types, which were introduced in Java SE 11.
 
 Let's use an example to illustrate this.
 
@@ -58,7 +58,7 @@ public record EmailAddress(
 }
 ```
 
-In a Java SE environment, simply add the Jakarta Validation implementation to the classpath and initialize a `Validator` instance as follows:
+In a Java SE environment, simply add the Jakarta Validation implementation, eg, [Hibernate Validator](https://hibernate.org/validator/), to the classpath and initialize a `Validator` instance as follows:
 
 ```java
 Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
