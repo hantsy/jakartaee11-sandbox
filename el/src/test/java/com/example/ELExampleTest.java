@@ -1,6 +1,7 @@
 package com.example;
 
 import jakarta.el.ELProcessor;
+import jakarta.el.OptionalELResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ class ELExampleTest {
     @BeforeEach
     public void init() {
         elProcessor = new ELProcessor();
+        elProcessor.getELManager().addELResolver(new OptionalELResolver());
     }
 
     @Test
@@ -31,7 +33,8 @@ class ELExampleTest {
         );
 
         // access optional phonenumber
-        String phoneNumber = elProcessor.eval("customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')");
+        // String phoneNumber = elProcessor.eval("customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')");
+        String phoneNumber = elProcessor.eval("'('.concat(customer.phoneNumber.countryCode).concat(')').concat(customer.phoneNumber.number)");
         System.out.println(phoneNumber);
 
         String firstName = elProcessor.eval("customer.firstName");
@@ -71,8 +74,10 @@ class ELExampleTest {
                 )
         );
 
+
         // access optional phonenumber
-        String phoneNumber = elProcessor.eval("customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')");
+        //String phoneNumber = elProcessor.eval("customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')");
+        String phoneNumber = elProcessor.eval("customer.phoneNumber.number");
         System.out.println("Phone number = " + phoneNumber);
 
         // access email
