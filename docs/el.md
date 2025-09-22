@@ -1,8 +1,8 @@
 # Jakarta Expression Language
 
-Jakarta Expression Language 6.0 removes the dependency of `SecurityManager` and some deprecated APIs, also add several small notable features for developers.
+[Jakarta Expression Language 6.0](https://jakarta.ee/specifications/expression-language/6.0/) removes the dependency on `SecurityManager` and several deprecated APIs. It also introduces a number of notable improvements for developers:
 
-* A new property, `length`, is now supported for arrays.
-* Added support, enabled by default, for `java.lang.Record` instances via the new `RecordELResolver`.
-* Added support, disabled by default, for `java.lang.Optional` instances via the new `OptionalELResolver`.
+* Arrays now support a new `length` property.
+* Introduces support for `java.lang.Record` through the new `RecordELResolver`, which is enabled by default.
+* Adds support for `java.lang.Optional` via the new `OptionalELResolver`, which is disabled by default.
 
