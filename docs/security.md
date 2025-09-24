@@ -1,5 +1,6 @@
 # What's New in Jakarta Security 4.0
-Jakarta Security offers intuitive APIs for managing authentication and authorization in Jakarta EE applications.
+The Jakarta Security specification provides a collection of user-friendly APIs for handling authentication and authorization in Jakarta EE applications.
+The Jakarta Security is based on Jakarta Authentication and Jakarta Authorization, but provides more control for developers.
 
 Version 4.0 brings several notable improvements, including:
 

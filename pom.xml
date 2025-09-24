@@ -15,7 +15,7 @@
         <maven.compiler.release>21</maven.compiler.release>
 
         <!-- Official Maven Plugins -->
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
 
@@ -45,12 +45,12 @@
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
         <shrinkwrap-resolver-bom.version>3.3.4</shrinkwrap-resolver-bom.version>
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
-        <assertj.version>3.27.5</assertj.version>
+        <assertj.version>3.27.6</assertj.version>
         <awaitility.version>4.3.0</awaitility.version>
 
         <!-- Glassfish server -->
         <glassfish.version>8.0.0-M12</glassfish.version>
-        <jersey.version>4.0.0-M3</jersey.version>
+        <jersey.version>4.0.0-M4</jersey.version>
         <eclipselink.version>5.0.0-B07</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
 
