@@ -49,13 +49,13 @@
         <awaitility.version>4.3.0</awaitility.version>
 
         <!-- Glassfish server -->
-        <glassfish.version>8.0.0-M12</glassfish.version>
+        <glassfish.version>8.0.0-M13</glassfish.version>
         <jersey.version>4.0.0-M4</jersey.version>
         <eclipselink.version>5.0.0-B07</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
 
         <!-- WildFly -->
-        <wildfly.version>37.0.0.Beta1</wildfly.version>
+        <wildfly.version>38.0.0.Beta1</wildfly.version>
         <wildfly-maven-plugin.version>5.1.4.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
         <resteasy.version>7.0.0.Final</resteasy.version>
