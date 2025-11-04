@@ -50,7 +50,7 @@
 
         <!-- Glassfish server -->
         <glassfish.version>8.0.0-M13</glassfish.version>
-        <jersey.version>4.0.0-M4</jersey.version>
+        <jersey.version>4.0.0</jersey.version>
         <eclipselink.version>5.0.0-B07</eclipselink.version>
         <arquillian-glassfish.version>7.0.13</arquillian-glassfish.version>
 
