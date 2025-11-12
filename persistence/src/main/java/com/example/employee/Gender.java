@@ -6,7 +6,7 @@ public enum Gender {
     MALE("M"), FEMALE("F");
 
     @EnumeratedValue
-    private String symbol;
+    private final String symbol;
 
     Gender(String symbol) {
         this.symbol = symbol;
