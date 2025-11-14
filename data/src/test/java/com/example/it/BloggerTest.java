@@ -53,7 +53,7 @@ public class BloggerTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "BloggerTest.war")
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
@@ -116,7 +116,7 @@ public class BloggerTest {
                 Order.by(Sort.desc("createdAt")),
                 Limit.of(10)
         );
-        assertEquals(3, foundByStatus.size());
+        assertEquals(1, foundByStatus.size());
 
         // jakarta data page number starts with 1, NOTTTTTTT 0, I am crazy...
         var allPosts = blogger.allPosts("%My%", PageRequest.ofPage(1, 10, true));

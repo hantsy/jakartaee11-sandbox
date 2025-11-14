@@ -52,7 +52,7 @@ public class RepositoryWithDataInitializerTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "RepositoryWithDataInitializerTest.war")
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
                 .addClass(DataInitializer.class)

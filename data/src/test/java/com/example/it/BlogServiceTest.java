@@ -49,7 +49,7 @@ public class BlogServiceTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "BlogServiceTest.war")
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
                 .addPackage(BlogService.class.getPackage())

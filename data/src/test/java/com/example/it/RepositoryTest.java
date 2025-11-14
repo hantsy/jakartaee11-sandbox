@@ -18,11 +18,10 @@ under the License.
  */
 package com.example.it;
 
-import com.example.DataInitializer;
 import com.example.domain.Comment;
+import com.example.domain.Post;
 import com.example.repository.Blogger;
 import com.example.repository.CommentRepository;
-import com.example.domain.Post;
 import com.example.repository.PostRepository;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -51,7 +50,7 @@ public class RepositoryTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "RepositoryTest.war")
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")

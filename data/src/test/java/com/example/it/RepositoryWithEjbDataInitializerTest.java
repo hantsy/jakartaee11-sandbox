@@ -18,7 +18,6 @@ under the License.
  */
 package com.example.it;
 
-import com.example.DataInitializer;
 import com.example.EjbDataInitializer;
 import com.example.domain.Comment;
 import com.example.domain.Post;
@@ -52,7 +51,7 @@ public class RepositoryWithEjbDataInitializerTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "RepositoryWithEjbDataInitializerTest.war")
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
                 .addClass(EjbDataInitializer.class)
