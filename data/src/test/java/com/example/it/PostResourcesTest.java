@@ -60,7 +60,7 @@ public class PostResourcesTest {
                 .resolve("org.assertj:assertj-core")
                 .withTransitivity()
                 .asFile();
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "PostResourcesTest.war")
                 .addAsLibraries(extraJars)
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
