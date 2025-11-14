@@ -16,7 +16,7 @@ on:
       - reopened
 
 jobs:
-  data:
+  data-wildfly:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -30,6 +30,17 @@ jobs:
       run: |
         cd data
         mvn -B -q clean verify -Parq-wildfly-managed    
+              
+  data-glassfish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - name: Set up JDK
+      uses: actions/setup-java@v5
+      with:
+        java-version: '21'
+        distribution: 'zulu'
+        cache: maven 
     - name: Build with Maven(GlassFish)
       run: |
         cd data
@@ -39,4 +50,3 @@ jobs:
       with:
         name: server-log
         path: data/target/glassfish*/glassfish/domains/domain1/logs/server.log
-              
