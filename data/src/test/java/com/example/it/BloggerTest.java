@@ -20,8 +20,6 @@ package com.example.it;
 
 import com.example.repository.Blogger;
 import com.example.domain.Post;
-import com.example.repository.DataInitializer;
-import com.example.repository.PostRepository;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
