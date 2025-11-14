@@ -1,4 +1,4 @@
-package com.example.repository;
+package com.example.blog;
 
 import com.example.domain.Comment;
 import com.example.domain.Post;

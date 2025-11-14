@@ -19,7 +19,8 @@ under the License.
 package com.example.it;
 
 import com.example.domain.Post;
-import com.example.repository.Blogger;
+import com.example.blog.Blogger;
+import com.example.repository.PostRepository;
 import com.example.web.PostResources;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;

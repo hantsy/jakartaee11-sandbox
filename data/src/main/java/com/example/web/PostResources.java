@@ -1,7 +1,6 @@
 package com.example.web;
 
-import com.example.domain.PostSummary;
-import com.example.repository.Blogger;
+import com.example.blog.Blogger;
 import jakarta.data.page.PageRequest;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;

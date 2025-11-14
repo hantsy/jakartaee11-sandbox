@@ -21,7 +21,6 @@ package com.example.it;
 import com.example.EjbDataInitializer;
 import com.example.domain.Comment;
 import com.example.domain.Post;
-import com.example.repository.Blogger;
 import com.example.repository.CommentRepository;
 import com.example.repository.PostRepository;
 import jakarta.inject.Inject;
@@ -53,7 +52,7 @@ public class RepositoryWithEjbDataInitializerTest {
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "RepositoryWithEjbDataInitializerTest.war")
                 .addPackage(Post.class.getPackage())
-                .addPackage(Blogger.class.getPackage())
+                .addPackage(PostRepository.class.getPackage())
                 .addClass(EjbDataInitializer.class)
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

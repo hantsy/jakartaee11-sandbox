@@ -21,7 +21,6 @@ package com.example.it;
 import com.example.DataInitializer;
 import com.example.domain.Comment;
 import com.example.domain.Post;
-import com.example.repository.Blogger;
 import com.example.repository.CommentRepository;
 import com.example.repository.PostRepository;
 import jakarta.inject.Inject;
@@ -54,7 +53,7 @@ public class RepositoryWithDataInitializerTest {
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "RepositoryWithDataInitializerTest.war")
                 .addPackage(Post.class.getPackage())
-                .addPackage(Blogger.class.getPackage())
+                .addPackage(PostRepository.class.getPackage())
                 .addClass(DataInitializer.class)
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

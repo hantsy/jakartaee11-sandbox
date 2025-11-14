@@ -18,7 +18,7 @@ under the License.
  */
 package com.example.it;
 
-import com.example.repository.Blogger;
+import com.example.blog.Blogger;
 import com.example.domain.Post;
 import jakarta.data.Limit;
 import jakarta.data.Order;

@@ -20,7 +20,8 @@ package com.example.it;
 
 import com.example.domain.Comment;
 import com.example.domain.Post;
-import com.example.repository.Blogger;
+import com.example.blog.Blogger;
+import com.example.repository.PostRepository;
 import com.example.service.BlogService;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -51,7 +52,7 @@ public class BlogServiceTest {
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "BlogServiceTest.war")
                 .addPackage(Post.class.getPackage())
-                .addPackage(Blogger.class.getPackage())
+                .addPackage(PostRepository.class.getPackage())
                 .addPackage(BlogService.class.getPackage())
                 .addAsManifestResource("test-persistence.xml", "persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
