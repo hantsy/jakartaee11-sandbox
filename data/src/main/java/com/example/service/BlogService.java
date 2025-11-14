@@ -5,8 +5,10 @@ import com.example.repository.CommentRepository;
 import com.example.repository.PostRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
+@Transactional
 public class BlogService {
     private PostRepository postRepository;
     private CommentRepository commentRepository;
