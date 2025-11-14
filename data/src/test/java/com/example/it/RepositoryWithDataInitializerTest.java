@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// see: https://github.com/jakartaee/transactions/issues/235
 @ExtendWith(ArquillianExtension.class)
 public class RepositoryWithDataInitializerTest {
 
