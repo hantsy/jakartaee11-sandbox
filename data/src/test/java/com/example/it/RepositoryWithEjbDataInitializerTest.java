@@ -19,6 +19,7 @@ under the License.
 package com.example.it;
 
 import com.example.DataInitializer;
+import com.example.EjbDataInitializer;
 import com.example.domain.Comment;
 import com.example.domain.Post;
 import com.example.repository.Blogger;
@@ -45,16 +46,16 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(ArquillianExtension.class)
-public class RepositoryWithDataInitializerTest {
+public class RepositoryWithEjbDataInitializerTest {
 
-    private final static Logger LOGGER = Logger.getLogger(RepositoryWithDataInitializerTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(RepositoryWithEjbDataInitializerTest.class.getName());
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class)
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
-                .addClass(DataInitializer.class)
+                .addClass(EjbDataInitializer.class)
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));

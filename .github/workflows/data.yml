@@ -30,10 +30,10 @@ jobs:
       run: |
         cd data
         mvn -B -q clean verify -Parq-wildfly-managed    
-    # - name: Build with Maven(GlassFish)
-    #   run: |
-    #     cd data
-    #     mvn -B -q clean verify -Parq-glassfish-managed
+    - name: Build with Maven(GlassFish)
+      run: |
+        cd data
+        mvn -B -q clean verify -Parq-glassfish-managed
     - uses: actions/upload-artifact@v5
       if: failure()
       with:

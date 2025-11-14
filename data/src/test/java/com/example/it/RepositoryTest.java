@@ -54,7 +54,6 @@ public class RepositoryTest {
         WebArchive war = ShrinkWrap.create(WebArchive.class)
                 .addPackage(Post.class.getPackage())
                 .addPackage(Blogger.class.getPackage())
-                .addClass(DataInitializer.class)
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
