@@ -21,8 +21,6 @@ package com.example.it;
 import com.example.domain.Comment;
 import com.example.domain.Post;
 import com.example.repository.Blogger;
-import com.example.repository.CommentRepository;
-import com.example.repository.PostRepository;
 import com.example.service.BlogService;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -42,7 +40,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(ArquillianExtension.class)
 public class BlogServiceTest {
@@ -99,10 +97,18 @@ public class BlogServiceTest {
         post.setTitle("My Post");
         post.setContent("My Post Content");
         startTx();
-        var saved  = blogService.addPost(post);
+        var saved = blogService.addPost(post);
         endTx();
         UUID postId = saved.getId();
         LOGGER.log(Level.INFO, "inserted post: {0}", new Object[]{postId});
         assertNotNull(postId);
+
+        var comment = Comment.builder().content("test content").build();
+        startTx();
+        var savedComment = blogService.addCommentForPost(postId, comment);
+        endTx();
+        UUID commentId = savedComment.getId();
+        LOGGER.log(Level.INFO, "inserted comment: {0}", new Object[]{commentId});
+        assertNotNull(commentId);
     }
 }
