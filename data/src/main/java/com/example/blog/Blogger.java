@@ -20,8 +20,18 @@ import java.util.UUID;
 public interface Blogger {
 
 
+    // the projection is not avaialable in Jakarta Data 1.0.
+    // Jakarta Data 1.1 will cover it,
+    // see: https://jakarta.ee/specifications/data/1.1/jakarta-data-1.1.0-m1#_select_clause
+//    @Query("""
+//            SELECT p.id, p.title FROM Post AS p
+//            WHERE p.title LIKE :title
+//            ORDER BY p.createdAt DESC
+//            """)
+//    Page<PostSummary> allPosts(@Param("title") String title, PageRequest page);
+
     @Query("""
-            SELECT p.id, p.title FROM Post AS p
+            SELECT new com.example.domain.PostSummary(p.id, p.title) FROM Post AS p
             WHERE p.title LIKE :title
             ORDER BY p.createdAt DESC
             """)
