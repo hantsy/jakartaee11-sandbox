@@ -16,11 +16,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 
+@Transactional
 @Repository
 public interface Blogger {
 
 
-    // the projection is not avaialable in Jakarta Data 1.0.
+    // the projection is not available in Jakarta Data 1.0.
     // Jakarta Data 1.1 will cover it,
     // see: https://jakarta.ee/specifications/data/1.1/jakarta-data-1.1.0-m1#_select_clause
 //    @Query("""

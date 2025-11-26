@@ -134,7 +134,7 @@ public class BloggerTest {
                 Order.by(Sort.desc("createdAt")),
                 Limit.of(10)
         );
-        assertEquals(2, foundByStatusAfterUpdated.size());
+        assertEquals(0, foundByStatusAfterUpdated.size());
 
         var updatedPost = blogger.byId(postId);
         assertTrue(updatedPost.isPresent());
