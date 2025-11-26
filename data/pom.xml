@@ -112,6 +112,10 @@ under the License.
                             <version>${eclipselink.version}</version>
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
+                    <!-- see: https://github.com/eclipse-ee4j/glassfish/issues/25785#issuecomment-3582667079 -->
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

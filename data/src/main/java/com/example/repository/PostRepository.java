@@ -8,10 +8,10 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Repository;
 import jakarta.transaction.Transactional;
 
+@Transactional
 @Repository
 public interface PostRepository extends CrudRepository<Post, UUID> {
 
     @Delete
-    @Transactional
     void deleteAll();
 }

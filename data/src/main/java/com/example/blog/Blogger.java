@@ -31,12 +31,17 @@ public interface Blogger {
 //            """)
 //    Page<PostSummary> allPosts(@Param("title") String title, PageRequest page);
 
+//    @Query("""
+//            SELECT new com.example.domain.PostSummary(p.id, p.title) FROM Post AS p
+//            WHERE p.title LIKE :title
+//            ORDER BY p.createdAt DESC
+//            """)
     @Query("""
-            SELECT new com.example.domain.PostSummary(p.id, p.title) FROM Post AS p
+            FROM Post AS p
             WHERE p.title LIKE :title
             ORDER BY p.createdAt DESC
             """)
-    Page<PostSummary> allPosts(@Param("title") String title, PageRequest page);
+    Page<Post> allPosts(@Param("title") String title, PageRequest page);
 
     @Find
     @OrderBy("createdAt")

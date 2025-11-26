@@ -121,7 +121,7 @@ public class BloggerTest {
         // jakarta data page number starts with 1, NOTTTTTTT 0, I am crazy...
         var allPosts = blogger.allPosts("%My%", PageRequest.ofPage(1, 10, true));
         assertEquals(1, allPosts.totalElements());
-        assertEquals(postId, allPosts.content().getFirst().id());
+        assertEquals(postId, allPosts.content().getFirst().getId());
 
         savedPost.setTitle("New Title");
         savedPost.setStatus(PUBLISHED);
