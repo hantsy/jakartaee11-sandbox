@@ -18,11 +18,12 @@ under the License.
  */
 package com.example.it;
 
+import com.example.CdiInitializedDataInitializer;
+import com.example.CdiStartupDataInitializer;
 import com.example.domain.Comment;
 import com.example.domain.Post;
-import com.example.blog.Blogger;
+import com.example.repository.CommentRepository;
 import com.example.repository.PostRepository;
-import com.example.service.BlogService;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -41,19 +42,20 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
+// see: https://github.com/jakartaee/transactions/issues/235
 @ExtendWith(ArquillianExtension.class)
-public class BlogServiceTest {
+public class RepositoryWithCdiInitializedDataInitializerTest {
 
-    private final static Logger LOGGER = Logger.getLogger(BlogServiceTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(RepositoryWithCdiInitializedDataInitializerTest.class.getName());
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "BlogServiceTest.war")
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "RepositoryWithDataInitializerTest.war")
                 .addPackage(Post.class.getPackage())
                 .addPackage(PostRepository.class.getPackage())
-                .addPackage(BlogService.class.getPackage())
+                .addClass(CdiInitializedDataInitializer.class)
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
@@ -64,7 +66,10 @@ public class BlogServiceTest {
     private EntityManager em;
 
     @Inject
-    private BlogService blogService;
+    private PostRepository postRepository;
+
+    @Inject
+    CommentRepository commentRepository;
 
     @Inject
     UserTransaction ux;
@@ -98,18 +103,50 @@ public class BlogServiceTest {
         post.setTitle("My Post");
         post.setContent("My Post Content");
         startTx();
-        var saved = blogService.addPost(post);
+        em.persist(post);
         endTx();
-        UUID postId = saved.getId();
+        UUID postId = post.getId();
         LOGGER.log(Level.INFO, "inserted post: {0}", new Object[]{postId});
         assertNotNull(postId);
 
-        var comment = Comment.builder().content("test content").build();
+        // verify the existence
+        var found = postRepository.findById(postId);
+        assertTrue(found.isPresent());
+        assertEquals(post.getTitle(), found.get().getTitle());
+
+
+        // add a comment to the post
+        var comment = new Comment();
+        comment.setContent("My Comment");
+        comment.setPost(post);
         startTx();
-        var savedComment = blogService.addCommentForPost(postId, comment);
+        em.persist(comment);
         endTx();
-        UUID commentId = savedComment.getId();
-        LOGGER.log(Level.INFO, "inserted comment: {0}", new Object[]{commentId});
+        UUID commentId = comment.getId();
+        LOGGER.log(Level.INFO, "add comment: {0} to post: {1}", new Object[]{commentId, postId});
         assertNotNull(commentId);
+
+        //verify the saved comment
+        var foundComment = commentRepository.findById(commentId);
+        assertTrue(foundComment.isPresent());
+        assertEquals(comment.getContent(), foundComment.get().getContent());
+
+        // remove the comment
+        startTx();
+        commentRepository.delete(foundComment.get());
+        endTx();
+
+        // check the comment is removed
+        var commentByRemovedId = commentRepository.findById(commentId);
+        assertFalse(commentByRemovedId.isPresent());
+
+        // remove post and verify the existence
+        startTx();
+        postRepository.delete(found.get());
+        endTx();
+
+        // verify the post is removed
+        var postByRemovedId = postRepository.findById(postId);
+        assertFalse(postByRemovedId.isPresent());
     }
 }

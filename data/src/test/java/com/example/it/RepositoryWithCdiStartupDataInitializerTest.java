@@ -18,7 +18,7 @@ under the License.
  */
 package com.example.it;
 
-import com.example.DataInitializer;
+import com.example.CdiStartupDataInitializer;
 import com.example.domain.Comment;
 import com.example.domain.Post;
 import com.example.repository.CommentRepository;
@@ -45,16 +45,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // see: https://github.com/jakartaee/transactions/issues/235
 @ExtendWith(ArquillianExtension.class)
-public class RepositoryWithDataInitializerTest {
+public class RepositoryWithCdiStartupDataInitializerTest {
 
-    private final static Logger LOGGER = Logger.getLogger(RepositoryWithDataInitializerTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(RepositoryWithCdiStartupDataInitializerTest.class.getName());
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "RepositoryWithDataInitializerTest.war")
                 .addPackage(Post.class.getPackage())
                 .addPackage(PostRepository.class.getPackage())
-                .addClass(DataInitializer.class)
+                .addClass(CdiStartupDataInitializer.class)
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         LOGGER.log(Level.INFO, war.toString(true));
