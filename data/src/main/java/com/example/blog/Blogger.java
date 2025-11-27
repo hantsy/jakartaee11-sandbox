@@ -37,7 +37,7 @@ public interface Blogger {
 //            ORDER BY p.createdAt DESC
 //            """)
     @Query("""
-            FROM Post AS p
+            SELECT p FROM Post AS p
             WHERE p.title LIKE :title
             ORDER BY p.createdAt DESC
             """)
