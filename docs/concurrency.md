@@ -439,9 +439,10 @@ With this setup, messages sent to the chat service are stored in Redis and broad
 After deployment, you can interact with the service using the REST endpoints: e.g., `GET /chat` to join a chat conversation and track the new messages via SSE, `POST /chat` to send new messages, and `GET /chat/sync` or `GET /chat/async` to retrieve the latest 10 messages.
 
 > [!Warning]
-> Jakarta REST does not yet provide native reactive-streams support, so `GET /chat/flow` may not work reliably on some application servers.
+> Jakarta REST does not yet provide native Flow/Reactive Streams support, so `GET /chat/flow` may not work reliably on some application servers.
 
 See the complete example in this test class: [ChatResourceTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ChatResourceTest.java).
+
 
 
 
