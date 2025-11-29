@@ -15,7 +15,7 @@ In this post, we'll skip those topics and focus on the new `@Schedule` annotatio
 
 ## New `@Schedule` Annotation
 
-Legacy task scheduling has long been tied to the EJB container. Porting EJB functionalities to CDI-compatible APIs has been a long-standing effort ([see discussion](https://github.com/jakartaee/concurrency/issues/252)). The new `@Schedule` annotation aims to replace the [EJB scheduling annotation](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/ejb/schedule) and provide a more portable, CDI-friendly mechanism.
+Legacy task scheduling has long been tied to the EJB container. Porting EJB functionalities to CDI-compatible APIs has been a long-standing effort ([see discussion](https://github.com/jakartaee/concurrency/issues/252)). The new [`@Schedule`](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/enterprise/concurrent/schedule) annotation aims to replace the [EJB scheduling annotation](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/ejb/schedule) and provide a more portable, CDI-friendly mechanism.
 
 The example below demonstrates a simple usage of `@Schedule`.
 
@@ -155,7 +155,7 @@ Unfortunately, the current `@Schedule` design has a few rough edges:
 - It requires an external invocation to trigger scheduled tasks. It can not start automatically. see: [jakartaee/concurrency#624](https://github.com/jakartaee/concurrency/issues/624)
 - It is expressed as a nested `runAt` attribute inside `@Asynchronous`, which some find unintuitive.
 - Its attributes are not aligned with modern equivalents in frameworks such as Quarkus and Spring.
-- There is no clear replacement for the legacy `@TimeoutAround` pattern for handling schedule timeouts.
+- There is no clear replacement for the legacy timeout callback pattern for handling schedule timeouts.
 
 A cleaner, top-level scheduling annotation that adopts community best practices would be preferable. See the proposal for a standalone `@Scheduled` annotation: https://github.com/jakartaee/concurrency/issues/684
 
@@ -164,9 +164,9 @@ A cleaner, top-level scheduling annotation that adopts community best practices 
 
 Jakarta Concurrency 3.1 adds first-class support for the Java Flow (Reactive Streams) API, making it easier to build asynchronous, back-pressured pipelines that interoperate with other reactive libraries.
 
-The `ContextService` contains two helper methods such as `contextualSubscriber` and `contextualProcessor`. They are used to wrap standard Flow `Subscriber` and `Processor` implementations so they execute with proper Jakarta EE context propagation (CDI, JTA, Security).
+The `ContextService` contains two helper methods such as [`contextualSubscriber`](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/enterprise/concurrent/contextservice#contextualSubscriber(java.util.concurrent.Flow.Subscriber)) and [`contextualProcessor`](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/enterprise/concurrent/contextservice#contextualProcessor(java.util.concurrent.Flow.Processor)). They are used to wrap standard Flow `Subscriber` and `Processor` implementations so they execute with proper Jakarta EE context propagation (CDI, JTA, Security).
 
-The example below demonstrates these concepts with a simple chat application that uses CDI events and Server-Sent Events (SSE) to publish messages and Redis as a backing store. A contextual subscriber is used to process and count messages asynchronously.
+The example below demonstrates these concepts with a simple chat application that uses CDI events and Server-Sent Events (SSE) to publish messages and Redis as a backing store. A contextual subscriber is used to asynchronously process and count messages.
 
 First, define the sample subscriber - `RequestCountSubscriber`:
 
@@ -269,7 +269,7 @@ public class ChatResource {
 }
 ```
 
-Finally, implement the `ChatService` to handle the incoming messages and store in Redis, and use the contextual subscriber to subscribe it. It is also responsible for sending SSE events to connected clients.    
+Finally, implement the `ChatService` to handle incoming messages, store them in Redis, and use the contextual subscriber to subscribe to them. It is also responsible for sending SSE events to connected clients.    
 
 ```java
 @ApplicationScoped
@@ -442,4 +442,5 @@ After deployment, you can interact with the service using the REST endpoints: e.
 > Jakarta REST does not yet provide native reactive-streams support, so `GET /chat/flow` may not work reliably on some application servers.
 
 See the complete example in this test class: [ChatResourceTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ChatResourceTest.java).
+
 
