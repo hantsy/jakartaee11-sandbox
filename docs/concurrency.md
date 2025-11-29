@@ -15,7 +15,7 @@ In this post, we'll skip those topics and focus on the new `@Schedule` annotatio
 
 ## New `@Schedule` Annotation
 
-Legacy task scheduling has long been tied to the EJB container. Porting EJB functionalities to CDI-compatible APIs has been a long-standing effort ([see discussion](https://github.com/jakartaee/concurrency/issues/252)). The new `@Schedule` annotation aims to replace the EJB scheduling annotation and provide a more portable, CDI-friendly mechanism.
+Legacy task scheduling has long been tied to the EJB container. Porting EJB functionalities to CDI-compatible APIs has been a long-standing effort ([see discussion](https://github.com/jakartaee/concurrency/issues/252)). The new `@Schedule` annotation aims to replace the [EJB scheduling annotation](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/ejb/schedule) and provide a more portable, CDI-friendly mechanism.
 
 The example below demonstrates a simple usage of `@Schedule`.
 
@@ -442,3 +442,4 @@ After deployment, you can interact with the service using the REST endpoints: e.
 > Jakarta REST does not yet provide native reactive-streams support, so `GET /chat/flow` may not work reliably on some application servers.
 
 See the complete example in this test class: [ChatResourceTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ChatResourceTest.java).
+
