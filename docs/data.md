@@ -219,7 +219,7 @@ To run the project on a managed GlassFish server, execute the following command:
 mvn clean package cargo:run -Pglassfish
 ```
 
-To run the integration tests, which were written with Arquillian and JUnit 5, execute the following command:
+To run the integration tests on a managed GlassFish server with the Arquillian GlassFish adapter, execute the following command:
 
 ```bash
 mvn clean verify -Parq-glassfish-managed
@@ -227,4 +227,5 @@ mvn clean verify -Parq-glassfish-managed
 
 > [!NOTE]
 > Currently, several tests are still failing because some fixes from the upstream JNoSQL Jakarta Persistence project have not been applied to the GlassFish repository. I have created some GitHub issues for the GlassFish project to track future updates.  
+
 
