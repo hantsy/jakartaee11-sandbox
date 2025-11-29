@@ -11,11 +11,11 @@ Jakarta Concurrency provides a standard API for managing concurrent tasks in Jak
 
 We covered virtual threads in an earlier post — [Virtual Thread Support in Jakarta EE 11](./vt.md) — and showed how to define concurrency resources with CDI `@Qualifier`s so they can be injected like regular CDI beans.
 
-In this post we'll skip those topics and focus on the new `@Schedule` annotation and the Reactive Streams support.
+In this post, we'll skip those topics and focus on the new `@Schedule` annotation and the Reactive Streams support.
 
 ## New `@Schedule` Annotation
 
-Legacy task scheduling has long been tied to the EJB container. Moving scheduling to CDI-compatible concurrency APIs has been a long-standing effort ([see discussion](https://github.com/jakartaee/concurrency/issues/252)). The new `@Schedule` annotation aims to replace the EJB scheduling annotation and provide a more portable, CDI-friendly mechanism.
+Legacy task scheduling has long been tied to the EJB container. Porting EJB functionalities to CDI-compatible APIs has been a long-standing effort ([see discussion](https://github.com/jakartaee/concurrency/issues/252)). The new `@Schedule` annotation aims to replace the EJB scheduling annotation and provide a more portable, CDI-friendly mechanism.
 
 The example below demonstrates a simple usage of `@Schedule`.
 
@@ -146,13 +146,13 @@ public class ScheduleResources {
 }
 ```
 
-After deployment you can trigger notifications with `POST /schedule` and view invited names with `GET /schedule`.
+After deployment, you can trigger notifications with `POST /schedule` and view invited names with `GET /schedule`.
 
 See the test `ScheduleTest` for a runnable example: [ScheduleTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ScheduleTest.java).
 
 
 Unfortunately, the current `@Schedule` design has a few rough edges:
-- It requires an external invocation to trigger scheduled tasks. It can not start automatically.
+- It requires an external invocation to trigger scheduled tasks. It can not start automatically. see: [jakartaee/concurrency#624](https://github.com/jakartaee/concurrency/issues/624)
 - It is expressed as a nested `runAt` attribute inside `@Asynchronous`, which some find unintuitive.
 - Its attributes are not aligned with modern equivalents in frameworks such as Quarkus and Spring.
 - There is no clear replacement for the legacy `@TimeoutAround` pattern for handling schedule timeouts.
@@ -436,7 +436,7 @@ public record ChatMessage(String body, LocalDateTime sentAt) {
 
 With this setup, messages sent to the chat service are stored in Redis and broadcast to connected clients via SSE. The `RequestCountSubscriber` processes messages asynchronously, demonstrating Jakarta Concurrency's Reactive Streams support.
 
-After deployment, you can interact with the service using the REST endpoints: e.g., `GET /chat` to join chat conversation via SSE, `POST /chat` to send new messages, and `GET /chat/sync` or `GET /chat/async` to retrieve the latest 10 messages.
+After deployment, you can interact with the service using the REST endpoints: e.g., `GET /chat` to join a chat conversation via SSE, `POST /chat` to send new messages, and `GET /chat/sync` or `GET /chat/async` to retrieve the latest 10 messages.
 
 > [!Warning]
 > Jakarta REST does not yet provide native reactive-streams support, so `GET /chat/flow` may not work reliably on some application servers.
