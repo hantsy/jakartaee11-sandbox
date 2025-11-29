@@ -152,7 +152,7 @@ See the test `ScheduleTest` for a runnable example: [ScheduleTest](https://githu
 
 
 Unfortunately, the current `@Schedule` design has a few rough edges:
-- It requires an external invocation to trigger scheduled tasks. It can not start automatically. see: [jakartaee/concurrency#624](https://github.com/jakartaee/concurrency/issues/624)
+- It requires an external invocation to trigger scheduled tasks. That means it can not start automatically. see: [jakartaee/concurrency#624](https://github.com/jakartaee/concurrency/issues/624)
 - It is expressed as a nested `runAt` attribute inside `@Asynchronous`, which some find unintuitive.
 - Its attributes are not aligned with modern equivalents in frameworks such as Quarkus and Spring.
 - There is no clear replacement for the legacy timeout callback pattern for handling schedule timeouts.
@@ -442,6 +442,7 @@ After deployment, you can interact with the service using the REST endpoints: e.
 > Jakarta REST does not yet provide native Flow/Reactive Streams support, so `GET /chat/flow` may not work reliably on some application servers.
 
 See the complete example in this test class: [ChatResourceTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ChatResourceTest.java).
+
 
 
 
