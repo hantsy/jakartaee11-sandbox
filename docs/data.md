@@ -30,7 +30,7 @@ public interface PostRepository extends CrudRepository<Post, UUID> {
 }
 ```
 
-Additionally, Jakarta Data provides a collection of lifecycle annotations ([`Find`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/find), [`Insert`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/insert), [`Update`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/update), [`Delete`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/delete)) that allow you to write operation methods more freely in your own interfaces. The entity type can be detected by the method parameters or return type.
+Additionally, Jakarta Data provides a collection of lifecycle annotations ([`Find`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/find), [`Insert`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/insert), [`Update`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/update), [`Delete`](https://jakarta.ee/specifications/data/1.0/apidocs/jakarta.data/jakarta/data/repository/delete)) that allow you to write operation methods more freely in your own interfaces. The entity type can be determined from the method parameters or the return type.
 
 ```java
 @Repository
@@ -62,9 +62,9 @@ public interface Blogger {
 
 Currently, Quarkus and Micronaut have already integrated Jakarta Data as an alternative persistence solution for developers. I have written articles introducing [the integration of Jakarta Data with Quarkus](https://itnext.io/integrating-jakarta-data-with-quarkus-0d18365a86fe) and [Micronaut](https://itnext.io/seamless-data-access-micronaut-data-embraces-jakarta-data-2f16f5a64c9e). Spring and Spring Data have no plans to integrate Jakarta Data, but that does not mean integrating Jakarta Data with Spring is difficult. I also wrote a post about [integrating Hibernate Data Repositories with Spring](https://itnext.io/integrating-jakarta-data-with-spring-0beb5c215f5f).
 
-Unlike Jakarta Persistence, Spring Data, and Micronaut Data, Jakarta Data 1.0 does not provide specific annotations to define entity types. As a result, it relies heavily on the implementation details of each provider. For example, Micronaut Data reuses Jakarta Persistence annotations as well as its own data annotations, both of which work seamlessly with Jakarta Data. Quarkus and WildFly integrate Jakarta Data through Hibernate Data repositories, so in these environments, Jakarta Persistence entities are used to represent entities for Jakarta Data.
+Unlike Jakarta Persistence, Spring Data, and Micronaut Data, Jakarta Data 1.0 does not provide specific annotations to define entity types. As a result, it relies heavily on each provider's implementation details. For example, Micronaut Data reuses Jakarta Persistence annotations as well as its own data annotations, both of which work seamlessly with Jakarta Data. Quarkus and WildFly integrate Jakarta Data via Hibernate Data repositories, so in these environments, Jakarta Persistence entities are used to represent Jakarta Data entities.
 
-Currently, open-source Jakarta EE implementors such as GlassFish, WildFly, and Open Liberty are working on their own Jakarta Data implementations, typically leveraging entities defined with Jakarta Persistence. However, their approaches vary. WildFly (with Hibernate) translates Jakarta Data queries into Java code and generates repository implementations at compile time. In contrast, GlassFish reuses the effort from Eclipse JNoSQL and processes the queries dynamically at runtime.
+Currently, open-source Jakarta EE implementors such as GlassFish, WildFly, and Open Liberty are working on their own Jakarta Data implementations, typically leveraging entities defined with Jakarta Persistence. However, their approaches vary. WildFly (with Hibernate) translates Jakarta Data queries into Java code and generates repository implementations at compile time. In contrast, GlassFish reuses the effort from Eclipse JNoSQL and dynamically processes queries at runtime.
 
 In this post, we’ll focus on demonstrating Jakarta Data features on standard Jakarta EE-compatible application servers, such as GlassFish, WildFly, and others.
 
@@ -194,5 +194,35 @@ mvn clean verify -Parq-wildfly-managed
 
 ## GlassFish
 
-TBD
+Since GlassFish 8.0.0-M14, initial Jakarta Data support has been included. But unfortunately, I still encountered some issues running these examples on GlassFish. 
 
+Firstly, we used a query result projection to a Record class for `Blogger.allPosts`, which is a preview feature of the future Jakarta Data 1.1. It is not available in GlassFish. We have to change it to use an entity class in the return type or wrapped type.
+
+```java
+@Repository
+public interface Blogger {
+    @Query("""
+            SELECT p FROM Post AS p
+            WHERE p.title LIKE :title
+            ORDER BY p.createdAt DESC
+            """)
+    Page<Post> allPosts(@Param("title") String title, PageRequest page);
+
+}
+```
+
+Unlike WildFly, which generates implementation code at compile time via the Hibernate processor, the Jakarta Data implementation on GlassFish is provided by the JNoSQL extension [JNoSQL Jakarta Persistence](https://github.com/eclipse-jnosql/jnosql-extensions/tree/main/jnosql-jakarta-persistence), which handles Jakarta Data facilities at runtime.
+
+To run the project on a managed GlassFish server, execute the following command:
+
+```bash
+mvn clean package cargo:run -Pglassfish
+```
+
+To run the integration tests, which were written with Arquillian and JUnit 5, execute the following command:
+
+```bash
+mvn clean verify -Parq-glassfish-managed
+```
+
+> [NOTE]: Currently, several tests still fail to run because some fixes from the upstream JNoSQL Jakarta Persistence project have not been applied to the GlassFish repository. I have created some GitHub issues for the GlassFish project to track future updates.  
