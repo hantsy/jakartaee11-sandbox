@@ -1,32 +1,32 @@
 # What's New in Jakarta Concurrency 3.1?
 
-[Jakarta Concurrency 3.1](https://jakarta.ee/specifications/concurrency/3.1/) brings several new features into the Jakarta EE world:
+Jakarta Concurrency provides a standard API for managing concurrent tasks in Jakarta EE applications. It exposes managed executor services, thread factories, and context propagation helpers so that concurrent work runs with container-managed concurrency resources.
 
-* Integration with Java 21 Virtual thread
-* CDI alignment with injecting Concurrency resources
-* New `@Schedule` annotation
-* Java 9 Flow/ReactiveStreams support
+[Jakarta Concurrency 3.1](https://jakarta.ee/specifications/concurrency/3.1/) introduces several notable improvements:
 
-We have introduced the **Virtual Thread** support in a previous post - [Virtual Thread Support in Jakarta EE 11](./vt.md), and also demonstrated how to define the Concurrency resources with CDI `@Quaulifer` and inject them like regular CDI beans.
+- Integration with Java 21 virtual threads
+- Improved CDI support for injecting concurrency resources
+- A new `@Schedule` annotation for task scheduling
+- Java 9 Flow / Reactive Streams support
 
-Here, we will skip these in this post and focus on the new `@Schedule` annotation and Reactive Streams support.
+We covered virtual threads in an earlier post — [Virtual Thread Support in Jakarta EE 11](./vt.md) — and showed how to define concurrency resources with CDI `@Qualifier`s so they can be injected like regular CDI beans.
 
-## New @Schedule Annotation
+In this post we'll skip those topics and focus on the new `@Schedule` annotation and the Reactive Streams support.
 
-The legacy task scheduling was heavily bound to the EJB container, and [replacing EJB with Concurrency](https://github.com/jakartaee/concurrency/issues/252) and CDI-compatible facilities is a long-awatied mission. 
+## New `@Schedule` Annotation
 
-The purpose of new `@Schedule` annotation to replace the EJB one.
+Legacy task scheduling has long been tied to the EJB container. Moving scheduling to CDI-compatible concurrency APIs has been a long-standing effort ([see discussion](https://github.com/jakartaee/concurrency/issues/252)). The new `@Schedule` annotation aims to replace the EJB scheduling annotation and provide a more portable, CDI-friendly mechanism.
 
-Let's create a simple example to show how to use it. 
+The example below demonstrates a simple usage of `@Schedule`.
 
-Assume we need to notify the team members to attend a project meeting, here we create a bean with `@Schedule` to archive the purpose.
+Suppose we need to notify team members about a recurring project meeting. The bean below uses `@Schedule` to trigger those notifications.
 
 ```java
 @ApplicationScoped
 public class StandUpMeeting {
-    private final static Logger LOGGER = Logger.getLogger(StandUpMeeting.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StandUpMeeting.class.getName());
 
-    private final static Map<String, String> members = Map.of(
+    private static final Map<String, String> members = Map.of(
             "jack", "jack@example.com",
             "ross", "ross@example.com"
     );
@@ -39,11 +39,10 @@ public class StandUpMeeting {
 
     @PostConstruct
     public void init() {
-        LOGGER.log(Level.ALL, "init from scheduled tasks....");
+        LOGGER.log(Level.ALL, "init from scheduled tasks...");
     }
 
     @Asynchronous(
-            //executor = "java:comp/MyScheduleExecutor", // can not refer by Qualifier???
             runAt = {
                     @Schedule(
                             daysOfWeek = {
@@ -55,12 +54,12 @@ public class StandUpMeeting {
                             },
                             hours = 8
                     ), // daily standup
-                    @Schedule(daysOfMonth = {1}, hours = {12}), // monthly meeting,
-                    @Schedule(cron = "*/5 * * * * *") // every 5 seconds for test purpose
+                    @Schedule(daysOfMonth = {1}, hours = {12}), // monthly meeting
+                    @Schedule(cron = "*/5 * * * * *") // every 5 seconds (test)
             }
     )
     void sendInviteNotifications() {
-        LOGGER.log(Level.ALL, "running scheduled tasks....");
+        LOGGER.log(Level.ALL, "running scheduled tasks...");
         try (ForkJoinPool pool = new ForkJoinPool(
                 Runtime.getRuntime().availableProcessors(),
                 threadFactory,
@@ -98,9 +97,9 @@ public class StandUpMeeting {
 }
 ```
 
-As you see, the new `@Schedule` is located in the existing `@Asynchronous(runAt=...)`, which make the usage looks a little weird. 
+As you can see, the new `@Schedule` is currently declared inside the `@Asynchronous(runAt = ...)` attribute, which some developers find awkward.
 
-The `NotificationService` is a dummy notification service used for test purpose.
+The `NotificationService` below is a simple test service used in the example.
 
 ```java
 @ApplicationScoped
@@ -120,7 +119,7 @@ public class NotificationService {
 }
 ```
 
-Create a REST resource to trigger the scheduled tasks.
+Create a REST resource that triggers the scheduled tasks:
 
 ```java
 @RequestScoped
@@ -147,18 +146,299 @@ public class ScheduleResources {
 }
 ```
 
-After the application is deployed, we can start send notifications via endpoint `POST /schedule`, and check the invited names via `GET /schedule`. 
+After deployment you can trigger notifications with `POST /schedule` and view invited names with `GET /schedule`.
 
-You can check the testing code [ScheduleTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ScheduleTest.java) to explore the progress. 
+See the test `ScheduleTest` for a runnable example: [ScheduleTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ScheduleTest.java).
 
-Unfornately, the new `@Schedule` annoation looks a little weird for developers. 
-* It requirs an external invocation to trigger the scheduled tasks, can not start automaticially.
-* It works as a nested `runAt` attribute of the existing `@Asynchronous` annoation.
-* The attributes of `@Schedule` does not align with the modern equvilent ones in Quarkus and Spring.
-* The is no equilvence of the legacy `@TimeoutAround` to handle the original schedule timeout.
 
-I hope there is a completely new  replacement of the EJB `@Schedule`, and adopt the good part of the community's work, eg. Quarkus and Spring. 
-Check the [proposal of the top-level standalone `@Scheduled` annotation](https://github.com/jakartaee/concurrency/issues/684).
+Unfortunately, the current `@Schedule` design has a few rough edges:
+- It requires an external invocation to trigger scheduled tasks. It can not start automatically.
+- It is expressed as a nested `runAt` attribute inside `@Asynchronous`, which some find unintuitive.
+- Its attributes are not aligned with modern equivalents in frameworks such as Quarkus and Spring.
+- There is no clear replacement for the legacy `@TimeoutAround` pattern for handling schedule timeouts.
 
-## ReactiveStreams Support
+A cleaner, top-level scheduling annotation that adopts community best practices would be preferable. See the proposal for a standalone `@Scheduled` annotation: https://github.com/jakartaee/concurrency/issues/684
 
+
+## Reactive Streams Support
+
+Jakarta Concurrency 3.1 adds first-class support for the Java Flow (Reactive Streams) API, making it easier to build asynchronous, back-pressured pipelines that interoperate with other reactive libraries.
+
+The `ContextService` contains two helper methods such as `contextualSubscriber` and `contextualProcessor`. They are used to wrap standard Flow `Subscriber` and `Processor` implementations so they execute with proper Jakarta EE context propagation (CDI, JTA, Security).
+
+The example below demonstrates these concepts with a simple chat application that uses CDI events and Server-Sent Events (SSE) to publish messages and Redis as a backing store. A contextual subscriber is used to process and count messages asynchronously.
+
+First, define the sample subscriber - `RequestCountSubscriber`:
+
+```java
+@ApplicationScoped
+public class RequestCountSubscriber implements Flow.Subscriber<Long> {
+    private Logger LOGGER = Logger.getLogger(RequestCountSubscriber.class.getName());
+    final public static int MAX_REQUESTS = 2;
+
+    Flow.Subscription subscription;
+    int requestCount = 0;
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+        LOGGER.info("onSubscribe:" + subscription);
+        this.subscription = subscription;
+        this.subscription.request(1);
+        this.requestCount++;
+    }
+
+    @Override
+    public void onNext(Long item) {
+        LOGGER.info("onNext:" + item);
+        if (requestCount % MAX_REQUESTS == 0) {
+            this.subscription.request(MAX_REQUESTS);
+        }
+        requestCount++;
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+        LOGGER.info("onError:" + throwable.getMessage());
+        this.subscription.cancel();
+    }
+
+    @Override
+    public void onComplete() {
+        LOGGER.log(Level.INFO, "onComplete: request count:{0}", new Object[]{this.requestCount});
+    }
+}
+```
+
+Next, create a REST resource to publish messages and subscribe the message via SSE:
+
+```java
+@ApplicationScoped
+@Path("chat")
+public class ChatResource {
+
+    @Inject
+    ChatService chatService;
+
+    @Context
+    Sse sse;
+
+    @PostConstruct
+    public void init() {
+        chatService.setSse(this.sse);
+    }
+
+    @GET
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void join(@Context SseEventSink sink) {
+        var userId = UUID.randomUUID();
+        chatService.register(userId, sink);
+    }
+
+    @DELETE
+    @Path("{id}")
+    public void quit(@PathParam("id") UUID id) {
+        chatService.deregister(id);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void send(@Valid NewMessageCommand message) {
+        chatService.send(ChatMessage.of(message.body()));
+    }
+
+    @GET
+    @Path("sync")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response latestMessages() {
+        return Response.ok(chatService.latest10Messages()).build();
+    }
+
+    @GET
+    @Path("async")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response latestMessagesAsync() {
+        return Response.ok(chatService.latest10MessagesFuture()).build();
+    }
+
+    @GET
+    @Path("flow")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Flow.Publisher<ChatMessage> latestMessagesFlow() {
+        return chatService.latest10MessagesFlowPublisher();
+    }
+}
+```
+
+Finally, implement the `ChatService` to handle the incoming messages and store in Redis, and use the contextual subscriber to subscribe it. It is also responsible for sending SSE events to connected clients.    
+
+```java
+@ApplicationScoped
+public class ChatService {
+    @Inject
+    private ManagedExecutorService executor;
+
+    @Inject
+    private ContextService contextService;
+
+    @Inject
+    StatefulRedisConnection<String, String> redisConnection;
+
+    @Inject
+    Jsonb jsonb;
+
+    @Inject
+    Logger LOG;
+
+    @Inject
+    RequestCountSubscriber requestCountSubscriber;
+
+    @Inject
+    Event<ChatMessage> chatMessageEvent;
+
+    private Sse sse;
+
+    private final Map<UUID, SseEventSink> sinks = new ConcurrentHashMap<>();
+
+    public void register(UUID id, SseEventSink request) {
+        LOG.log(Level.FINEST, "register request:{0}", id);
+        sinks.put(id, request);
+    }
+
+    public void deregister(UUID uuid) {
+        LOG.log(Level.FINEST, "deregister request:{0}", uuid);
+        SseEventSink eventSink = sinks.remove(uuid);
+        try {
+            eventSink.close();
+            LOG.log(Level.FINEST, "closing sink: {0}", eventSink);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            LOG.log(Level.ALL, "closed SSE event sink");
+        }
+    }
+
+    public void send(ChatMessage message) {
+        RedisReactiveCommands<String, String> commands = redisConnection.reactive();
+        commands.lpush("chat", jsonb.toJson(message))
+                .doOnSuccess(
+                        inserted -> {
+                            LOG.log(Level.FINEST, "inserted items into redis:" + inserted);
+                            chatMessageEvent.fire(message);
+                        }
+                )
+                .subscribe(
+                        FlowAdapters.toSubscriber(
+                                contextService.contextualSubscriber(requestCountSubscriber)
+                        )
+                );
+    }
+
+    public void onMessage(@Observes ChatMessage msg) {
+        sinks.values()
+                .forEach(sink -> {
+                            OutboundSseEvent outboundSseEvent = this.sse.newEventBuilder()
+                                    .mediaType(MediaType.APPLICATION_JSON_TYPE)
+                                    .id(UUID.randomUUID().toString())
+                                    .name("message from cdi")
+                                    .data(msg)
+                                    .build();
+                            sink.send(outboundSseEvent);
+                        }
+                );
+    }
+
+    public List<ChatMessage> latest10Messages() {
+        RedisCommands<String, String> commands = redisConnection.sync();
+
+        return commands.lpop("chat", 10)
+                .stream()
+                .map(it -> jsonb.fromJson(it, ChatMessage.class))
+                .toList();
+    }
+
+    public CompletableFuture<List<ChatMessage>> latest10MessagesFuture() {
+        RedisAsyncCommands<String, String> commands = redisConnection.async();
+
+        return commands.lpop("chat", 10)
+                .thenApplyAsync(
+                        msg -> msg.stream()
+                                .map(it -> jsonb.fromJson(it, ChatMessage.class))
+                                .toList(),
+                        executor
+                )
+                .toCompletableFuture();
+    }
+
+    public Flow.Publisher<ChatMessage> latest10MessagesFlowPublisher() {
+        RedisReactiveCommands<String, String> commands = redisConnection.reactive();
+
+        Flux<ChatMessage> messageFlux = commands.lpop("chat", 10)
+                .map(it -> jsonb.fromJson(it, ChatMessage.class))
+                .subscribeOn(Schedulers.fromExecutor(executor));
+
+        return FlowAdapters.toFlowPublisher(messageFlux);
+    }
+
+    public void setSse(Sse sse) {
+        this.sse = sse;
+    }
+}
+```
+
+The RedisConnection bean is defined as follows:
+
+```java
+@ApplicationScoped
+public class RedisClientProducer {
+    private static final Logger LOGGER = Logger.getLogger(RedisClientProducer.class.getName());
+
+    // Producer method for RedisClient
+    @Produces
+    @ApplicationScoped
+    public RedisClient createRedisClient() {
+        return RedisClient.create("redis://localhost:6379");
+    }
+
+    // Disposer method to close the RedisClient
+    public void closeRedisClient(@Disposes RedisClient redisClient) {
+        LOGGER.finest("shutdown redis client...");
+        redisClient.shutdown();
+    }
+
+    @Produces
+    @ApplicationScoped
+    public StatefulRedisConnection<String, String> redisConnection(RedisClient redisClient) {
+        return redisClient.connect();
+    }
+
+    public void closeConnection(@Disposes StatefulRedisConnection<String, String> redisConnection) {
+        LOGGER.finest("closing redis connection...");
+        redisConnection.close();
+    }
+}
+```
+The `NewMessageCommand` and `ChatMessage` classes are simple POJOs:
+
+```java
+public record NewMessageCommand(
+        @NotBlank String body
+) {
+}
+```
+
+```java
+public record ChatMessage(String body, LocalDateTime sentAt) {
+    static ChatMessage of(String body) {
+        return new ChatMessage(body, LocalDateTime.now());
+    }
+}
+```
+
+With this setup, messages sent to the chat service are stored in Redis and broadcast to connected clients via SSE. The `RequestCountSubscriber` processes messages asynchronously, demonstrating Jakarta Concurrency's Reactive Streams support.
+
+After deployment, you can interact with the service using the REST endpoints: e.g., `GET /chat` to join chat conversation via SSE, `POST /chat` to send new messages, and `GET /chat/sync` or `GET /chat/async` to retrieve the latest 10 messages.
+
+> [!Warning]
+> Jakarta REST does not yet provide native reactive-streams support, so `GET /chat/flow` may not work reliably on some application servers.
+
+See the complete example in this test class: [ChatResourceTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ChatResourceTest.java).
