@@ -1,6 +1,6 @@
 # Meet Jakarta Data: The Newest Member of the Jakarta EE 11 Ecosystem
 
-[Jakarta Data](https://jakarta.ee/specifications/data/1.0/) is a new specification introduced in Jakarta EE 11. Jakarta Data provides a set of APIs to simplify data access, and it is not limited to Jakarta Persistence or relational databases. It is designed to be neutral regarding the underlying data storage. The [Eclipse JNoSQL project](https://www.jnosql.org/) also implements this specification, bringing the same experience to the NoSQL world.
+[Jakarta Data](https://jakarta.ee/specifications/data/1.0/) is a new specification in Jakarta EE 11 that simplifies data access across different storage technologies. It is storage-agnostic — not limited to Jakarta Persistence or relational databases — and is designed so providers can adapt it to a variety of backends. The [Eclipse JNoSQL project](https://www.jnosql.org/) also implements this specification, bringing the same API surface to the NoSQL ecosystem.
 
 ## Exploring Jakarta Data
 
