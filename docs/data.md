@@ -225,4 +225,6 @@ To run the integration tests, which were written with Arquillian and JUnit 5, ex
 mvn clean verify -Parq-glassfish-managed
 ```
 
-> [NOTE]: Currently, several tests still fail to run because some fixes from the upstream JNoSQL Jakarta Persistence project have not been applied to the GlassFish repository. I have created some GitHub issues for the GlassFish project to track future updates.  
+> [!NOTE]
+> Currently, several tests are still failing because some fixes from the upstream JNoSQL Jakarta Persistence project have not been applied to the GlassFish repository. I have created some GitHub issues for the GlassFish project to track future updates.  
+
