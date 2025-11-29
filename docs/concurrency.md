@@ -162,7 +162,7 @@ A cleaner, top-level scheduling annotation that adopts community best practices 
 
 ## Reactive Streams Support
 
-Jakarta Concurrency 3.1 adds first-class support for the Java Flow (Reactive Streams) API, making it easier to build asynchronous, back-pressured pipelines that interoperate with other reactive libraries.
+Jakarta Concurrency 3.1 adds first-class support for the [Java 9 `Flow`](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html) ([Reactive Streams](https://www.reactive-streams.org/)) API, making it easier to build asynchronous, back-pressured pipelines that interoperate with other reactive libraries.
 
 The `ContextService` contains two helper methods such as [`contextualSubscriber`](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/enterprise/concurrent/contextservice#contextualSubscriber(java.util.concurrent.Flow.Subscriber)) and [`contextualProcessor`](https://jakarta.ee/specifications/platform/11/apidocs/jakarta/enterprise/concurrent/contextservice#contextualProcessor(java.util.concurrent.Flow.Processor)). They are used to wrap standard Flow `Subscriber` and `Processor` implementations so they execute with proper Jakarta EE context propagation (CDI, JTA, Security).
 
@@ -442,5 +442,6 @@ After deployment, you can interact with the service using the REST endpoints: e.
 > Jakarta REST does not yet provide native reactive-streams support, so `GET /chat/flow` may not work reliably on some application servers.
 
 See the complete example in this test class: [ChatResourceTest](https://github.com/hantsy/jakartaee11-sandbox/blob/master/concurrency/src/test/java/com/example/it/ChatResourceTest.java).
+
 
 
