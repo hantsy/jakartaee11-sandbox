@@ -30,7 +30,7 @@ jobs:
       run: |
         cd security
         mvn -B -q clean verify -Parq-glassfish-managed
-    - uses: actions/upload-artifact@v5
+    - uses: actions/upload-artifact@v6
       if: failure()
       with:
         name: server-log
