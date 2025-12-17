@@ -37,9 +37,9 @@ public interface Blogger {
 //            ORDER BY p.createdAt DESC
 //            """)
     @Query("""
-            SELECT p FROM Post AS p
-            WHERE p.title LIKE :title
-            ORDER BY p.createdAt DESC
+            FROM Post
+            WHERE title LIKE :title
+            ORDER BY createdAt DESC
             """)
     Page<Post> allPosts(@Param("title") String title, PageRequest page);
 
