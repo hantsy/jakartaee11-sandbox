@@ -30,7 +30,7 @@
         <!-- Jakarta EE API -->
         <jakartaee-api.version>11.0.0</jakartaee-api.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <logback.version>1.5.24</logback.version>
+        <logback.version>1.5.27</logback.version>
         <lombok.version>1.18.36</lombok.version>
 
         <!-- Hibernate 7.0.0 or higher implements JPA 3.2 -->
