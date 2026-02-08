@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - "cdi/**"
+      - "pom.xml"
     branches:
       - master
   pull_request:

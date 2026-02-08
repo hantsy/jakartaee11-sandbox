@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - "rest/**"
+      - "pom.xml"
     branches:
       - master
   pull_request:
