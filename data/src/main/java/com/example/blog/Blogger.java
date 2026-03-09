@@ -2,7 +2,6 @@ package com.example.blog;
 
 import com.example.domain.Comment;
 import com.example.domain.Post;
-import com.example.domain.PostSummary;
 import com.example.domain.Status;
 import jakarta.data.Limit;
 import jakarta.data.Order;
@@ -43,10 +42,10 @@ public interface Blogger {
     //         ORDER BY p.createdAt DESC
     //         """)
     @Query("""
-        SELECT this FROM Post
-        WHERE title LIKE :title
-        ORDER BY createdAt DESC
-        """)
+            SELECT this FROM Post
+            WHERE title LIKE :title
+            ORDER BY createdAt DESC
+            """)
     Page<Post> allPosts(@Param("title") String title, PageRequest page);
 
     @Find
