@@ -36,11 +36,17 @@ public interface Blogger {
 //            WHERE p.title LIKE :title
 //            ORDER BY p.createdAt DESC
 //            """)
+// see: https://github.com/eclipse-ee4j/glassfish/issues/25941#issuecomment-4020028678    
+    // @Query("""
+    //         SELECT p FROM Post p
+    //         WHERE p.title LIKE :title
+    //         ORDER BY p.createdAt DESC
+    //         """)
     @Query("""
-            SELECT p FROM Post p
-            WHERE p.title LIKE :title
-            ORDER BY p.createdAt DESC
-            """)
+        SELECT this FROM Post
+        WHERE title LIKE :title
+        ORDER BY createdAt DESC
+        """)
     Page<Post> allPosts(@Param("title") String title, PageRequest page);
 
     @Find
