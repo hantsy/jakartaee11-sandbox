@@ -18,7 +18,13 @@
             <strong>#{customerBean2.customer.firstName.concat(customerBean2.customer.lastName)}</strong>
             <hr/>
         </div>
-        <div>PhoneNumber: #{customerBean2.customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')}</div>
+        <div>PhoneNumber:
+            <!--
+            This expression does not work, which OptionalELResolver is enabled in Facelets.
+            customerBean2.customer.phoneNumber.map(p-> '('.concat(p.countryCode).concat(')').concat(p.number)).orElse('NotFound')
+            -->
+            #{'('.concat(customerBean2.customer.phoneNumber.countryCode).concat(')').concat(customerBean2.customer.phoneNumber.number)}
+        </div>
         <div>Emails: (#{customerBean2.customer.emailAddresses.length})</div>
         <ul>
             <ui:repeat value="#{customerBean2.customer.emailAddresses}" var="email">

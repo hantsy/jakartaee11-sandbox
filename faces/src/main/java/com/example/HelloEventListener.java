@@ -2,6 +2,7 @@ package com.example;
 
 import jakarta.enterprise.context.*;
 import jakarta.enterprise.event.Observes;
+import jakarta.faces.convert.UUIDConverter;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
