@@ -11,3 +11,20 @@ public record Customer(
 ) {
 }
 
+record PhoneNumber(String countryCode, String number) {
+}
+
+record EmailAddress(
+        String email,
+        Boolean primary
+) {
+}
+
+record Address(
+        String street,
+        String city,
+        String state,
+        String zipCode
+) {
+}
+
