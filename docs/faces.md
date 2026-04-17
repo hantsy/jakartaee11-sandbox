@@ -94,4 +94,8 @@ Create a Facelets page to display the `Customer` information.
 
 The `OptionalELResolver` is enabled by default in Facelets, so you can access `customerBean2.customer.phoneNumber` directly.
 
+Clone the [example project](https://github.com/hantsy/jakartaee11-sandbox/tree/master/faces), open a terminal in the project root, run `mvn clean package cargo:run -Pglassfish` to build and run the application on the managed GlassFish server, then open a browser to `http://localhost:18080/faces-examples/customer2.xhtml` to see the result.
+
+![result](./faces.png)
+
 Check the full example code on [Github](https://github.com/hantsy/jakartaee11-sandbox/tree/master/faces) and explore it yourself.
