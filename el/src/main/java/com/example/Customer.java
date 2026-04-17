@@ -11,20 +11,22 @@ public record Customer(
 ) {
 }
 
-record PhoneNumber(String countryCode, String number) {
-}
+//see: https://github.com/eclipse-ee4j/expressly/issues/23
 
-record EmailAddress(
-        String email,
-        Boolean primary
-) {
-}
-
-record Address(
-        String street,
-        String city,
-        String state,
-        String zipCode
-) {
-}
+//record PhoneNumber(String countryCode, String number) {
+//}
+//
+//record EmailAddress(
+//        String email,
+//        Boolean primary
+//) {
+//}
+//
+//record Address(
+//        String street,
+//        String city,
+//        String state,
+//        String zipCode
+//) {
+//}
 
