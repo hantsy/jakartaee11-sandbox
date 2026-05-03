@@ -34,13 +34,13 @@
         <lombok.version>1.18.36</lombok.version>
 
         <!-- Hibernate 7.0.0 or higher implements JPA 3.2 -->
-        <hibernate.version>7.3.1.Final</hibernate.version>
+        <hibernate.version>7.3.2.Final</hibernate.version>
         <h2.version>2.4.240</h2.version>
         <hibernate-validator.version>9.1.0.Final</hibernate-validator.version>
         <expressly.version>6.0.0</expressly.version>
 
         <!-- Arquillian BOM -->
-        <arquillian-bom.version>1.10.0.Final</arquillian-bom.version>
+        <arquillian-bom.version>1.10.1.Final</arquillian-bom.version>
         <!-- Since Aruqillian core 1.9.0.Final, need to add Aruqillian Jakarta BOM which aligns to Jakarta EE -->
         <arquillian-jakarta-bom.version>10.0.0.Final</arquillian-jakarta-bom.version>
         <shrinkwrap-resolver-bom.version>3.3.4</shrinkwrap-resolver-bom.version>
@@ -55,10 +55,10 @@
         <arquillian-glassfish.version>7.0.14</arquillian-glassfish.version>
 
         <!-- WildFly -->
-        <wildfly.version>39.0.1.Final</wildfly.version>
-        <wildfly-maven-plugin.version>5.1.5.Final</wildfly-maven-plugin.version>
-        <wildfly-arquillian.version>5.1.0.Final</wildfly-arquillian.version>
-        <resteasy.version>7.0.1.Final</resteasy.version>
+        <wildfly.version>40.0.0.Beta1</wildfly.version>
+        <wildfly-maven-plugin.version>6.0.0.Beta3</wildfly-maven-plugin.version>
+        <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
+        <resteasy.version>7.0.2.Final</resteasy.version>
 
         <!-- by default skip tests -->
         <skip.unit.tests>false</skip.unit.tests>
