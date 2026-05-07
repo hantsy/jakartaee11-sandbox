@@ -11,15 +11,20 @@ import com.example.bookstore.Isbn;
 import com.example.record.RecordEmbeddedEntity;
 import com.example.record.RecordEmbeddedIdEntity;
 import com.example.record.RecordIdClassEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.CacheRetrieveMode;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceConfiguration;
+import jakarta.persistence.PersistenceUnitTransactionType;
+import jakarta.persistence.Timeout;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaSelect;
 import jakarta.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -28,8 +33,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 
+@Slf4j
 public class SampleTest {
-    private static final Logger LOG = LoggerFactory.getLogger(SampleTest.class);
 
     @Test
     public void testWithPersistenceXML() {
@@ -43,7 +48,7 @@ public class SampleTest {
                         new BigDecimal("50.1234")
                 );
                 em.persist(entity);
-                LOG.debug("persisted book: {}", entity);
+                log.debug("persisted book: {}", entity);
 
                 var book =
                         em.find(Book.class, new Isbn("9781932394887"),
@@ -52,29 +57,29 @@ public class SampleTest {
                                         "jakarta.persistence.query.timeout", 500,
                                         "org.hibernate.readOnly", true)
                         );
-                LOG.debug("found book with Map properties: {}", book);
+                log.debug("found book with Map properties: {}", book);
 
                 // type safe options
                 var result = em.find(Book.class, new Isbn("9781932394887"),
                         CacheRetrieveMode.BYPASS,
                         Timeout.seconds(500),
                         LockModeType.READ);
-                LOG.debug("found book result with type-safe options: {}", result);
+                log.debug("found book result with type-safe options: {}", result);
 
                 // get persistent or detached instance
                 var ref = em.getReference(result);
-                LOG.debug("book ref: {}", ref);
+                log.debug("book ref: {}", ref);
 
 
                 var nullableReult = em.createQuery("from Book where id=:isbn", Book.class)
                         .setParameter("isbn", new Isbn("9781932394887"))
                         .getSingleResultOrNull();
-                LOG.debug("book getSingleResultOrNull result: {}", nullableReult);
+                log.debug("book getSingleResultOrNull result: {}", nullableReult);
             });
 
             emf.callInTransaction(em -> em.createQuery("from Book", Book.class)
                             .getResultList())
-                    .forEach(book -> LOG.debug("saved book: {}", book));
+                    .forEach(book -> log.debug("saved book: {}", book));
 
         }
     }
@@ -93,23 +98,23 @@ public class SampleTest {
                         new BigDecimal("50.1234")
                 );
                 em.persist(entity);
-                LOG.debug("persisted book: {}", entity);
+                log.debug("persisted book: {}", entity);
 
                 // query without select
                 em.createQuery("from Book where name like '%Hibernate'", Book.class)
                         .getResultStream()
-                        .forEach(book -> LOG.debug("query result without select:{}", book));
+                        .forEach(book -> log.debug("query result without select:{}", book));
 
                 // new functions
                 // count(this): org.hibernate.query.SemanticException: Could not interpret path expression 'this'
                 var count = em.createQuery("select count(this) from Book")
                         .getSingleResult();
-                LOG.debug(" count(this) result:{}", count);
+                log.debug(" count(this) result:{}", count);
 
                 // id and version function
                 em.createQuery("select id(this), version(this) from Book", Object[].class)
                         .getResultList()
-                        .forEach(book -> LOG.debug("id and version result:{}", book));
+                        .forEach(book -> log.debug("id and version result:{}", book));
 
                 em.createQuery("""
                                 select left(name, 5),
@@ -120,20 +125,20 @@ public class SampleTest {
                                 from Book
                                 """, Object[].class)
                         .getResultStream()
-                        .forEach(book -> LOG.debug("new functions result:{}", Stream.of(book).toList()));
+                        .forEach(book -> log.debug("new functions result:{}", Stream.of(book).toList()));
 
                 // improved sort nulls first/last
                 em.createQuery("from Book order by name nulls first", Book.class)
                         .getResultStream()
-                        .forEach(book -> LOG.debug("improved sort nulls first:{}", book));
+                        .forEach(book -> log.debug("improved sort nulls first:{}", book));
 
                 // persist new customers
                 var person = new Person("Gavin", "King");
                 em.persist(person);
-                LOG.debug("persisted person: {}", person);
+                log.debug("persisted person: {}", person);
                 var person2 = new Person("Hantsy", "Bai");
                 em.persist(person2);
-                LOG.debug("persisted person2: {}", person2);
+                log.debug("persisted person2: {}", person2);
 
                 // query book author name equals person firstName and lastName
                 em.createQuery("""
@@ -145,7 +150,7 @@ public class SampleTest {
                         .setParameter("firstName", "Gavin")
                         .setParameter("lastName", "King")
                         .getResultStream()
-                        .forEach(book -> LOG.debug("query book author name equals person firstName and lastName: {}", book));
+                        .forEach(book -> log.debug("query book author name equals person firstName and lastName: {}", book));
 
                 // query union book name and person name
                 em.createQuery("""
@@ -154,7 +159,7 @@ public class SampleTest {
                                 select b.author.name  from Book b
                                 """, String.class)
                         .getResultStream()
-                        .forEach(name -> LOG.debug("query union book name and person name: {}", name));
+                        .forEach(name -> log.debug("query union book name and person name: {}", name));
 
                 // intersect book name and person name
                 em.createQuery("""
@@ -163,7 +168,7 @@ public class SampleTest {
                                 select b.author.name  from Book b
                                 """, String.class)
                         .getResultStream()
-                        .forEach(name -> LOG.debug("intersect book name and person name: {}", name));
+                        .forEach(name -> log.debug("intersect book name and person name: {}", name));
 
                 // except book name and person name
                 em.createQuery("""
@@ -172,7 +177,7 @@ public class SampleTest {
                                 select b.author.name  from Book b
                                 """, String.class)
                         .getResultStream()
-                        .forEach(name -> LOG.debug("except book name and person name: {}", name));
+                        .forEach(name -> log.debug("except book name and person name: {}", name));
 
 
                 /////////////////////////////////////////
@@ -197,7 +202,7 @@ public class SampleTest {
 
                 em.createQuery(unionQuery)
                         .getResultStream()
-                        .forEach(name -> LOG.info("query union book name and person name: " + name));
+                        .forEach(name -> log.debug("query union book name and person name: " + name));
 
             });
 
@@ -208,7 +213,7 @@ public class SampleTest {
     public void testSchemaExport() {
         try (var emf = Persistence.createEntityManagerFactory("bookstorePU")) {
             // schema export
-            LOG.debug("exporting schema...");
+            log.debug("exporting schema...");
             emf.getSchemaManager().truncate();
             emf.getSchemaManager().drop(true);
             emf.getSchemaManager().create(true);
@@ -224,31 +229,31 @@ public class SampleTest {
                         "dummy content of Jakarta Persistence 3.2");
                 entity.addComment(new Comment("dummy comment by addComment method"));
                 em.persist(entity);
-                LOG.debug("persisted Post: {}", entity);
+                log.debug("persisted Post: {}", entity);
 
                 // persist comment
                 var comment = new Comment(entity, "dummy comment");
                 em.persist(comment);
-                LOG.debug("persisted comment: {}", comment);
+                log.debug("persisted comment: {}", comment);
             });
             emf.runInTransaction(em -> {
                 var entity = em.createQuery("from Post", Post.class).getResultList().getFirst();
-                LOG.debug("query result: {}", entity);
+                log.debug("query result: {}", entity);
                 // query byTitle named query
                 var result = em.createNamedQuery(Post_.QUERY_BY_TITLE, Post.class)
                         .setParameter("title", "What's new in Persistence 3.2?")
                         .getSingleResult();
-                LOG.debug("query byTitle result: {}", result);
+                log.debug("query byTitle result: {}", result);
 
                 // query withComments entityGraph
                 Post result2 = (Post) em.find(em.getEntityGraph(Post_.GRAPH_WITH_COMMENTS), entity.getId());
-                LOG.debug("query withComments result: {}", result2.getComments());
+                log.debug("query withComments result: {}", result2.getComments());
 
                 // query withComments entityGraph programmatically
                 var postEntityGraph = em.createEntityGraph("withComments");
                 postEntityGraph.addAttributeNode("comments");
                 Post result3 = (Post) em.find(postEntityGraph, entity.getId());
-                LOG.debug("query withComments programmatically result: {}", result3.getComments());
+                log.debug("query withComments programmatically result: {}", result3.getComments());
             });
         }
     }
@@ -260,17 +265,17 @@ public class SampleTest {
                 // persist MyClassIdEntity
                 RecordIdClassEntity entity = new RecordIdClassEntity(new RecordIdClassEntity.RecordIdClass("test1", "test2"));
                 em.persist(entity);
-                LOG.debug("persisted MyClassIdEntity: {}", entity);
+                log.debug("persisted MyClassIdEntity: {}", entity);
 
                 // persist MyEmbeddedIdEntity
                 RecordEmbeddedIdEntity entity2 = new RecordEmbeddedIdEntity(new RecordEmbeddedIdEntity.RecordId("test1"));
                 em.persist(entity2);
-                LOG.debug("persisted MyEmbeddedIdEntity: {}", entity2);
+                log.debug("persisted MyEmbeddedIdEntity: {}", entity2);
 
                 // persist MyEmbeddedEntity
                 RecordEmbeddedEntity entity3 = new RecordEmbeddedEntity(new RecordEmbeddedEntity.RecordEmbedded("test1", 40));
                 em.persist(entity3);
-                LOG.debug("persisted MyEmbeddedEntity: {}", entity3);
+                log.debug("persisted MyEmbeddedEntity: {}", entity3);
             });
         }
     }
@@ -283,17 +288,17 @@ public class SampleTest {
                 Post entity = new Post("What's new in Persistence 3.2?",
                         "dummy content of Jakarta Persistence 3.2");
                 em.persist(entity);
-                LOG.debug("persisted Post: {}", entity);
+                log.debug("persisted Post: {}", entity);
             });
 
             var em = emf.createEntityManager();
             em.runWithConnection((Connection conn) -> {
                 var rs = conn.prepareStatement("select * from posts").executeQuery();
                 while (rs.next()) {
-                    LOG.debug("query result:");
-                    LOG.debug("id: {}", rs.getLong("id"));
-                    LOG.debug("title: {}", rs.getString("title"));
-                    LOG.debug("content: {}", rs.getString("content"));
+                    log.debug("query result:");
+                    log.debug("id: {}", rs.getLong("id"));
+                    log.debug("title: {}", rs.getString("title"));
+                    log.debug("content: {}", rs.getString("content"));
                 }
             });
 
@@ -342,7 +347,7 @@ public class SampleTest {
             });
 
             emf.callInTransaction(em -> em.createQuery("from Book", Book.class).getResultList())
-                    .forEach(book -> LOG.debug("saved book: {}", book));
+                    .forEach(book -> log.debug("saved book: {}", book));
 
 //
 //            Persistence.generateSchema(

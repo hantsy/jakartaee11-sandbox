@@ -45,4 +45,10 @@ under the License.
         </configuration>
     </container>
 
+    <container qualifier="wildfly">
+        <configuration>
+            <property name="serverConfig">standalone-full.xml</property>
+        </configuration>
+    </container>
+
 </arquillian>

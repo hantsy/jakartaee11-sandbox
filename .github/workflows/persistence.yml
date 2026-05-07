@@ -17,7 +17,7 @@ on:
       - reopened
 
 jobs:
-  persistence:
+  persistence-glassfish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
@@ -37,3 +37,17 @@ jobs:
         name: server-log
         path: persistence/target/glassfish*/glassfish/domains/domain1/logs/server.log
               
+  persistence-wildfly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+          cache: maven
+      - name: Build with Maven
+        run: |
+          cd persistence
+          mvn -B -q clean verify -Parq-wildfly-managed

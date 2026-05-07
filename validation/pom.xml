@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>validation</artifactId>
+    <artifactId>jakartaee11-validation-examples</artifactId>
     <parent>
         <groupId>com.example</groupId>
         <artifactId>jakartaee11-sandbox-parent</artifactId>
@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>validation</name>
+    <name>Jakarta EE 11 Sandbox: Validation Examples</name>
     <description>Jakarta EE 11 Sandbox: Jakarta Validation example</description>
 
     <properties>
@@ -53,19 +53,6 @@
             <version>${logback.version}</version>
         </dependency>
 
-        <!-- test dependencies -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit-jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>
