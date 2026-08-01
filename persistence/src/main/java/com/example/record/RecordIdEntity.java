@@ -1,26 +1,25 @@
 package com.example.record;
 
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 
 @Entity
-public class RecordEmbeddedIdEntity {
+public class RecordIdEntity {
     @EmbeddedId
-    MyId id;
+    RecordId id;
 
-    public RecordEmbeddedIdEntity() {
+    public RecordIdEntity() {
     }
 
-    public RecordEmbeddedIdEntity(MyId id) {
+    public RecordIdEntity(RecordId id) {
         this.id = id;
     }
 
-    public MyId getId() {
+    public RecordId getId() {
         return id;
     }
 
-    public void setId(MyId id) {
+    public void setId(RecordId id) {
         this.id = id;
     }
 
@@ -31,7 +30,4 @@ public class RecordEmbeddedIdEntity {
                 '}';
     }
 
-    @Embeddable
-    public static record MyId(String id) {
-    }
 }

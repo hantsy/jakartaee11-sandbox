@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 
 @Entity
-@IdClass(RecordIdClassEntity.RecordIdClass.class)
+@IdClass(RecordIdClass.class)
 public class RecordIdClassEntity {
 
     @Id
@@ -45,9 +45,4 @@ public class RecordIdClassEntity {
                 '}';
     }
 
-    public static record RecordIdClass(
-            String id1,
-            String id2
-    ) {
-    }
 }

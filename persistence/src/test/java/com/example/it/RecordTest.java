@@ -18,9 +18,7 @@ under the License.
  */
 package com.example.it;
 
-import com.example.record.RecordEmbeddedEntity;
-import com.example.record.RecordEmbeddedIdEntity;
-import com.example.record.RecordIdClassEntity;
+import com.example.record.*;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -45,7 +43,7 @@ public class RecordTest {
     @Deployment
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class)
-                .addPackage(RecordEmbeddedEntity.class.getPackage())
+                .addPackage(RecordValueEntity.class.getPackage())
                 .addAsResource("test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
@@ -83,18 +81,18 @@ public class RecordTest {
     @Test
     public void testRecordIdClass() throws Exception {
         doInTx(() -> {
-            // persist MyClassIdEntity
-            RecordIdClassEntity entity = new RecordIdClassEntity(new RecordIdClassEntity.RecordIdClass("test1", "test2"));
+            // persist embeddable record ClassId
+            RecordIdClassEntity entity = new RecordIdClassEntity(new RecordIdClass("test1", "test2"));
             em.persist(entity);
             LOGGER.log(Level.INFO, "persisted MyClassIdEntity: {0}", new Object[]{entity});
 
-            // persist MyEmbeddedIdEntity
-            RecordEmbeddedIdEntity entity2 = new RecordEmbeddedIdEntity(new RecordEmbeddedIdEntity.MyId("test1"));
+            // persist embeddable record id
+            RecordIdEntity entity2 = new RecordIdEntity(new RecordId("test1"));
             em.persist(entity2);
             LOGGER.log(Level.INFO, "persisted MyEmbeddedIdEntity: {0}", new Object[]{entity2});
 
-            // persist MyEmbeddedEntity
-            RecordEmbeddedEntity entity3 = new RecordEmbeddedEntity(new RecordEmbeddedEntity.RecordEmbedded("test1", 40));
+            // persist embeddable record field
+            RecordValueEntity entity3 = new RecordValueEntity(new RecordValue("test1", 40));
             em.persist(entity3);
             LOGGER.log(Level.INFO, "persisted MyEmbeddedEntity: {0}", new Object[]{entity3});
         });
