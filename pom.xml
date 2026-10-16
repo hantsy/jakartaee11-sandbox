@@ -35,7 +35,7 @@
         <lombok.version>1.18.46</lombok.version>
 
         <!-- Hibernate 7.0.0 or higher implements JPA 3.2 -->
-        <hibernate.version>7.3.14.Final</hibernate.version>
+        <hibernate.version>7.4.13.Final</hibernate.version>
         <h2.version>2.5.252</h2.version>
         <hibernate-validator.version>9.1.0.Final</hibernate-validator.version>
         <expressly.version>6.0.0</expressly.version>
