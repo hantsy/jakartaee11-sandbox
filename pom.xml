@@ -35,8 +35,8 @@
         <lombok.version>1.18.46</lombok.version>
 
         <!-- Hibernate 7.0.0 or higher implements JPA 3.2 -->
-        <hibernate.version>7.3.6.Final</hibernate.version>
-        <h2.version>2.4.240</h2.version>
+        <hibernate.version>7.3.14.Final</hibernate.version>
+        <h2.version>2.5.252</h2.version>
         <hibernate-validator.version>9.1.0.Final</hibernate-validator.version>
         <expressly.version>6.0.0</expressly.version>
 
@@ -56,7 +56,7 @@
         <arquillian-glassfish.version>7.1.1</arquillian-glassfish.version>
 
         <!-- WildFly -->
-        <wildfly.version>41.0.0.Final</wildfly.version>
+        <wildfly.version>42.0.0.Beta1</wildfly.version>
         <wildfly-maven-plugin.version>6.0.1.Final</wildfly-maven-plugin.version>
         <wildfly-arquillian.version>6.0.0.Alpha1</wildfly-arquillian.version>
         <resteasy.version>7.0.2.Final</resteasy.version>
